@@ -1,0 +1,172 @@
+'use client';
+import { useState } from 'react';
+import { useCartStore } from '@/store/useCartStore';
+import { motion } from 'framer-motion';
+import { ShieldCheck, CreditCard, Wallet, CheckCircle2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+
+export default function CheckoutPage() {
+  const { items, getCartTotal, clearCart } = useCartStore();
+  const router = useRouter();
+  
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+    firstName: '', lastName: '', email: '', phone: '',
+    address: '', city: '', state: '', pincode: '',
+    paymentMethod: 'RAZORPAY'
+  });
+
+  const total = getCartTotal();
+  const gst = total * 0.12;
+  const shipping = total > 5000 ? 0 : 250;
+  const grandTotal = total + gst + shipping;
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handlePayment = async () => {
+    // Mocking the payment logic for demonstration
+    setStep(3); // Success step
+    clearCart();
+  };
+
+  if (step === 3) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-20 text-center min-h-[60vh] flex flex-col justify-center items-center">
+        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6">
+          <CheckCircle2 className="w-12 h-12" />
+        </motion.div>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Order Confirmed!</h1>
+        <p className="text-gray-600 dark:text-gray-400 mb-8">Thank you for your purchase. Your elegant sarees will reach you soon. Order ID: #ORD-98234</p>
+        <button onClick={() => router.push('/shop')} className="bg-[var(--color-primary)] text-white px-8 py-3 rounded-md font-medium">
+          Continue Shopping
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Checkout</h1>
+      
+      <div className="flex flex-col lg:flex-row gap-12">
+        {/* Forms */}
+        <div className="w-full lg:w-2/3 space-y-8">
+          
+          {/* Address Step */}
+          <div className={`bg-white dark:bg-[#121212] p-6 rounded-xl border ${step === 1 ? 'border-[var(--color-primary)] shadow-md' : 'border-gray-200 dark:border-gray-800 opacity-60'}`}>
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <span className="bg-[var(--color-primary)] text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">1</span> 
+              Shipping Address
+            </h2>
+            
+            {step === 1 && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <input name="firstName" placeholder="First Name" onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
+                  <input name="lastName" placeholder="Last Name" onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <input name="email" type="email" placeholder="Email" onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
+                  <input name="phone" placeholder="Phone Number" onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
+                </div>
+                <input name="address" placeholder="Complete Address" onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
+                <div className="grid grid-cols-3 gap-4">
+                  <input name="city" placeholder="City" onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
+                  <input name="state" placeholder="State" onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
+                  <input name="pincode" placeholder="PIN Code" onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
+                </div>
+                <button onClick={() => setStep(2)} className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-md font-medium mt-4">
+                  Proceed to Payment
+                </button>
+              </motion.div>
+            )}
+          </div>
+
+          {/* Payment Step */}
+          <div className={`bg-white dark:bg-[#121212] p-6 rounded-xl border ${step === 2 ? 'border-[var(--color-primary)] shadow-md' : 'border-gray-200 dark:border-gray-800 opacity-60'}`}>
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <span className="bg-[var(--color-primary)] text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">2</span> 
+              Payment Method
+            </h2>
+            
+            {step === 2 && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
+                <label className="flex items-center p-4 border border-gray-200 dark:border-gray-800 rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900">
+                  <input type="radio" name="paymentMethod" value="RAZORPAY" defaultChecked className="text-[var(--color-primary)]" />
+                  <CreditCard className="w-6 h-6 ml-4 mr-4 text-gray-500" />
+                  <div>
+                    <div className="font-medium text-gray-900 dark:text-white">Pay Online (Razorpay)</div>
+                    <div className="text-sm text-gray-500">Credit/Debit Cards, UPI, Netbanking</div>
+                  </div>
+                </label>
+                
+                <label className="flex items-center p-4 border border-gray-200 dark:border-gray-800 rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900">
+                  <input type="radio" name="paymentMethod" value="COD" className="text-[var(--color-primary)]" />
+                  <Wallet className="w-6 h-6 ml-4 mr-4 text-gray-500" />
+                  <div>
+                    <div className="font-medium text-gray-900 dark:text-white">Cash on Delivery</div>
+                    <div className="text-sm text-gray-500">Pay when you receive the order</div>
+                  </div>
+                </label>
+                
+                <div className="flex gap-4 mt-6">
+                  <button onClick={() => setStep(1)} className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-md font-medium">
+                    Back
+                  </button>
+                  <button onClick={handlePayment} className="bg-[var(--color-indian-gold)] text-gray-900 px-6 py-3 rounded-md font-bold flex-grow shadow-md hover:bg-[#E6C200] flex items-center justify-center gap-2">
+                    <ShieldCheck className="w-5 h-5" /> Place Order
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </div>
+          
+        </div>
+
+        {/* Order Summary (Sidebar) */}
+        <div className="w-full lg:w-1/3">
+          <div className="bg-gray-50 dark:bg-[#1A1A1A] rounded-xl border border-gray-200 dark:border-gray-800 p-6 sticky top-24">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Summary</h2>
+            
+            <div className="space-y-4 mb-6 max-h-60 overflow-y-auto">
+              {items.map(item => (
+                <div key={item.id} className="flex gap-4">
+                  <div className="w-16 h-20 rounded bg-gray-200 shrink-0">
+                    <img src={item.image} alt={item.name} className="w-full h-full object-cover rounded" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-sm text-gray-900 dark:text-white line-clamp-2">{item.name}</div>
+                    <div className="text-xs text-gray-500">Qty: {item.quantity}</div>
+                    <div className="font-medium text-[var(--color-primary)]">₹{(item.price * item.quantity).toLocaleString('en-IN')}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="border-t border-gray-200 dark:border-gray-800 pt-4 space-y-2 text-sm mb-4">
+              <div className="flex justify-between">
+                <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
+                <span>₹{total.toLocaleString('en-IN')}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600 dark:text-gray-400">GST (12%)</span>
+                <span>₹{gst.toLocaleString('en-IN')}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600 dark:text-gray-400">Shipping</span>
+                <span>{shipping === 0 ? 'Free' : `₹${shipping}`}</span>
+              </div>
+            </div>
+            
+            <div className="border-t border-gray-200 dark:border-gray-800 pt-4 flex justify-between items-center">
+              <span className="font-bold text-gray-900 dark:text-white">You Pay</span>
+              <span className="text-2xl font-bold text-[var(--color-primary)]">₹{grandTotal.toLocaleString('en-IN')}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
