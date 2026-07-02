@@ -1,12 +1,12 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useCartStore } from '@/store/useCartStore';
+import { useCart } from '@/context/CartContext';
 import { motion } from 'framer-motion';
 import { ShieldCheck, CreditCard, Wallet, CheckCircle2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function CheckoutPage() {
-  const { items, getCartTotal, clearCart } = useCartStore();
+  const { items, subtotal: total, clearCart } = useCart();
   const router = useRouter();
   
   const [step, setStep] = useState(1);
@@ -27,10 +27,11 @@ export default function CheckoutPage() {
     }
   }, []);
 
-  const total = getCartTotal();
-  const gst = total * 0.12;
-  const shipping = total > 5000 ? 0 : 250;
-  const grandTotal = total + gst + shipping;
+  const deliveryCharge = storeSettings?.deliveryCharge !== undefined ? storeSettings.deliveryCharge : 150;
+  const freeShippingThreshold = storeSettings?.freeShippingThreshold !== undefined ? storeSettings.freeShippingThreshold : 5000;
+  
+  const shipping = (freeShippingThreshold > 0 && total >= freeShippingThreshold) ? 0 : deliveryCharge;
+  const grandTotal = total + shipping;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     if (e.target.name === 'paymentMethod') {
@@ -220,12 +221,8 @@ export default function CheckoutPage() {
                 <span>₹{total.toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">GST (12%)</span>
-                <span>₹{gst.toLocaleString('en-IN')}</span>
-              </div>
-              <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-400">Shipping</span>
-                <span>{shipping === 0 ? 'Free' : `₹${shipping}`}</span>
+                <span>{shipping === 0 ? <span className="text-green-600">Free</span> : `₹${shipping}`}</span>
               </div>
             </div>
             
