@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Settings, Save, Lock, Store, Bell, CreditCard } from 'lucide-react';
+import { supabase } from '@/lib/supabaseClient';
 
 export default function AdminSettingsPage() {
   const [storeName, setStoreName] = useState('Akhila Sarees');
@@ -19,6 +20,13 @@ export default function AdminSettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [activeTab, setActiveTab] = useState('store');
+
+  // Security Settings
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
   
   useEffect(() => {
     const saved = localStorage.getItem('akhila_store_settings');
@@ -65,6 +73,40 @@ export default function AdminSettingsPage() {
     }, 800);
   };
 
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError('');
+    setPasswordSuccess(false);
+
+    if (newPassword.length < 6) {
+      setPasswordError('Password must be at least 6 characters long.');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError('Passwords do not match.');
+      return;
+    }
+
+    setIsUpdatingPassword(true);
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) throw error;
+      
+      setPasswordSuccess(true);
+      setNewPassword('');
+      setConfirmPassword('');
+      setTimeout(() => setPasswordSuccess(false), 3000);
+    } catch (err: any) {
+      setPasswordError(err.message || 'Failed to update password.');
+    } finally {
+      setIsUpdatingPassword(false);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-8 flex justify-between items-center">
@@ -103,8 +145,15 @@ export default function AdminSettingsPage() {
           >
             <CreditCard className="w-4 h-4" /> Payments
           </button>
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg font-medium text-sm transition-colors text-left opacity-50 cursor-not-allowed">
-            <Lock className="w-4 h-4" /> Security (Coming Soon)
+          <button 
+            onClick={() => setActiveTab('security')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-colors text-left ${
+              activeTab === 'security' 
+                ? 'bg-[var(--color-primary)] text-white' 
+                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
+            }`}
+          >
+            <Lock className="w-4 h-4" /> Security
           </button>
           <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg font-medium text-sm transition-colors text-left opacity-50 cursor-not-allowed">
             <Bell className="w-4 h-4" /> Notifications (Coming Soon)
@@ -255,21 +304,23 @@ export default function AdminSettingsPage() {
             </>
           )}
 
-          <div className="flex justify-end gap-3">
-            <button className="px-6 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-              Cancel
-            </button>
-            <button 
-              onClick={handleSave}
-              disabled={isSaving}
-              className={`flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-colors ${
-                isSaving ? 'bg-gray-400 cursor-not-allowed' : 'bg-[var(--color-primary)] hover:bg-[#600000] text-white'
-              }`}
-            >
-              <Save className="w-4 h-4" /> 
-              {isSaving ? 'Saving...' : 'Save Changes'}
-            </button>
-          </div>
+          {activeTab !== 'security' && (
+            <div className="flex justify-end gap-3">
+              <button className="px-6 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                Cancel
+              </button>
+              <button 
+                onClick={handleSave}
+                disabled={isSaving}
+                className={`flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-colors ${
+                  isSaving ? 'bg-gray-400 cursor-not-allowed' : 'bg-[var(--color-primary)] hover:bg-[#600000] text-white'
+                }`}
+              >
+                <Save className="w-4 h-4" /> 
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          )}
         </div>
 
       </div>
