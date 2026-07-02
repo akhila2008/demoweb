@@ -21,7 +21,9 @@ export default function WishlistPage() {
       name: item.name,
       price: item.price,
       quantity: 1,
-      image: item.image
+      image: item.image,
+      color: 'Default',
+      maxStock: 10
     });
   };
 
