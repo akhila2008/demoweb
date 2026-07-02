@@ -1,4 +1,5 @@
 'use client';
+import { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import Link from 'next/link';
 import { Trash2, ShoppingBag, ArrowRight, ShieldCheck } from 'lucide-react';
@@ -6,8 +7,21 @@ import { motion } from 'framer-motion';
 
 export default function CartPage() {
   const { items, removeFromCart, updateQuantity, subtotal, totalItems } = useCart();
+  const [deliveryCharge, setDeliveryCharge] = useState(150);
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState(5000);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('akhila_store_settings');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.deliveryCharge !== undefined) setDeliveryCharge(parsed.deliveryCharge);
+        if (parsed.freeShippingThreshold !== undefined) setFreeShippingThreshold(parsed.freeShippingThreshold);
+      } catch (e) {}
+    }
+  }, []);
   
-  const shipping = subtotal > 5000 ? 0 : 150; // Free shipping over ₹5000
+  const shipping = (freeShippingThreshold > 0 && subtotal >= freeShippingThreshold) ? 0 : deliveryCharge;
   const total = subtotal + shipping;
 
   if (items.length === 0) {
@@ -108,8 +122,8 @@ export default function CartPage() {
                 <span>Shipping</span>
                 <span>{shipping === 0 ? <span className="text-green-600">Free</span> : `₹${shipping}`}</span>
               </div>
-              {shipping > 0 && (
-                <p className="text-xs text-gray-500 text-right mt-1">Add items worth ₹{(5000 - subtotal).toLocaleString('en-IN')} more for free shipping!</p>
+              {shipping > 0 && freeShippingThreshold > 0 && subtotal < freeShippingThreshold && (
+                <p className="text-xs text-gray-500 text-right mt-1">Add items worth ₹{(freeShippingThreshold - subtotal).toLocaleString('en-IN')} more for free shipping!</p>
               )}
             </div>
 

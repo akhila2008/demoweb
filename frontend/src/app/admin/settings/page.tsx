@@ -1,22 +1,46 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Settings, Save, Lock, Store, Bell, CreditCard } from 'lucide-react';
 
 export default function AdminSettingsPage() {
   const [storeName, setStoreName] = useState('Akhila Sarees');
   const [email, setEmail] = useState('akhila@example.com');
   const [currency, setCurrency] = useState('INR');
+  const [deliveryCharge, setDeliveryCharge] = useState(150);
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState(5000);
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  
+  useEffect(() => {
+    const saved = localStorage.getItem('akhila_store_settings');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.storeName) setStoreName(parsed.storeName);
+        if (parsed.email) setEmail(parsed.email);
+        if (parsed.currency) setCurrency(parsed.currency);
+        if (parsed.deliveryCharge !== undefined) setDeliveryCharge(parsed.deliveryCharge);
+        if (parsed.freeShippingThreshold !== undefined) setFreeShippingThreshold(parsed.freeShippingThreshold);
+      } catch (e) {}
+    }
+  }, []);
 
   const handleSave = () => {
     setIsSaving(true);
-    // Simulate API call
+    
+    // Save to localStorage
+    const settings = {
+      storeName,
+      email,
+      currency,
+      deliveryCharge: Number(deliveryCharge),
+      freeShippingThreshold: Number(freeShippingThreshold)
+    };
+    localStorage.setItem('akhila_store_settings', JSON.stringify(settings));
+
     setTimeout(() => {
       setIsSaving(false);
       setShowSuccess(true);
-      
-      // Hide success message after 3 seconds
       setTimeout(() => setShowSuccess(false), 3000);
     }, 800);
   };
@@ -90,6 +114,34 @@ export default function AdminSettingsPage() {
                   <option value="USD">US Dollar ($)</option>
                   <option value="EUR">Euro (€)</option>
                 </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm p-6">
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">Shipping Configuration</h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Standard Delivery Charge (₹)</label>
+                <input 
+                  type="number" 
+                  value={deliveryCharge}
+                  onChange={(e) => setDeliveryCharge(Number(e.target.value))}
+                  onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                  className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Free Shipping Threshold (₹) - Enter 0 to disable</label>
+                <input 
+                  type="number" 
+                  value={freeShippingThreshold}
+                  onChange={(e) => setFreeShippingThreshold(Number(e.target.value))}
+                  onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                  className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                />
               </div>
             </div>
           </div>
