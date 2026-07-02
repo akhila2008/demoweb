@@ -83,7 +83,7 @@ export default function AdminProductsPage() {
 
   const handleAddProduct = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newProduct.name || !newProduct.price || !newProduct.stock) return;
+    if (!newProduct.name || !newProduct.price || !newProduct.stock || !newProduct.groupId) return;
     
     if (editingProductId) {
       // Update existing product
@@ -380,8 +380,9 @@ export default function AdminProductsPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" title="Give identical Model Group IDs to group variants together.">Model Group ID (Optional)</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" title="Give identical Model Numbers to group variants together.">Model Number</label>
                     <input 
+                      required
                       type="text" 
                       value={newProduct.groupId}
                       onChange={(e) => setNewProduct({...newProduct, groupId: e.target.value})}
