@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCartStore } from '@/store/useCartStore';
 import { motion } from 'framer-motion';
 import { ShieldCheck, CreditCard, Wallet, CheckCircle2 } from 'lucide-react';
@@ -13,8 +13,19 @@ export default function CheckoutPage() {
   const [formData, setFormData] = useState({
     firstName: '', lastName: '', email: '', phone: '',
     address: '', city: '', state: '', pincode: '',
-    paymentMethod: 'RAZORPAY'
+    paymentMethod: 'ONLINE'
   });
+  const [transactionId, setTransactionId] = useState('');
+  const [storeSettings, setStoreSettings] = useState<any>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('akhila_store_settings');
+    if (saved) {
+      try {
+        setStoreSettings(JSON.parse(saved));
+      } catch (e) {}
+    }
+  }, []);
 
   const total = getCartTotal();
   const gst = total * 0.12;
@@ -22,7 +33,11 @@ export default function CheckoutPage() {
   const grandTotal = total + gst + shipping;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (e.target.name === 'paymentMethod') {
+      setFormData({ ...formData, paymentMethod: e.target.value });
+    } else {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
   };
 
   const handlePayment = async () => {
@@ -94,16 +109,62 @@ export default function CheckoutPage() {
             {step === 2 && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
                 <label className="flex items-center p-4 border border-gray-200 dark:border-gray-800 rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900">
-                  <input type="radio" name="paymentMethod" value="RAZORPAY" defaultChecked className="text-[var(--color-primary)]" />
-                  <CreditCard className="w-6 h-6 ml-4 mr-4 text-gray-500" />
+                  <input type="radio" name="paymentMethod" value="ONLINE" checked={formData.paymentMethod === 'ONLINE'} onChange={handleInputChange} className="text-[var(--color-primary)]" />
+                  <CreditCard className="w-6 h-6 ml-4 mr-4 text-[var(--color-primary)]" />
                   <div>
-                    <div className="font-medium text-gray-900 dark:text-white">Pay Online (Razorpay)</div>
-                    <div className="text-sm text-gray-500">Credit/Debit Cards, UPI, Netbanking</div>
+                    <div className="font-medium text-gray-900 dark:text-white">Pay Online (UPI / Bank Transfer)</div>
+                    <div className="text-sm text-gray-500">Google Pay, PhonePe, Paytm, Navi</div>
                   </div>
                 </label>
                 
+                {formData.paymentMethod === 'ONLINE' && (
+                  <div className="ml-8 p-4 bg-gray-50 dark:bg-gray-900 rounded-md border border-gray-200 dark:border-gray-800 space-y-4">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Please make a payment of <strong>₹{grandTotal.toLocaleString('en-IN')}</strong> to our UPI ID or Bank Account and enter the Transaction ID below to place your order.
+                    </p>
+                    
+                    {storeSettings?.upiId && (
+                      <div className="bg-white dark:bg-black p-4 rounded border border-gray-200 dark:border-gray-700">
+                        <div className="text-xs text-gray-500 mb-1">Pay via UPI</div>
+                        <div className="font-bold text-lg select-all">{storeSettings.upiId}</div>
+                        <div className="flex flex-wrap gap-2 mt-3">
+                          <a href={`upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}`} className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded text-xs font-medium transition-colors">Google Pay</a>
+                          <a href={`upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}`} className="px-3 py-1.5 bg-purple-100 text-purple-800 hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-300 rounded text-xs font-medium transition-colors">PhonePe</a>
+                          <a href={`upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}`} className="px-3 py-1.5 bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-300 rounded text-xs font-medium transition-colors">Paytm</a>
+                          <a href={`upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}`} className="px-3 py-1.5 bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300 rounded text-xs font-medium transition-colors">Navi</a>
+                        </div>
+                      </div>
+                    )}
+
+                    {storeSettings?.accountNumber && (
+                      <div className="bg-white dark:bg-black p-4 rounded border border-gray-200 dark:border-gray-700 text-sm">
+                        <div className="text-xs text-gray-500 mb-2">Direct Bank Transfer</div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="text-gray-500">Bank Name:</div><div className="font-medium">{storeSettings.bankName}</div>
+                          <div className="text-gray-500">Account No:</div><div className="font-medium select-all">{storeSettings.accountNumber}</div>
+                          <div className="text-gray-500">IFSC Code:</div><div className="font-medium select-all">{storeSettings.ifscCode}</div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                        Transaction ID (UTR Number) <span className="text-red-500">*</span>
+                      </label>
+                      <input 
+                        type="text" 
+                        value={transactionId}
+                        onChange={(e) => setTransactionId(e.target.value)}
+                        placeholder="Enter 12-digit UTR or Transaction ID"
+                        className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-800 focus:ring-[var(--color-primary)]"
+                        required
+                      />
+                    </div>
+                  </div>
+                )}
+                
                 <label className="flex items-center p-4 border border-gray-200 dark:border-gray-800 rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900">
-                  <input type="radio" name="paymentMethod" value="COD" className="text-[var(--color-primary)]" />
+                  <input type="radio" name="paymentMethod" value="COD" checked={formData.paymentMethod === 'COD'} onChange={handleInputChange} className="text-[var(--color-primary)]" />
                   <Wallet className="w-6 h-6 ml-4 mr-4 text-gray-500" />
                   <div>
                     <div className="font-medium text-gray-900 dark:text-white">Cash on Delivery</div>
@@ -115,7 +176,15 @@ export default function CheckoutPage() {
                   <button onClick={() => setStep(1)} className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-md font-medium">
                     Back
                   </button>
-                  <button onClick={handlePayment} className="bg-[var(--color-indian-gold)] text-gray-900 px-6 py-3 rounded-md font-bold flex-grow shadow-md hover:bg-[#E6C200] flex items-center justify-center gap-2">
+                  <button 
+                    onClick={handlePayment} 
+                    disabled={formData.paymentMethod === 'ONLINE' && transactionId.trim().length < 8}
+                    className={`px-6 py-3 rounded-md font-bold flex-grow shadow-md flex items-center justify-center gap-2 transition-colors ${
+                      formData.paymentMethod === 'ONLINE' && transactionId.trim().length < 8
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-[var(--color-indian-gold)] text-gray-900 hover:bg-[#E6C200]'
+                    }`}
+                  >
                     <ShieldCheck className="w-5 h-5" /> Place Order
                   </button>
                 </div>

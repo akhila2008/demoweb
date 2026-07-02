@@ -8,8 +8,16 @@ export default function AdminSettingsPage() {
   const [currency, setCurrency] = useState('INR');
   const [deliveryCharge, setDeliveryCharge] = useState(150);
   const [freeShippingThreshold, setFreeShippingThreshold] = useState(5000);
+  
+  // Payment Settings
+  const [upiId, setUpiId] = useState('');
+  const [bankName, setBankName] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+  const [ifscCode, setIfscCode] = useState('');
+  
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [activeTab, setActiveTab] = useState('store');
   
   useEffect(() => {
     const saved = localStorage.getItem('akhila_store_settings');
@@ -21,6 +29,11 @@ export default function AdminSettingsPage() {
         if (parsed.currency) setCurrency(parsed.currency);
         if (parsed.deliveryCharge !== undefined) setDeliveryCharge(parsed.deliveryCharge);
         if (parsed.freeShippingThreshold !== undefined) setFreeShippingThreshold(parsed.freeShippingThreshold);
+        if (parsed.freeShippingThreshold !== undefined) setFreeShippingThreshold(parsed.freeShippingThreshold);
+        if (parsed.upiId) setUpiId(parsed.upiId);
+        if (parsed.bankName) setBankName(parsed.bankName);
+        if (parsed.accountNumber) setAccountNumber(parsed.accountNumber);
+        if (parsed.ifscCode) setIfscCode(parsed.ifscCode);
       } catch (e) {}
     }
   }, []);
@@ -34,7 +47,11 @@ export default function AdminSettingsPage() {
       email,
       currency,
       deliveryCharge: Number(deliveryCharge),
-      freeShippingThreshold: Number(freeShippingThreshold)
+      freeShippingThreshold: Number(freeShippingThreshold),
+      upiId,
+      bankName,
+      accountNumber,
+      ifscCode
     };
     localStorage.setItem('akhila_store_settings', JSON.stringify(settings));
 
@@ -63,23 +80,39 @@ export default function AdminSettingsPage() {
         
         {/* Settings Navigation */}
         <div className="md:col-span-1 space-y-1">
-          <button className="w-full flex items-center gap-3 px-4 py-3 bg-[var(--color-primary)] text-white rounded-lg font-medium text-sm transition-colors text-left">
+          <button 
+            onClick={() => setActiveTab('store')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-colors text-left ${
+              activeTab === 'store' 
+                ? 'bg-[var(--color-primary)] text-white' 
+                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
+            }`}
+          >
             <Store className="w-4 h-4" /> Store Details
           </button>
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg font-medium text-sm transition-colors text-left">
-            <Lock className="w-4 h-4" /> Security
-          </button>
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg font-medium text-sm transition-colors text-left">
-            <Bell className="w-4 h-4" /> Notifications
-          </button>
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg font-medium text-sm transition-colors text-left">
+          <button 
+            onClick={() => setActiveTab('payments')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-colors text-left ${
+              activeTab === 'payments' 
+                ? 'bg-[var(--color-primary)] text-white' 
+                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
+            }`}
+          >
             <CreditCard className="w-4 h-4" /> Payments
+          </button>
+          <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg font-medium text-sm transition-colors text-left opacity-50 cursor-not-allowed">
+            <Lock className="w-4 h-4" /> Security (Coming Soon)
+          </button>
+          <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg font-medium text-sm transition-colors text-left opacity-50 cursor-not-allowed">
+            <Bell className="w-4 h-4" /> Notifications (Coming Soon)
           </button>
         </div>
 
         {/* Settings Content */}
         <div className="md:col-span-3 space-y-6">
-          <div className="bg-white dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm p-6">
+          {activeTab === 'store' && (
+            <>
+              <div className="bg-white dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm p-6">
             <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">Store Profile</h2>
             
             <div className="space-y-4">
@@ -145,6 +178,68 @@ export default function AdminSettingsPage() {
               </div>
             </div>
           </div>
+            </>
+          )}
+
+          {activeTab === 'payments' && (
+            <>
+              <div className="bg-white dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm p-6">
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">UPI Settings</h2>
+                <p className="text-sm text-gray-500 mb-4">Enter your store's UPI ID. Customers choosing Pay Online will be asked to pay to this UPI ID.</p>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">UPI ID (e.g., store@okhdfcbank)</label>
+                    <input 
+                      type="text" 
+                      value={upiId}
+                      onChange={(e) => setUpiId(e.target.value)}
+                      placeholder="Enter UPI ID"
+                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm p-6">
+                <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">Bank Details (Optional)</h2>
+                <p className="text-sm text-gray-500 mb-4">Enter your bank details for direct transfers. Leave blank if you only want to accept UPI.</p>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bank Name</label>
+                    <input 
+                      type="text" 
+                      value={bankName}
+                      onChange={(e) => setBankName(e.target.value)}
+                      placeholder="e.g. State Bank of India"
+                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Account Number</label>
+                    <input 
+                      type="text" 
+                      value={accountNumber}
+                      onChange={(e) => setAccountNumber(e.target.value)}
+                      placeholder="Enter Account Number"
+                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">IFSC Code</label>
+                    <input 
+                      type="text" 
+                      value={ifscCode}
+                      onChange={(e) => setIfscCode(e.target.value)}
+                      placeholder="Enter IFSC Code"
+                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                    />
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
 
           <div className="flex justify-end gap-3">
             <button className="px-6 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
