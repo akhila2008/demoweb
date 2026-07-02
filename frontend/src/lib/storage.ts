@@ -25,7 +25,7 @@ export async function saveProducts(products: any[]): Promise<boolean> {
               
             if (error) {
               console.error('Error uploading file:', error);
-              newImageUrls.push(p.images[i] || p.image || ''); 
+              newImageUrls.push((p.images && p.images[i]) || p.image || ''); 
             } else {
               const { data: publicUrlData } = supabase.storage
                 .from('product-media')
@@ -34,7 +34,7 @@ export async function saveProducts(products: any[]): Promise<boolean> {
             }
           } else {
             // Already a URL
-            newImageUrls.push(p.images[i] || p.image);
+            newImageUrls.push((p.images && p.images[i]) || p.image || '');
           }
         }
         productData.images = newImageUrls;
