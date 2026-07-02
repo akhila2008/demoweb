@@ -78,6 +78,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
             washCare: 'Dry Clean Only. Keep away from direct sunlight.',
             stock: foundProduct.stock,
             isVideo: foundProduct.isVideo,
+            isVideos: foundProduct.isVideos,
             // Use dynamic images array if available, otherwise mock it
             images: foundProduct.images && foundProduct.images.length > 0 
               ? foundProduct.images 
