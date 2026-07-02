@@ -1,16 +1,17 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { loadProducts } from '@/lib/storage';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Filter, ChevronDown, SlidersHorizontal } from 'lucide-react';
-
-// Mock data for initial UI (now loaded dynamically)
-const INITIAL_PRODUCTS: any[] = [];
+import { Filter, ChevronDown, SlidersHorizontal, Check } from 'lucide-react';
+import { AVAILABLE_COLORS } from '@/lib/colors';
 
 export default function ShopPage() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [products, setProducts] = useState<any[]>(INITIAL_PRODUCTS);
+  const [products, setProducts] = useState<any[]>([]);
+  
+  const [pendingFilters, setPendingFilters] = useState({ fabrics: [] as string[], price: '', colors: [] as string[] });
+  const [activeFilters, setActiveFilters] = useState({ fabrics: [] as string[], price: '', colors: [] as string[] });
 
   useEffect(() => {
     // Sync with products added in the admin panel via IndexedDB
@@ -32,6 +33,56 @@ export default function ShopPage() {
     window.addEventListener('akhila_products_updated', handleUpdate);
     return () => window.removeEventListener('akhila_products_updated', handleUpdate);
   }, []);
+
+  const handleFabricToggle = (fabric: string) => {
+    setPendingFilters(prev => ({
+      ...prev,
+      fabrics: prev.fabrics.includes(fabric) 
+        ? prev.fabrics.filter(f => f !== fabric) 
+        : [...prev.fabrics, fabric]
+    }));
+  };
+
+  const handleColorToggle = (color: string) => {
+    setPendingFilters(prev => ({
+      ...prev,
+      colors: prev.colors.includes(color) 
+        ? prev.colors.filter(c => c !== color) 
+        : [...prev.colors, color]
+    }));
+  };
+
+  const applyFilters = () => {
+    setActiveFilters(pendingFilters);
+    if (window.innerWidth < 768) setIsFilterOpen(false); // Close mobile filter
+  };
+
+  const clearFilters = () => {
+    const emptyFilters = { fabrics: [], price: '', colors: [] };
+    setPendingFilters(emptyFilters);
+    setActiveFilters(emptyFilters);
+  };
+
+  const filteredProducts = useMemo(() => {
+    return products.filter(p => {
+      // Fabric filter
+      if (activeFilters.fabrics.length > 0 && !activeFilters.fabrics.includes(p.category)) return false;
+      
+      // Price filter
+      if (activeFilters.price === 'under_5000' && p.price >= 5000) return false;
+      if (activeFilters.price === '5000_15000' && (p.price < 5000 || p.price > 15000)) return false;
+      if (activeFilters.price === 'over_15000' && p.price <= 15000) return false;
+
+      // Color filter
+      if (activeFilters.colors.length > 0) {
+        if (!p.colors || p.colors.length === 0) return false;
+        const hasMatchingColor = activeFilters.colors.some(c => p.colors.includes(c));
+        if (!hasMatchingColor) return false;
+      }
+
+      return true;
+    });
+  }, [products, activeFilters]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col md:flex-row gap-8">
@@ -62,8 +113,16 @@ export default function ShopPage() {
               </h3>
               <div className="space-y-2">
                 {['Silk', 'Cotton', 'Banarasi', 'Organza', 'Chiffon', 'Georgette'].map(category => (
-                  <label key={category} className="flex items-center space-x-2 cursor-pointer">
-                    <input type="checkbox" className="rounded text-[var(--color-primary)] focus:ring-[var(--color-primary)]" />
+                  <label key={category} className="flex items-center space-x-2 cursor-pointer group">
+                    <div className={`w-5 h-5 border rounded flex items-center justify-center ${pendingFilters.fabrics.includes(category) ? 'bg-[var(--color-primary)] border-[var(--color-primary)]' : 'border-gray-300 dark:border-gray-700 group-hover:border-[var(--color-primary)]'}`}>
+                      {pendingFilters.fabrics.includes(category) && <Check className="w-3.5 h-3.5 text-white" />}
+                    </div>
+                    <input 
+                      type="checkbox" 
+                      className="sr-only" 
+                      checked={pendingFilters.fabrics.includes(category)}
+                      onChange={() => handleFabricToggle(category)} 
+                    />
                     <span className="text-gray-600 dark:text-gray-300">{category}</span>
                   </label>
                 ))}
@@ -77,17 +136,18 @@ export default function ShopPage() {
               </h3>
               <div className="space-y-2">
                 <label className="flex items-center space-x-2 cursor-pointer">
-                  <input type="radio" name="price" className="text-[var(--color-primary)] focus:ring-[var(--color-primary)]" />
+                  <input type="radio" name="price" checked={pendingFilters.price === 'under_5000'} onChange={() => setPendingFilters(prev => ({...prev, price: 'under_5000'}))} className="text-[var(--color-primary)] focus:ring-[var(--color-primary)]" />
                   <span className="text-gray-600 dark:text-gray-300">Under ₹5,000</span>
                 </label>
                 <label className="flex items-center space-x-2 cursor-pointer">
-                  <input type="radio" name="price" className="text-[var(--color-primary)] focus:ring-[var(--color-primary)]" />
+                  <input type="radio" name="price" checked={pendingFilters.price === '5000_15000'} onChange={() => setPendingFilters(prev => ({...prev, price: '5000_15000'}))} className="text-[var(--color-primary)] focus:ring-[var(--color-primary)]" />
                   <span className="text-gray-600 dark:text-gray-300">₹5,000 - ₹15,000</span>
                 </label>
                 <label className="flex items-center space-x-2 cursor-pointer">
-                  <input type="radio" name="price" className="text-[var(--color-primary)] focus:ring-[var(--color-primary)]" />
+                  <input type="radio" name="price" checked={pendingFilters.price === 'over_15000'} onChange={() => setPendingFilters(prev => ({...prev, price: 'over_15000'}))} className="text-[var(--color-primary)] focus:ring-[var(--color-primary)]" />
                   <span className="text-gray-600 dark:text-gray-300">Over ₹15,000</span>
                 </label>
+                <button type="button" onClick={() => setPendingFilters(prev => ({...prev, price: ''}))} className="text-xs text-[var(--color-primary)] hover:underline mt-2 inline-block">Clear Price Selection</button>
               </div>
             </div>
 
@@ -95,15 +155,37 @@ export default function ShopPage() {
             <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
               <h3 className="font-semibold mb-3">Color</h3>
               <div className="flex flex-wrap gap-2">
-                {['#800000', '#FFD700', '#50C878', '#4169E1', '#FF00FF', '#1A1A1A'].map(color => (
+                {AVAILABLE_COLORS.map(color => (
                   <button 
-                    key={color} 
-                    className="w-8 h-8 rounded-full border-2 border-transparent hover:border-gray-400 focus:border-gray-900 dark:focus:border-white transition-all shadow-sm"
-                    style={{ backgroundColor: color }}
-                    aria-label={`Color ${color}`}
-                  />
+                    key={color.name} 
+                    onClick={() => handleColorToggle(color.name)}
+                    className={`w-8 h-8 rounded-full border-2 transition-all shadow-sm flex items-center justify-center ${pendingFilters.colors.includes(color.name) ? 'border-gray-900 dark:border-white scale-110' : 'border-transparent hover:border-gray-400'}`}
+                    style={{ backgroundColor: color.hex }}
+                    aria-label={`Color ${color.name}`}
+                    title={color.name}
+                  >
+                    {pendingFilters.colors.includes(color.name) && (
+                      <Check className={`w-4 h-4 ${['White', 'Cream', 'Silver', 'Yellow'].includes(color.name) ? 'text-black' : 'text-white'}`} />
+                    )}
+                  </button>
                 ))}
               </div>
+            </div>
+            
+            {/* Action Buttons */}
+            <div className="pt-6 mt-6 border-t border-gray-200 dark:border-gray-800 flex flex-col gap-3">
+              <button 
+                onClick={applyFilters}
+                className="w-full bg-[var(--color-primary)] hover:bg-[#600000] text-white py-3 rounded-lg font-medium transition-colors shadow-md"
+              >
+                Apply Filters
+              </button>
+              <button 
+                onClick={clearFilters}
+                className="w-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 py-3 rounded-lg font-medium transition-colors"
+              >
+                Clear All
+              </button>
             </div>
           </div>
         </div>
@@ -125,13 +207,13 @@ export default function ShopPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.length === 0 ? (
+          {filteredProducts.length === 0 ? (
             <div className="col-span-full py-20 text-center">
-              <p className="text-xl text-gray-500 mb-4">No sarees available at the moment.</p>
-              <p className="text-gray-400">Please check back soon for our new collection!</p>
+              <p className="text-xl text-gray-500 mb-4">No sarees match your selected filters.</p>
+              <button onClick={clearFilters} className="text-[var(--color-primary)] hover:underline font-medium">Clear Filters</button>
             </div>
           ) : (
-            products.map((product) => (
+            filteredProducts.map((product) => (
               <motion.div 
                 key={product.id}
                 whileHover={{ y: -5 }}
@@ -173,17 +255,12 @@ export default function ShopPage() {
                     {product.colors && product.colors.length > 0 && (
                       <div className="flex gap-1">
                         {product.colors.slice(0, 3).map((colorName: string) => {
-                          // Simple mapping for demo purposes. Real app would share the const array
-                          const hexMap: Record<string, string> = {
-                            'Red': '#EF4444', 'Maroon': '#800000', 'Blue': '#3B82F6', 
-                            'Green': '#10B981', 'Gold': '#F59E0B', 'Pink': '#EC4899', 
-                            'Purple': '#8B5CF6', 'Black': '#1F2937'
-                          };
+                          const hex = AVAILABLE_COLORS.find(c => c.name === colorName)?.hex || '#ccc';
                           return (
                             <div 
                               key={colorName}
                               className="w-3.5 h-3.5 rounded-full border border-gray-300 dark:border-gray-600 shadow-sm"
-                              style={{ backgroundColor: hexMap[colorName] || '#ccc' }}
+                              style={{ backgroundColor: hex }}
                               title={colorName}
                             />
                           );

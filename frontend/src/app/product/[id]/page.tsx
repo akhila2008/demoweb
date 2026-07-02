@@ -216,18 +216,20 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
             <div className="flex items-center border border-gray-300 dark:border-gray-700 rounded-lg h-12 w-32 shrink-0">
               <button 
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="px-4 py-2 text-gray-600 hover:text-[var(--color-primary)] transition-colors"
+                type="button"
+                onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
+                className="px-4 py-2 text-gray-600 hover:text-[var(--color-primary)] transition-colors cursor-pointer"
               >-</button>
               <input 
                 type="number" 
                 value={quantity}
                 readOnly
-                className="w-full text-center bg-transparent border-none focus:ring-0 text-gray-900 dark:text-white font-medium" 
+                className="w-full text-center bg-transparent border-none focus:ring-0 text-gray-900 dark:text-white font-medium cursor-default" 
               />
               <button 
-                onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                className="px-4 py-2 text-gray-600 hover:text-[var(--color-primary)] transition-colors"
+                type="button"
+                onClick={() => setQuantity(prev => Math.min(Number(product.stock), prev + 1))}
+                className="px-4 py-2 text-gray-600 hover:text-[var(--color-primary)] transition-colors cursor-pointer"
               >+</button>
             </div>
             
