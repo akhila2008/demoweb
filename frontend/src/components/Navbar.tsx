@@ -75,8 +75,16 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
+          {/* Mobile menu and cart */}
+          <div className="md:hidden flex items-center space-x-4">
+            <Link href="/cart" className="relative text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
+              <ShoppingCart className="w-5 h-5" />
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-[var(--color-primary)] text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
             <button onClick={() => setIsOpen(!isOpen)} className="text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] focus:outline-none">
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -102,9 +110,6 @@ export default function Navbar() {
               Silk Sarees
             </Link>
             <div className="flex space-x-6 px-3 py-4 border-t border-gray-200 dark:border-gray-800">
-              <Link href="/cart" className="flex items-center text-gray-600 dark:text-gray-400">
-                <ShoppingCart className="w-5 h-5 mr-2" /> Cart
-              </Link>
               <Link href="/login" className="flex items-center text-gray-600 dark:text-gray-400">
                 <User className="w-5 h-5 mr-2" /> Profile
               </Link>
