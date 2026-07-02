@@ -146,50 +146,50 @@ export default function Navbar() {
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="absolute right-0 w-full md:w-64 bg-white dark:bg-[#121212] border-b md:border md:rounded-bl-xl border-gray-200 dark:border-gray-800 shadow-xl"
+          className="absolute right-0 w-full md:w-64 bg-gray-900 border-b md:border md:border-t-0 border-[var(--color-primary)] md:rounded-bl-xl shadow-2xl shadow-[var(--color-primary)]/20"
         >
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link href="/" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
+            <Link href="/" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-[var(--color-primary)] hover:bg-gray-800 rounded-md transition-colors">
               Home
             </Link>
             <div className="md:hidden">
-              <Link href="/shop" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
+              <Link href="/shop" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-[var(--color-primary)] hover:bg-gray-800 rounded-md transition-colors">
                 Collections
               </Link>
-              <Link href="/shop?category=wedding" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
+              <Link href="/shop?category=wedding" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-[var(--color-primary)] hover:bg-gray-800 rounded-md transition-colors">
                 Wedding
               </Link>
-              <Link href="/shop?category=silk" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
+              <Link href="/shop?category=silk" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-[var(--color-primary)] hover:bg-gray-800 rounded-md transition-colors">
                 Silk Sarees
               </Link>
             </div>
-            <Link href="/wishlist" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md flex justify-between items-center">
+            <Link href="/wishlist" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-[var(--color-primary)] hover:bg-gray-800 rounded-md transition-colors flex justify-between items-center">
               <span>Wishlist</span>
               {wishlistItems.length > 0 && (
-                <span className="bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="bg-[var(--color-primary)] text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                   {wishlistItems.length}
                 </span>
               )}
             </Link>
             
-            <div className="border-t border-gray-200 dark:border-gray-800 my-2"></div>
+            <div className="border-t border-gray-700 my-2"></div>
             
             {user ? (
-              <Link href="/profile" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
+              <Link href="/profile" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-[var(--color-primary)] hover:bg-gray-800 rounded-md transition-colors">
                 My Profile
               </Link>
             ) : (
               <>
-                <Link href="/login" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
+                <Link href="/login" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-[var(--color-primary)] hover:bg-gray-800 rounded-md transition-colors">
                   Log In
                 </Link>
-                <Link href="/login" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-[var(--color-primary)] hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
+                <Link href="/login" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-[var(--color-primary)] hover:bg-gray-800 rounded-md transition-colors">
                   Sign Up
                 </Link>
               </>
             )}
             
-            <button onClick={() => { handleShareSite(); setIsOpen(false); }} className="w-full text-left block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
+            <button onClick={() => { handleShareSite(); setIsOpen(false); }} className="w-full text-left block px-3 py-2 text-base font-medium text-gray-300 hover:text-[var(--color-primary)] hover:bg-gray-800 rounded-md transition-colors">
               Share Website
             </button>
           </div>
