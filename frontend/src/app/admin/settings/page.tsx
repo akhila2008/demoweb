@@ -4,7 +4,8 @@ import { Settings, Save, Lock, Store, Bell, CreditCard } from 'lucide-react';
 
 export default function AdminSettingsPage() {
   const [storeName, setStoreName] = useState('Akhila Sarees');
-  const [email, setEmail] = useState('akhila@example.com');
+  const [email, setEmail] = useState('contact@akhilasarees.com');
+  const [contactPhone, setContactPhone] = useState('+91 9876543210');
   const [currency, setCurrency] = useState('INR');
   const [deliveryCharge, setDeliveryCharge] = useState(150);
   const [freeShippingThreshold, setFreeShippingThreshold] = useState(5000);
@@ -26,6 +27,7 @@ export default function AdminSettingsPage() {
         const parsed = JSON.parse(saved);
         if (parsed.storeName) setStoreName(parsed.storeName);
         if (parsed.email) setEmail(parsed.email);
+        if (parsed.contactPhone) setContactPhone(parsed.contactPhone);
         if (parsed.currency) setCurrency(parsed.currency);
         if (parsed.deliveryCharge !== undefined) setDeliveryCharge(parsed.deliveryCharge);
         if (parsed.freeShippingThreshold !== undefined) setFreeShippingThreshold(parsed.freeShippingThreshold);
@@ -45,6 +47,7 @@ export default function AdminSettingsPage() {
     const settings = {
       storeName,
       email,
+      contactPhone,
       currency,
       deliveryCharge: Number(deliveryCharge),
       freeShippingThreshold: Number(freeShippingThreshold),
@@ -127,11 +130,22 @@ export default function AdminSettingsPage() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Contact Email</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Help Center Email</label>
                 <input 
                   type="email" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Help Center Phone</label>
+                <input 
+                  type="text" 
+                  value={contactPhone}
+                  onChange={(e) => setContactPhone(e.target.value)}
+                  placeholder="e.g. +91 9876543210"
                   className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
                 />
               </div>
