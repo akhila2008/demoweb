@@ -137,9 +137,9 @@ export default function CartPage() {
               <p className="text-xs text-gray-500 mt-1">Inclusive of all taxes</p>
             </div>
 
-            <button className="w-full bg-[var(--color-primary)] hover:bg-[#600000] text-white py-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors shadow-lg">
+            <Link href="/checkout" className="w-full bg-[var(--color-primary)] hover:bg-[#600000] text-white py-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors shadow-lg">
               Proceed to Checkout <ArrowRight className="w-5 h-5" />
-            </button>
+            </Link>
 
             <div className="mt-6 flex items-center justify-center text-sm text-gray-500 gap-2">
               <ShieldCheck className="w-5 h-5 text-green-600" />
