@@ -47,7 +47,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black p-4">
+      <div className="min-h-screen flex items-center justify-center bg-black p-4">
         <div className="bg-gray-900 text-white p-8 rounded-xl shadow-lg border border-[var(--color-primary)] border-opacity-30 w-full max-w-md">
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
@@ -87,7 +87,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50 dark:bg-black">
+    <div className="flex min-h-screen bg-black">
       {/* Sidebar */}
       <aside className="w-64 bg-gray-900 text-white border-r border-[var(--color-primary)] border-opacity-30 flex flex-col hidden md:flex">
         <div className="p-6">

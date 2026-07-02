@@ -9,6 +9,8 @@ export default function ProfilePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [profileData, setProfileData] = useState<any>(null);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -21,8 +23,27 @@ export default function ProfilePage() {
         email: user.email,
         joinDate: new Date(user.created_at).toLocaleDateString()
       });
+      fetchUserOrders(user.id);
     }
   }, [user, loading, router]);
+
+  const fetchUserOrders = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+        
+      if (!error && data) {
+        setOrders(data);
+      }
+    } catch (err) {
+      console.error('Error fetching orders:', err);
+    } finally {
+      setLoadingOrders(false);
+    }
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -100,17 +121,58 @@ export default function ProfilePage() {
             
             <div className="mt-12 pt-8 border-t border-[var(--color-primary)] border-opacity-30">
               <h2 className="text-xl font-bold mb-6">Recent Orders</h2>
-              <div className="text-center py-12 bg-gray-50 bg-gray-900 text-white rounded-xl border border-dashed border-[var(--color-primary)] border-opacity-50">
-                <Package className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-                <h3 className="text-lg font-medium mb-2">No orders yet</h3>
-                <p className="text-gray-300 mb-6 max-w-sm mx-auto">When you purchase your first premium saree, the order details will appear here.</p>
-                <button 
-                  onClick={() => router.push('/shop')}
-                  className="bg-[var(--color-primary)] hover:bg-[#600000] text-white px-6 py-2 rounded-lg font-medium transition-colors"
-                >
-                  Start Shopping
-                </button>
-              </div>
+              
+              {loadingOrders ? (
+                <div className="text-center py-8 text-gray-400">Loading your orders...</div>
+              ) : orders.length > 0 ? (
+                <div className="space-y-4">
+                  {orders.map((order) => (
+                    <div key={order.id} className="bg-black border border-[var(--color-primary)] border-opacity-30 rounded-lg p-6">
+                      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4 pb-4 border-b border-[var(--color-primary)] border-opacity-30">
+                        <div>
+                          <div className="font-bold text-[var(--color-primary)]">{order.id}</div>
+                          <div className="text-sm text-gray-400">{new Date(order.created_at).toLocaleDateString()}</div>
+                        </div>
+                        <div className="flex flex-col sm:items-end gap-2">
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold w-fit ${
+                            order.data?.status === 'DELIVERED' ? 'bg-green-100 text-green-800' :
+                            order.data?.status === 'SHIPPED' ? 'bg-blue-100 text-blue-800' :
+                            order.data?.status === 'CANCELLED' ? 'bg-red-100 text-red-800' :
+                            'bg-orange-100 text-orange-800'
+                          }`}>
+                            {order.data?.status?.replace('_', ' ') || 'PROCESSING'}
+                          </span>
+                          <div className="font-bold">₹{order.data?.grandTotal?.toLocaleString('en-IN')}</div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        {order.data?.items?.map((item: any, idx: number) => (
+                          <div key={idx} className="flex items-center gap-4">
+                            <img src={item.image} alt={item.name} className="w-12 h-16 object-cover rounded" />
+                            <div>
+                              <div className="font-medium">{item.name}</div>
+                              <div className="text-sm text-gray-400">Qty: {item.quantity} × ₹{item.price.toLocaleString('en-IN')}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12 bg-gray-900 text-white rounded-xl border border-dashed border-[var(--color-primary)] border-opacity-50">
+                  <Package className="w-12 h-12 text-[var(--color-primary)] mx-auto mb-4" />
+                  <h3 className="text-lg font-medium mb-2">No orders yet</h3>
+                  <p className="text-gray-400 mb-6 max-w-sm mx-auto">When you purchase your first premium saree, the order details will appear here.</p>
+                  <button 
+                    onClick={() => router.push('/shop')}
+                    className="bg-[var(--color-primary)] hover:bg-[#600000] text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                  >
+                    Start Shopping
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

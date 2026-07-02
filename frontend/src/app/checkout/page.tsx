@@ -5,9 +5,11 @@ import { motion } from 'framer-motion';
 import { ShieldCheck, CreditCard, Wallet, CheckCircle2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
+import { useAuth } from '@/context/AuthContext';
 
 export default function CheckoutPage() {
   const { items, subtotal: total, clearCart } = useCart();
+  const { user } = useAuth();
   const router = useRouter();
   
   const [step, setStep] = useState(1);
@@ -66,7 +68,11 @@ export default function CheckoutPage() {
       // 3. Save to Supabase
       const { error } = await supabase
         .from('orders')
-        .insert([{ id: newOrderId, data: orderData }]);
+        .insert([{ 
+          id: newOrderId, 
+          user_id: user?.id || null,
+          data: orderData 
+        }]);
         
       if (error) {
         console.error("Error saving order:", error);
@@ -110,6 +116,26 @@ export default function CheckoutPage() {
         <button onClick={() => router.push('/shop')} className="bg-[var(--color-primary)] text-white px-8 py-3 rounded-md font-medium">
           Continue Shopping
         </button>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-20 text-center min-h-[60vh] flex flex-col justify-center items-center">
+        <ShieldCheck className="w-16 h-16 text-[var(--color-primary)] mb-6" />
+        <h1 className="text-3xl font-bold text-white mb-4">Login Required</h1>
+        <p className="text-gray-300 mb-8 max-w-md">
+          Please log in or create an account to proceed with checkout and place your order.
+        </p>
+        <div className="flex gap-4">
+          <button onClick={() => router.push('/login?redirect=/checkout')} className="bg-[var(--color-primary)] text-white hover:bg-[#600000] px-8 py-3 rounded-md font-medium transition-colors">
+            Login
+          </button>
+          <button onClick={() => router.push('/signup?redirect=/checkout')} className="bg-transparent border border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white px-8 py-3 rounded-md font-medium transition-colors">
+            Sign Up
+          </button>
+        </div>
       </div>
     );
   }
