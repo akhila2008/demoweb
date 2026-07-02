@@ -41,14 +41,7 @@ export default function AdminProductsPage() {
     }
   }, [products, isInitialized]);
   
-  const [newProduct, setNewProduct] = useState({
-    name: '',
-    price: '',
-    stock: '',
-    category: 'Silk',
-    groupId: '',
-    colors: [] as string[]
-  });
+  const [newProduct, setNewProduct] = useState({ name: '', price: '', stock: '', category: 'Silk', groupId: '', colors: [] as string[], occasions: [] as string[] });
 
   const handleColorToggle = (colorName: string) => {
     setNewProduct(prev => {
@@ -56,6 +49,16 @@ export default function AdminProductsPage() {
         return { ...prev, colors: prev.colors.filter(c => c !== colorName) };
       } else {
         return { ...prev, colors: [...prev.colors, colorName] };
+      }
+    });
+  };
+
+  const handleOccasionToggle = (occasion: string) => {
+    setNewProduct(prev => {
+      if (prev.occasions.includes(occasion)) {
+        return { ...prev, occasions: prev.occasions.filter(o => o !== occasion) };
+      } else {
+        return { ...prev, occasions: [...prev.occasions, occasion] };
       }
     });
   };
@@ -96,6 +99,7 @@ export default function AdminProductsPage() {
             category: newProduct.category,
             groupId: newProduct.groupId,
             colors: newProduct.colors,
+            occasions: newProduct.occasions,
             image: previewImages.length > 0 ? previewImages[0] : p.image,
             images: previewImages.length > 0 ? previewImages : (p.images || [p.image]),
             imageFile: previewImageFiles.length > 0 ? previewImageFiles[0] : p.imageFile,
@@ -117,6 +121,7 @@ export default function AdminProductsPage() {
         category: newProduct.category,
         groupId: newProduct.groupId,
         colors: newProduct.colors,
+        occasions: newProduct.occasions,
         image: previewImages.length > 0 ? previewImages[0] : defaultImg,
         images: previewImages.length > 0 ? previewImages : [defaultImg],
         imageFile: previewImageFiles.length > 0 ? previewImageFiles[0] : null,
@@ -143,7 +148,8 @@ export default function AdminProductsPage() {
       stock: product.stock.toString(),
       category: product.category,
       groupId: product.groupId || '',
-      colors: product.colors || []
+      colors: product.colors || [],
+      occasions: product.occasions || []
     });
     setPreviewImages(product.images || (product.image ? [product.image] : []));
     setPreviewImageFiles(product.imageFiles || (product.imageFile ? [product.imageFile] : []));
@@ -161,7 +167,7 @@ export default function AdminProductsPage() {
         <button 
           onClick={() => {
             setEditingProductId(null);
-            setNewProduct({ name: '', price: '', stock: '', category: 'Silk', groupId: '', colors: [] });
+            setNewProduct({ name: '', price: '', stock: '', category: 'Silk', groupId: '', colors: [], occasions: [] });
             setPreviewImages([]);
             setPreviewImageFiles([]);
             setIsAddModalOpen(true);
@@ -428,6 +434,30 @@ export default function AdminProductsPage() {
                           <div className="w-5 h-5 rounded-full border border-gray-300 shadow-sm" style={{ backgroundColor: color.hex }}></div>
                           <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">{color.name}</span>
                         </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Occasions</label>
+                  <div className="flex flex-wrap gap-2">
+                    {['Party', 'Daily Wear', 'Wedding', 'Haldi', 'Festive', 'Casual'].map(occasion => (
+                      <label 
+                        key={occasion} 
+                        className={`px-3 py-1.5 rounded-full border cursor-pointer text-sm font-medium transition-colors ${
+                          newProduct.occasions.includes(occasion) 
+                            ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-white' 
+                            : 'border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-400'
+                        }`}
+                      >
+                        <input 
+                          type="checkbox" 
+                          className="sr-only" 
+                          checked={newProduct.occasions.includes(occasion)}
+                          onChange={() => handleOccasionToggle(occasion)}
+                        />
+                        {occasion}
                       </label>
                     ))}
                   </div>

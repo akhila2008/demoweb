@@ -10,8 +10,8 @@ export default function ShopPage() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
   
-  const [pendingFilters, setPendingFilters] = useState({ fabrics: [] as string[], price: '', colors: [] as string[] });
-  const [activeFilters, setActiveFilters] = useState({ fabrics: [] as string[], price: '', colors: [] as string[] });
+  const [pendingFilters, setPendingFilters] = useState({ fabrics: [] as string[], price: '', colors: [] as string[], occasions: [] as string[] });
+  const [activeFilters, setActiveFilters] = useState({ fabrics: [] as string[], price: '', colors: [] as string[], occasions: [] as string[] });
 
   useEffect(() => {
     // Sync with products added in the admin panel via IndexedDB
@@ -52,13 +52,22 @@ export default function ShopPage() {
     }));
   };
 
+  const handleOccasionToggle = (occasion: string) => {
+    setPendingFilters(prev => ({
+      ...prev,
+      occasions: prev.occasions.includes(occasion) 
+        ? prev.occasions.filter(o => o !== occasion) 
+        : [...prev.occasions, occasion]
+    }));
+  };
+
   const applyFilters = () => {
     setActiveFilters(pendingFilters);
     if (window.innerWidth < 768) setIsFilterOpen(false); // Close mobile filter
   };
 
   const clearFilters = () => {
-    const emptyFilters = { fabrics: [], price: '', colors: [] };
+    const emptyFilters = { fabrics: [], price: '', colors: [], occasions: [] };
     setPendingFilters(emptyFilters);
     setActiveFilters(emptyFilters);
   };
@@ -76,8 +85,15 @@ export default function ShopPage() {
       // Color filter
       if (activeFilters.colors.length > 0) {
         if (!p.colors || p.colors.length === 0) return false;
-        const hasMatchingColor = activeFilters.colors.some(c => p.colors.includes(c));
+        const hasMatchingColor = activeFilters.colors.some((c: string) => p.colors.includes(c));
         if (!hasMatchingColor) return false;
+      }
+
+      // Occasion filter
+      if (activeFilters.occasions.length > 0) {
+        if (!p.occasions || p.occasions.length === 0) return false;
+        const hasMatchingOccasion = activeFilters.occasions.some((o: string) => p.occasions.includes(o));
+        if (!hasMatchingOccasion) return false;
       }
 
       return true;
@@ -124,6 +140,29 @@ export default function ShopPage() {
                       onChange={() => handleFabricToggle(category)} 
                     />
                     <span className="text-gray-600 dark:text-gray-300">{category}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Occasion Filter */}
+            <div className="pt-4 border-t border-gray-200 dark:border-gray-800">
+              <h3 className="font-semibold mb-3 flex justify-between items-center cursor-pointer">
+                Occasion <ChevronDown className="w-4 h-4" />
+              </h3>
+              <div className="space-y-2">
+                {['Party', 'Daily Wear', 'Wedding', 'Haldi', 'Festive', 'Casual'].map(occasion => (
+                  <label key={occasion} className="flex items-center space-x-2 cursor-pointer group">
+                    <div className={`w-5 h-5 border rounded flex items-center justify-center ${pendingFilters.occasions.includes(occasion) ? 'bg-[var(--color-primary)] border-[var(--color-primary)]' : 'border-gray-300 dark:border-gray-700 group-hover:border-[var(--color-primary)]'}`}>
+                      {pendingFilters.occasions.includes(occasion) && <Check className="w-3.5 h-3.5 text-white" />}
+                    </div>
+                    <input 
+                      type="checkbox" 
+                      className="sr-only" 
+                      checked={pendingFilters.occasions.includes(occasion)}
+                      onChange={() => handleOccasionToggle(occasion)} 
+                    />
+                    <span className="text-gray-600 dark:text-gray-300">{occasion}</span>
                   </label>
                 ))}
               </div>
