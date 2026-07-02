@@ -11,7 +11,7 @@ export default function AdminSettingsPage() {
   const [freeShippingThreshold, setFreeShippingThreshold] = useState(5000);
   
   // Payment Settings
-  const [upiId, setUpiId] = useState('');
+  const [upiId, setUpiId] = useState('8143227553@ybl');
   const [bankName, setBankName] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [ifscCode, setIfscCode] = useState('');
