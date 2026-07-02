@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import { loadProducts } from '@/lib/storage';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -8,7 +8,7 @@ import { AVAILABLE_COLORS } from '@/lib/colors';
 
 import { useSearchParams } from 'next/navigation';
 
-export default function ShopPage() {
+function ShopContent() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
   
@@ -333,5 +333,13 @@ export default function ShopPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">Loading products...</div>}>
+      <ShopContent />
+    </Suspense>
   );
 }
