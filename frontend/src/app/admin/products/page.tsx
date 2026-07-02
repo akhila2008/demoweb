@@ -134,7 +134,7 @@ export default function AdminProductsPage() {
 
     setIsAddModalOpen(false);
     setEditingProductId(null);
-    setNewProduct({ name: '', price: '', stock: '', category: 'Silk', groupId: '', colors: [] });
+    setNewProduct({ name: '', price: '', stock: '', category: 'Silk', groupId: '', colors: [], occasions: [] });
     setPreviewImages([]);
     setPreviewImageFiles([]);
     setPreviewIsVideo([]);
