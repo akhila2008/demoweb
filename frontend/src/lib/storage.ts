@@ -8,10 +8,14 @@ export async function saveProducts(products: any[]): Promise<boolean> {
       let productData = { ...p };
       
       // Upload new files if they exist
-      if (p.imageFiles && p.imageFiles.length > 0) {
+      const filesToUpload = (p.imageFiles && p.imageFiles.length > 0) 
+        ? p.imageFiles 
+        : (p.imageFile ? [p.imageFile] : []);
+        
+      if (filesToUpload.length > 0) {
         const newImageUrls = [];
-        for (let i = 0; i < p.imageFiles.length; i++) {
-          const file = p.imageFiles[i];
+        for (let i = 0; i < filesToUpload.length; i++) {
+          const file = filesToUpload[i];
           if (file && (file instanceof File || file instanceof Blob)) {
             const fileExt = (file as any).name ? (file as any).name.split('.').pop() : 'jpg';
             const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
@@ -67,6 +71,7 @@ export async function saveProducts(products: any[]): Promise<boolean> {
     return true;
   } catch (e) {
     console.error('Error saving to Supabase:', e);
+    console.error('Error details:', JSON.stringify(e), e.message || e.details || e.hint);
     return false;
   }
 }
