@@ -71,7 +71,7 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Icons */}
+          {/* Desktop Icons */}
           <div className="hidden md:flex items-center space-x-6">
             <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
               <Search className="w-5 h-5" />
@@ -79,14 +79,6 @@ export default function Navbar() {
             <button onClick={handleShareSite} title="Share Website" className="text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
               <Share2 className="w-5 h-5" />
             </button>
-            <Link href="/wishlist" className="relative text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
-              <Heart className="w-5 h-5" />
-              {wishlistItems.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
-                  {wishlistItems.length}
-                </span>
-              )}
-            </Link>
             <Link href="/cart" className="relative text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
               <ShoppingCart className="w-5 h-5" />
               {totalItems > 0 && (
@@ -95,9 +87,9 @@ export default function Navbar() {
                 </span>
               )}
             </Link>
-            <Link href={user ? "/profile" : "/login"} className="text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
-              <User className="w-5 h-5" />
-            </Link>
+            <button onClick={() => setIsOpen(!isOpen)} className="text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] focus:outline-none ml-2">
+              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
 
           {/* Mobile menu and icons */}
@@ -105,14 +97,6 @@ export default function Navbar() {
             <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
               <Search className="w-5 h-5" />
             </button>
-            <Link href="/wishlist" className="relative text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
-              <Heart className="w-5 h-5" />
-              {wishlistItems.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
-                  {wishlistItems.length}
-                </span>
-              )}
-            </Link>
             <Link href="/cart" className="relative text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
               <ShoppingCart className="w-5 h-5" />
               {totalItems > 0 && (
@@ -157,31 +141,57 @@ export default function Navbar() {
         </AnimatePresence>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Dropdown Menu */}
       {isOpen && (
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="md:hidden bg-white dark:bg-[#121212] border-b border-gray-200 dark:border-gray-800"
+          className="absolute right-0 w-full md:w-64 bg-white dark:bg-[#121212] border-b md:border md:rounded-bl-xl border-gray-200 dark:border-gray-800 shadow-xl"
         >
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link href="/shop" className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
-              Collections
+            <Link href="/" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
+              Home
             </Link>
-            <Link href="/shop?category=wedding" className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
-              Wedding
-            </Link>
-            <Link href="/shop?category=silk" className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
-              Silk Sarees
-            </Link>
-            <div className="flex space-x-6 px-3 py-4 border-t border-gray-200 dark:border-gray-800">
-              <Link href={user ? "/profile" : "/login"} className="flex items-center text-gray-600 dark:text-gray-400">
-                <User className="w-5 h-5 mr-2" /> {user ? 'Profile' : 'Log In'}
+            <div className="md:hidden">
+              <Link href="/shop" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
+                Collections
               </Link>
-              <button onClick={handleShareSite} className="flex items-center text-gray-600 dark:text-gray-400">
-                <Share2 className="w-5 h-5 mr-2" /> Share
-              </button>
+              <Link href="/shop?category=wedding" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
+                Wedding
+              </Link>
+              <Link href="/shop?category=silk" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
+                Silk Sarees
+              </Link>
             </div>
+            <Link href="/wishlist" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md flex justify-between items-center">
+              <span>Wishlist</span>
+              {wishlistItems.length > 0 && (
+                <span className="bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {wishlistItems.length}
+                </span>
+              )}
+            </Link>
+            
+            <div className="border-t border-gray-200 dark:border-gray-800 my-2"></div>
+            
+            {user ? (
+              <Link href="/profile" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
+                My Profile
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
+                  Log In
+                </Link>
+                <Link href="/login" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-[var(--color-primary)] hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
+                  Sign Up
+                </Link>
+              </>
+            )}
+            
+            <button onClick={() => { handleShareSite(); setIsOpen(false); }} className="w-full text-left block px-3 py-2 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md">
+              Share Website
+            </button>
           </div>
         </motion.div>
       )}
