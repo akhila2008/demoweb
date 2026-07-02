@@ -10,8 +10,8 @@ export default function AdminProductsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [products, setProducts] = useState<any[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [previewImageFile, setPreviewImageFile] = useState<File | null>(null);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [previewImageFiles, setPreviewImageFiles] = useState<File[]>([]);
   const [previewIsVideo, setPreviewIsVideo] = useState(false);
 
   const [isInitialized, setIsInitialized] = useState(false);
@@ -44,6 +44,7 @@ export default function AdminProductsPage() {
     price: '',
     stock: '',
     category: 'Silk',
+    groupId: '',
     colors: [] as string[]
   });
 
@@ -69,11 +70,12 @@ export default function AdminProductsPage() {
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setPreviewIsVideo(file.type.startsWith('video/'));
-      setPreviewImageFile(file);
-      setPreviewImage(URL.createObjectURL(file));
+    const files = Array.from(e.target.files || []);
+    if (files.length > 0) {
+      // For simplicity, we flag if the first item is a video
+      setPreviewIsVideo(files[0].type.startsWith('video/'));
+      setPreviewImageFiles(files);
+      setPreviewImages(files.map(file => URL.createObjectURL(file)));
     }
   };
 
@@ -93,25 +95,32 @@ export default function AdminProductsPage() {
             price: Number(newProduct.price),
             stock: Number(newProduct.stock),
             category: newProduct.category,
+            groupId: newProduct.groupId,
             colors: newProduct.colors,
-            image: previewImage || p.image,
-            imageFile: previewImageFile || p.imageFile,
-            isVideo: previewImage ? previewIsVideo : p.isVideo
+            image: previewImages.length > 0 ? previewImages[0] : p.image,
+            images: previewImages.length > 0 ? previewImages : (p.images || [p.image]),
+            imageFile: previewImageFiles.length > 0 ? previewImageFiles[0] : p.imageFile,
+            imageFiles: previewImageFiles.length > 0 ? previewImageFiles : p.imageFiles,
+            isVideo: previewImages.length > 0 ? previewIsVideo : p.isVideo
           };
         }
         return p;
       }));
     } else {
       // Add new product
+      const defaultImg = 'https://images.unsplash.com/photo-1583391733958-d150dcddf723?q=80&w=200&auto=format&fit=crop';
       const addedProduct = {
         id: Math.random().toString(36).substr(2, 9),
         name: newProduct.name,
         price: Number(newProduct.price),
         stock: Number(newProduct.stock),
         category: newProduct.category,
+        groupId: newProduct.groupId,
         colors: newProduct.colors,
-        image: previewImage || 'https://images.unsplash.com/photo-1583391733958-d150dcddf723?q=80&w=200&auto=format&fit=crop',
-        imageFile: previewImageFile,
+        image: previewImages.length > 0 ? previewImages[0] : defaultImg,
+        images: previewImages.length > 0 ? previewImages : [defaultImg],
+        imageFile: previewImageFiles.length > 0 ? previewImageFiles[0] : null,
+        imageFiles: previewImageFiles,
         isVideo: previewIsVideo
       };
       setProducts([...products, addedProduct]);
@@ -119,9 +128,9 @@ export default function AdminProductsPage() {
 
     setIsAddModalOpen(false);
     setEditingProductId(null);
-    setNewProduct({ name: '', price: '', stock: '', category: 'Silk', colors: [] }); // Reset form
-    setPreviewImage(null);
-    setPreviewImageFile(null);
+    setNewProduct({ name: '', price: '', stock: '', category: 'Silk', groupId: '', colors: [] });
+    setPreviewImages([]);
+    setPreviewImageFiles([]);
     setPreviewIsVideo(false);
   };
 
@@ -132,10 +141,11 @@ export default function AdminProductsPage() {
       price: product.price.toString(),
       stock: product.stock.toString(),
       category: product.category,
+      groupId: product.groupId || '',
       colors: product.colors || []
     });
-    setPreviewImage(product.image);
-    setPreviewImageFile(product.imageFile || null);
+    setPreviewImages(product.images || (product.image ? [product.image] : []));
+    setPreviewImageFiles(product.imageFiles || (product.imageFile ? [product.imageFile] : []));
     setPreviewIsVideo(product.isVideo || false);
     setIsAddModalOpen(true);
   };
@@ -150,9 +160,9 @@ export default function AdminProductsPage() {
         <button 
           onClick={() => {
             setEditingProductId(null);
-            setNewProduct({ name: '', price: '', stock: '', category: 'Silk', colors: [] });
-            setPreviewImage(null);
-            setPreviewImageFile(null);
+            setNewProduct({ name: '', price: '', stock: '', category: 'Silk', groupId: '', colors: [] });
+            setPreviewImages([]);
+            setPreviewImageFiles([]);
             setIsAddModalOpen(true);
           }}
           className="bg-[var(--color-primary)] hover:bg-[#600000] text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors"
@@ -281,23 +291,27 @@ export default function AdminProductsPage() {
             >
               <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
                 <h2 className="text-xl font-bold">{editingProductId ? 'Edit Saree' : 'Add New Saree'}</h2>
-                <button onClick={() => { setIsAddModalOpen(false); setPreviewImage(null); setEditingProductId(null); }} className="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200">
+                <button onClick={() => { setIsAddModalOpen(false); setPreviewImages([]); setEditingProductId(null); }} className="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200">
                   <X className="w-6 h-6" />
                 </button>
               </div>
               
               <form onSubmit={handleAddProduct} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Product Photo</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Product Media (Carousel)</label>
                   <label className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-700 border-dashed rounded-md hover:border-[var(--color-primary)] transition-colors cursor-pointer relative w-full">
-                    <div className="space-y-1 text-center">
-                      {previewImage ? (
-                        <div className="w-32 h-40 mx-auto rounded overflow-hidden relative">
-                          {previewIsVideo ? (
-                            <video src={previewImage} className="w-full h-full object-cover" autoPlay loop muted playsInline />
-                          ) : (
-                            <img src={previewImage} alt="Preview" className="w-full h-full object-cover" />
-                          )}
+                    <div className="space-y-1 text-center w-full">
+                      {previewImages.length > 0 ? (
+                        <div className="flex gap-2 overflow-x-auto pb-2">
+                          {previewImages.map((img, idx) => (
+                            <div key={idx} className="w-24 h-32 shrink-0 rounded overflow-hidden relative">
+                              {previewIsVideo && idx === 0 ? (
+                                <video src={img} className="w-full h-full object-cover" autoPlay loop muted playsInline />
+                              ) : (
+                                <img src={img} alt={`Preview ${idx}`} className="w-full h-full object-cover" />
+                              )}
+                            </div>
+                          ))}
                         </div>
                       ) : (
                         <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
@@ -305,8 +319,8 @@ export default function AdminProductsPage() {
                         </svg>
                       )}
                       <div className="flex text-sm text-gray-600 dark:text-gray-400 justify-center mt-2">
-                        <span className="font-medium text-[var(--color-primary)] hover:text-[#600000]">Click to upload a photo or video</span>
-                        <input type="file" accept="image/*,video/*" className="sr-only" onChange={handleImageChange} />
+                        <span className="font-medium text-[var(--color-primary)] hover:text-[#600000]">Select multiple photos/videos</span>
+                        <input type="file" multiple accept="image/*,video/*" className="sr-only" onChange={handleImageChange} />
                       </div>
                     </div>
                   </label>
@@ -349,20 +363,32 @@ export default function AdminProductsPage() {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
-                  <select 
-                    value={newProduct.category}
-                    onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
-                    className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
-                  >
-                    <option value="Silk">Silk</option>
-                    <option value="Cotton">Cotton</option>
-                    <option value="Banarasi">Banarasi</option>
-                    <option value="Kanjivaram">Kanjivaram</option>
-                    <option value="Linen">Linen</option>
-                    <option value="Georgette">Georgette</option>
-                  </select>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
+                    <select 
+                      value={newProduct.category}
+                      onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
+                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                    >
+                      <option value="Silk">Silk</option>
+                      <option value="Cotton">Cotton</option>
+                      <option value="Banarasi">Banarasi</option>
+                      <option value="Kanjivaram">Kanjivaram</option>
+                      <option value="Linen">Linen</option>
+                      <option value="Georgette">Georgette</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" title="Give identical Model Group IDs to group variants together.">Model Group ID (Optional)</label>
+                    <input 
+                      type="text" 
+                      value={newProduct.groupId}
+                      onChange={(e) => setNewProduct({...newProduct, groupId: e.target.value})}
+                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
+                      placeholder="e.g. Saree-123"
+                    />
+                  </div>
                 </div>
 
                 <div>

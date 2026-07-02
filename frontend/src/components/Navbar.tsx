@@ -33,8 +33,8 @@ export default function Navbar() {
           
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="flex items-center gap-2 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-indian-magenta)]">
-              <img src="/logo.png" alt="Akhila Sarees Logo" className="h-10 w-10 object-contain mix-blend-multiply dark:mix-blend-screen dark:invert rounded-full" />
+            <Link href="/" className="flex items-center gap-3 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-indian-magenta)]">
+              <img src="/logo.png" alt="Akhila Sarees Logo" className="h-14 w-14 object-contain mix-blend-multiply dark:mix-blend-screen dark:invert rounded-full" />
               AKHILA SAREES
             </Link>
           </div>

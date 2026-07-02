@@ -66,8 +66,15 @@ export async function loadProducts(): Promise<any[]> {
         const results = getReq.result || [];
         // Rehydrate File objects back into blob URLs
         const hydrated = results.map((p: any) => {
+          // Handle old single image format
           if (p.imageFile && (p.imageFile instanceof File || p.imageFile instanceof Blob)) {
             p.image = URL.createObjectURL(p.imageFile);
+          }
+          // Handle new multiple images format (carousel)
+          if (p.imageFiles && Array.isArray(p.imageFiles)) {
+            p.images = p.imageFiles.map((f: any) => 
+              (f instanceof File || f instanceof Blob) ? URL.createObjectURL(f) : f
+            );
           }
           return p;
         });

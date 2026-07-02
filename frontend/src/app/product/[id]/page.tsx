@@ -25,6 +25,7 @@ const MOCK_PRODUCT = {
 export default function ProductDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const unwrappedParams = use(params);
   const [product, setProduct] = useState<any>(null);
+  const [linkedVariants, setLinkedVariants] = useState<any[]>([]);
   const [activeImage, setActiveImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -36,7 +37,16 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
         const foundProduct = savedProducts.find((p: any) => p.id === unwrappedParams.id);
         
         if (foundProduct) {
-          // Adapt the mock product structure to the details page structure
+          // Find linked products for color swatches
+          let variants: any[] = [];
+          if (foundProduct.groupId) {
+            variants = savedProducts.filter((p: any) => p.groupId === foundProduct.groupId);
+          } else {
+            variants = [foundProduct]; // just itself
+          }
+          setLinkedVariants(variants);
+
+          // Adapt the product structure
           setProduct({
             id: foundProduct.id,
             name: foundProduct.name,
@@ -48,8 +58,10 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
             washCare: 'Dry Clean Only. Keep away from direct sunlight.',
             stock: foundProduct.stock,
             isVideo: foundProduct.isVideo,
-            // We simulate multiple angles by repeating the same image for the demo
-            images: [foundProduct.image, foundProduct.image, foundProduct.image]
+            // Use dynamic images array if available, otherwise mock it
+            images: foundProduct.images && foundProduct.images.length > 0 
+              ? foundProduct.images 
+              : [foundProduct.image]
           });
         }
       } catch (e) {
@@ -144,6 +156,37 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
             </div>
             <span className="text-green-600 dark:text-green-400 text-sm font-medium">In Stock ({product.stock})</span>
           </div>
+
+          {/* Linked Color Variants */}
+          {linkedVariants.length > 1 && (
+            <div className="mb-6">
+              <h3 className="text-sm font-medium text-gray-900 dark:text-gray-300 mb-2">Available Colors</h3>
+              <div className="flex gap-3">
+                {linkedVariants.map((variant) => {
+                  const isCurrent = variant.id === product.id;
+                  const mainColor = variant.colors?.[0] || 'Unknown';
+                  const AVAILABLE_COLORS = [
+                    { name: 'Red', hex: '#EF4444' }, { name: 'Maroon', hex: '#800000' },
+                    { name: 'Blue', hex: '#3B82F6' }, { name: 'Green', hex: '#10B981' },
+                    { name: 'Gold', hex: '#F59E0B' }, { name: 'Pink', hex: '#EC4899' },
+                    { name: 'Purple', hex: '#8B5CF6' }, { name: 'Black', hex: '#1F2937' },
+                  ];
+                  const hex = AVAILABLE_COLORS.find(c => c.name === mainColor)?.hex || '#ccc';
+                  
+                  return (
+                    <Link 
+                      key={variant.id} 
+                      href={`/product/${variant.id}`}
+                      title={mainColor}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-transform ${isCurrent ? 'border-[var(--color-primary)] scale-110' : 'border-transparent hover:scale-110'}`}
+                    >
+                      <span className="w-6 h-6 rounded-full border border-gray-200 shadow-sm" style={{ backgroundColor: hex }}></span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           <div className="text-3xl font-bold text-[var(--color-primary)] mb-6">
             ₹{product.price.toLocaleString('en-IN')}
