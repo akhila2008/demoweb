@@ -2,17 +2,19 @@
 
 @theme {
   --color-indian-maroon: #800000;
-  --color-indian-gold: #FFD700;
-  --color-indian-emerald: #50C878;
-  --color-indian-royal: #4169E1;
-  --color-indian-magenta: #FF00FF;
-  --color-background-light: #FAFAFA;
-  --color-background-dark: #121212;
+  --color-indian-gold: #D4AF37; /* Radiant Gold */
+  --color-indian-emerald: #00695C;
+  --color-indian-royal: #4A148C; /* Deep Purple */
+  --color-indian-magenta: #C2185B; /* Rich Magenta */
+  
+  --color-background-light: #FFF8E1; /* Warm Cream */
+  --color-background-dark: #0A0B1A; /* Midnight Blue */
   --color-text-light: #1A1A1A;
   --color-text-dark: #F5F5F5;
   
-  --color-primary: var(--color-indian-maroon);
+  --color-primary: var(--color-indian-royal);
   --color-accent: var(--color-indian-gold);
+  --color-secondary: var(--color-indian-magenta);
 }
 
 :root {
@@ -28,7 +30,33 @@
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  /* Mandala SVG Background Pattern (Very faint) */
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 50m-40 0a40 40 0 1 0 80 0a40 40 0 1 0 -80 0M50 20a30 30 0 1 0 0 60a30 30 0 1 0 0 -60M28 50a22 22 0 1 0 44 0a22 22 0 1 0 -44 0' fill='none' stroke='%234A148C' stroke-width='0.5' stroke-opacity='0.05'/%3E%3Cpath d='M50 10 L60 40 L90 50 L60 60 L50 90 L40 60 L10 50 L40 40 Z' fill='none' stroke='%23D4AF37' stroke-width='0.5' stroke-opacity='0.08'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+}
+
+/* Typography Utilities */
+.font-brand {
+  font-family: var(--font-playfair), serif;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 50m-40 0a40 40 0 1 0 80 0a40 40 0 1 0 -80 0M50 20a30 30 0 1 0 0 60a30 30 0 1 0 0 -60M28 50a22 22 0 1 0 44 0a22 22 0 1 0 -44 0' fill='none' stroke='%23D4AF37' stroke-width='0.5' stroke-opacity='0.05'/%3E%3Cpath d='M50 10 L60 40 L90 50 L60 60 L50 90 L40 60 L10 50 L40 40 Z' fill='none' stroke='%23C2185B' stroke-width='0.5' stroke-opacity='0.08'/%3E%3C/svg%3E");
+  }
+  .glass-panel {
+    background: rgba(10, 11, 26, 0.7);
+    border: 1px solid rgba(212, 175, 55, 0.15);
+  }
 }

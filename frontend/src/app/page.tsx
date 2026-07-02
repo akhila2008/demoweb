@@ -7,29 +7,38 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       
       {/* Hero Section */}
-      <section className="relative h-[85vh] flex items-center justify-center overflow-hidden">
-        {/* Background Image - Using a gradient placeholder since actual images aren't provided yet */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#800000] via-[#500000] to-black z-0">
-          <div className="absolute inset-0 opacity-30 mix-blend-overlay bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+      <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
+        {/* Deep Royal Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)] via-[#7b1fa2] to-[var(--color-secondary)] z-0">
+          {/* Subtle Mandala Background Image Overlay */}
+          <div className="absolute inset-0 opacity-20 mix-blend-overlay" style={{backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 50m-40 0a40 40 0 1 0 80 0a40 40 0 1 0 -80 0M50 20a30 30 0 1 0 0 60a30 30 0 1 0 0 -60M28 50a22 22 0 1 0 44 0a22 22 0 1 0 -44 0' fill='none' stroke='%23D4AF37' stroke-width='1.5' stroke-opacity='1'/%3E%3Cpath d='M50 10 L60 40 L90 50 L60 60 L50 90 L40 60 L10 50 L40 40 Z' fill='none' stroke='%23D4AF37' stroke-width='1' stroke-opacity='0.8'/%3E%3C/svg%3E\")", backgroundSize: '120px 120px', animation: 'spin 120s linear infinite'}}></div>
         </div>
         
-        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <motion.h1 
-            initial={{ opacity: 0, y: 30 }}
+        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto glass-panel p-12 rounded-3xl border border-white/20 shadow-2xl">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-lg"
+            transition={{ duration: 1 }}
           >
-            The Essence of <br/><span className="text-[var(--color-indian-gold)]">True Indian Heritage</span>
+            <span className="text-[var(--color-indian-gold)] uppercase tracking-[0.3em] text-sm font-bold mb-4 block">Namaste & Welcome To</span>
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className="text-6xl md:text-8xl font-brand font-bold text-white mb-6 leading-tight drop-shadow-2xl"
+          >
+            Akhila Sarees
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.3 }}
-            className="text-lg md:text-xl text-gray-200 mb-10 max-w-2xl mx-auto drop-shadow-md"
+            transition={{ duration: 1, delay: 0.5 }}
+            className="text-lg md:text-2xl text-gray-100 mb-10 max-w-2xl mx-auto font-light tracking-wide"
           >
-            Discover our premium collection of handcrafted sarees, blending traditional elegance with modern sophistication.
+            Step into a world of royal elegance. Discover hand-woven masterpieces tailored for your most precious moments.
           </motion.p>
+
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -46,8 +55,8 @@ export default function Home() {
       <section className="py-20 bg-[var(--background)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-white">Curated Collections</h2>
-            <div className="w-24 h-1 bg-[var(--color-primary)] mx-auto rounded-full"></div>
+            <h2 className="text-4xl md:text-5xl font-brand font-bold mb-4 text-[var(--color-primary)] dark:text-[var(--color-accent)]">Curated Collections</h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] mx-auto rounded-full"></div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
