@@ -8,6 +8,7 @@ export default function AdminOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusUpdating, setStatusUpdating] = useState<string | null>(null);
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchOrders();
@@ -143,9 +144,11 @@ export default function AdminOrdersPage() {
                   const dateObj = new Date(d.date || order.created_at);
                   const dateStr = dateObj.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
                   const totalStr = `₹${(d.grandTotal || 0).toLocaleString('en-IN')}`;
+                  const isExpanded = expandedOrderId === order.id;
                   
                   return (
-                    <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-900 text-white/50 transition-colors group">
+                    <div key={order.id} className="contents">
+                      <tr className="hover:bg-gray-800 transition-colors group cursor-pointer" onClick={() => setExpandedOrderId(isExpanded ? null : order.id)}>
                       <td className="p-4 font-medium text-white">{order.id}</td>
                       <td className="p-4 text-sm text-gray-300">{dateStr}</td>
                       <td className="p-4">
@@ -157,7 +160,7 @@ export default function AdminOrdersPage() {
                         {d.paymentMethod === 'ONLINE' ? 'UPI / Online' : 'Cash on Delivery'}
                       </td>
                       <td className="p-4">{getStatusBadge(d.status)}</td>
-                      <td className="p-4 text-right">
+                      <td className="p-4 text-right" onClick={(e) => e.stopPropagation()}>
                         <select 
                           className="text-sm border border-[var(--color-primary)] border-opacity-50 rounded-md p-1.5 bg-gray-900 text-white opacity-50 group-hover:opacity-100 focus:opacity-100 transition-opacity disabled:opacity-50 cursor-pointer hover:border-[var(--color-primary)]"
                           value={d.status}
@@ -172,6 +175,58 @@ export default function AdminOrdersPage() {
                         </select>
                       </td>
                     </tr>
+                    {isExpanded && (
+                      <tr className="bg-black border-b border-[var(--color-primary)] border-opacity-30">
+                        <td colSpan={7} className="p-6">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
+                            {/* Customer Details */}
+                            <div className="bg-gray-900 p-4 rounded-lg border border-[var(--color-primary)] border-opacity-30">
+                              <h3 className="font-bold text-[var(--color-primary)] mb-3 flex items-center gap-2">
+                                Customer Details
+                              </h3>
+                              <div className="space-y-2 text-gray-300">
+                                <p><span className="font-semibold text-white">Name:</span> {customerName}</p>
+                                <p><span className="font-semibold text-white">Email:</span> {d.customer?.email}</p>
+                                <p><span className="font-semibold text-white">Phone:</span> {d.customer?.phone}</p>
+                                <div className="mt-4 pt-2 border-t border-[var(--color-primary)] border-opacity-20">
+                                  <p className="font-semibold text-white mb-1">Shipping Address:</p>
+                                  <p>{d.customer?.address}</p>
+                                  <p>{d.customer?.city}, {d.customer?.state} {d.customer?.pincode}</p>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {/* Order Items */}
+                            <div className="bg-gray-900 p-4 rounded-lg border border-[var(--color-primary)] border-opacity-30">
+                              <h3 className="font-bold text-[var(--color-primary)] mb-3 flex items-center gap-2">
+                                Order Items
+                              </h3>
+                              <div className="space-y-3">
+                                {d.items?.map((item: any, idx: number) => (
+                                  <div key={idx} className="flex gap-4 items-center border-b border-[var(--color-primary)] border-opacity-10 pb-3 last:border-0">
+                                    <div className="w-12 h-16 bg-gray-800 rounded shrink-0 overflow-hidden">
+                                      {item.image && <img src={item.image} alt={item.name} className="w-full h-full object-cover" />}
+                                    </div>
+                                    <div className="flex-1">
+                                      <p className="font-semibold text-white line-clamp-1">{item.name}</p>
+                                      <p className="text-gray-400">Qty: {item.quantity}</p>
+                                    </div>
+                                    <div className="font-bold text-white">
+                                      ₹{(item.price * item.quantity).toLocaleString('en-IN')}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                              <div className="mt-4 pt-3 border-t border-[var(--color-primary)] border-opacity-30 flex justify-between font-bold text-white">
+                                <span>Total Paid</span>
+                                <span>{totalStr}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                    </div>
                   );
                 })}
               </tbody>
