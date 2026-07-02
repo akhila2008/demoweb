@@ -2,7 +2,7 @@
 import { useState, use, useEffect } from 'react';
 import { loadProducts } from '@/lib/storage';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Heart, Share2, Star, Truck, ShieldCheck, Check } from 'lucide-react';
+import { ShoppingCart, Heart, Share2, Star, Truck, ShieldCheck, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { AVAILABLE_COLORS } from '@/lib/colors';
@@ -159,6 +159,36 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
                 <img src={product.images[activeImage]} alt={product.name} className="w-full h-full object-cover" />
               )}
             </motion.div>
+            
+            {/* Mobile Navigation Arrows */}
+            {product.images.length > 1 && (
+              <>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setActiveImage(prev => prev === 0 ? product.images.length - 1 : prev - 1); }}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-black/80 p-2 rounded-full shadow-md text-gray-800 dark:text-white hover:bg-white md:hidden"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setActiveImage(prev => prev === product.images.length - 1 ? 0 : prev + 1); }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-black/80 p-2 rounded-full shadow-md text-gray-800 dark:text-white hover:bg-white md:hidden"
+                  aria-label="Next image"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+                
+                {/* Dots indicator for mobile */}
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 md:hidden">
+                  {product.images.map((_: any, idx: number) => (
+                    <div 
+                      key={idx} 
+                      className={`h-2 rounded-full transition-all ${activeImage === idx ? 'w-6 bg-[var(--color-primary)]' : 'w-2 bg-white/60 dark:bg-gray-600/60'}`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
 
