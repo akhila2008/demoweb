@@ -304,6 +304,58 @@ export default function AdminSettingsPage() {
             </>
           )}
 
+          {activeTab === 'security' && (
+            <div className="bg-white dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm p-6">
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">Change Password</h2>
+              
+              <form onSubmit={handleUpdatePassword} className="space-y-4 max-w-md">
+                {passwordError && (
+                  <div className="p-3 bg-red-100 border border-red-200 text-red-700 rounded-md text-sm">
+                    {passwordError}
+                  </div>
+                )}
+                {passwordSuccess && (
+                  <div className="p-3 bg-green-100 border border-green-200 text-green-700 rounded-md text-sm">
+                    Password updated successfully!
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">New Password</label>
+                  <input 
+                    type="password" 
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                    className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirm New Password</label>
+                  <input 
+                    type="password" 
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                  />
+                </div>
+
+                <div className="pt-2">
+                  <button 
+                    type="submit" 
+                    disabled={isUpdatingPassword}
+                    className="flex items-center gap-2 bg-[var(--color-primary)] text-white px-6 py-2.5 rounded-md hover:bg-[#800000]/90 transition-colors disabled:opacity-50"
+                  >
+                    <Lock className="w-5 h-5" /> 
+                    {isUpdatingPassword ? 'Updating...' : 'Update Password'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
           {activeTab !== 'security' && (
             <div className="flex justify-end gap-3">
               <button className="px-6 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
