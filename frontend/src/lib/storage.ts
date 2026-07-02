@@ -13,7 +13,7 @@ export async function saveProducts(products: any[]): Promise<boolean> {
         for (let i = 0; i < p.imageFiles.length; i++) {
           const file = p.imageFiles[i];
           if (file && (file instanceof File || file instanceof Blob)) {
-            const fileExt = file.name ? file.name.split('.').pop() : 'jpg';
+            const fileExt = (file as any).name ? (file as any).name.split('.').pop() : 'jpg';
             const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
             const { data, error } = await supabase.storage
               .from('product-media')
@@ -124,7 +124,7 @@ export async function saveOffers(offers: any[]): Promise<boolean> {
       let offerData = { ...o };
       
       if (o.imageFile && (o.imageFile instanceof File || o.imageFile instanceof Blob)) {
-        const fileExt = o.imageFile.name ? o.imageFile.name.split('.').pop() : 'jpg';
+        const fileExt = (o.imageFile as any).name ? (o.imageFile as any).name.split('.').pop() : 'jpg';
         const fileName = `offer_${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
         const { data, error } = await supabase.storage
           .from('product-media')
