@@ -70,12 +70,24 @@ export default function AdminProductsPage() {
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    if (files.length > 0) {
-      // For simplicity, we flag if the first item is a video
-      setPreviewIsVideo(files[0].type.startsWith('video/'));
-      setPreviewImageFiles(files);
-      setPreviewImages(files.map(file => URL.createObjectURL(file)));
+    const newFiles = Array.from(e.target.files || []);
+    if (newFiles.length > 0) {
+      const updatedFiles = [...previewImageFiles, ...newFiles];
+      setPreviewImageFiles(updatedFiles);
+      setPreviewImages(updatedFiles.map(file => URL.createObjectURL(file)));
+      setPreviewIsVideo(updatedFiles[0].type.startsWith('video/'));
+    }
+  };
+
+  const removePreviewImage = (indexToRemove: number) => {
+    const updatedFiles = previewImageFiles.filter((_, idx) => idx !== indexToRemove);
+    const updatedImages = previewImages.filter((_, idx) => idx !== indexToRemove);
+    setPreviewImageFiles(updatedFiles);
+    setPreviewImages(updatedImages);
+    if (updatedFiles.length > 0) {
+      setPreviewIsVideo(updatedFiles[0].type.startsWith('video/'));
+    } else {
+      setPreviewIsVideo(false);
     }
   };
 
@@ -302,14 +314,21 @@ export default function AdminProductsPage() {
                   <label className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-700 border-dashed rounded-md hover:border-[var(--color-primary)] transition-colors cursor-pointer relative w-full">
                     <div className="space-y-1 text-center w-full">
                       {previewImages.length > 0 ? (
-                        <div className="flex gap-2 overflow-x-auto pb-2">
+                        <div className="flex gap-2 overflow-x-auto pb-2 w-full">
                           {previewImages.map((img, idx) => (
-                            <div key={idx} className="w-24 h-32 shrink-0 rounded overflow-hidden relative">
+                            <div key={idx} className="w-24 h-32 shrink-0 rounded overflow-hidden relative group">
                               {previewIsVideo && idx === 0 ? (
                                 <video src={img} className="w-full h-full object-cover" autoPlay loop muted playsInline />
                               ) : (
                                 <img src={img} alt={`Preview ${idx}`} className="w-full h-full object-cover" />
                               )}
+                              <button 
+                                type="button"
+                                onClick={(e) => { e.preventDefault(); removePreviewImage(idx); }}
+                                className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
                             </div>
                           ))}
                         </div>
@@ -344,6 +363,7 @@ export default function AdminProductsPage() {
                     <input 
                       required
                       type="number" 
+                      onWheel={(e) => (e.target as HTMLInputElement).blur()}
                       value={newProduct.price}
                       onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
                       className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
@@ -355,6 +375,7 @@ export default function AdminProductsPage() {
                     <input 
                       required
                       type="number" 
+                      onWheel={(e) => (e.target as HTMLInputElement).blur()}
                       value={newProduct.stock}
                       onChange={(e) => setNewProduct({...newProduct, stock: e.target.value})}
                       className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
