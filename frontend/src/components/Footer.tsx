@@ -8,7 +8,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-1 md:col-span-1">
             <Link href="/" className="flex items-center gap-3 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] font-brand">
-              <img src="/logo.png" alt="Akhila Sarees Logo" className="h-10 w-10 object-contain mix-blend-multiply dark:mix-blend-screen rounded-full" />
+              <img src="/logo.png?v=4" alt="Akhila Sarees Logo" className="h-10 w-10 object-contain mix-blend-screen rounded-full" />
               AKHILA SAREES
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">

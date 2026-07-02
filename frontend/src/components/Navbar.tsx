@@ -53,7 +53,7 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
             <Link href="/" className="flex items-center gap-3 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] font-brand">
-              <img src="/logo.png?v=3" alt="Akhila Sarees Logo" className="h-16 w-16 object-contain mix-blend-multiply dark:mix-blend-screen rounded-full" />
+              <img src="/logo.png?v=4" alt="Akhila Sarees Logo" className="h-16 w-16 object-contain mix-blend-screen rounded-full" />
               AKHILA SAREES
             </Link>
           </div>
