@@ -4,6 +4,7 @@ import { useCart } from '@/context/CartContext';
 import { motion } from 'framer-motion';
 import { ShieldCheck, CreditCard, Wallet, CheckCircle2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabaseClient';
 
 export default function CheckoutPage() {
   const { items, subtotal: total, clearCart } = useCart();
@@ -16,6 +17,8 @@ export default function CheckoutPage() {
     paymentMethod: 'ONLINE'
   });
   const [storeSettings, setStoreSettings] = useState<any>(null);
+  const [orderId, setOrderId] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('akhila_store_settings');
@@ -41,7 +44,38 @@ export default function CheckoutPage() {
   };
 
   const handlePayment = async () => {
-    // Mocking the payment logic for demonstration
+    setIsProcessing(true);
+    
+    // 1. Generate Order ID
+    const newOrderId = `ORD-${Math.floor(Math.random() * 100000) + 10000}`;
+    setOrderId(newOrderId);
+    
+    // 2. Prepare order data
+    const orderData = {
+      customer: formData,
+      items: items,
+      subtotal: total,
+      shipping: shipping,
+      grandTotal: grandTotal,
+      status: formData.paymentMethod === 'ONLINE' ? 'PENDING_VERIFICATION' : 'CONFIRMED',
+      paymentMethod: formData.paymentMethod,
+      date: new Date().toISOString()
+    };
+    
+    try {
+      // 3. Save to Supabase
+      const { error } = await supabase
+        .from('orders')
+        .insert([{ id: newOrderId, data: orderData }]);
+        
+      if (error) {
+        console.error("Error saving order:", error);
+      }
+    } catch (e) {
+      console.error("Failed to save order", e);
+    }
+    
+    setIsProcessing(false);
     setStep(3); // Success step
     clearCart();
   };
@@ -69,8 +103,8 @@ export default function CheckoutPage() {
         </h1>
         <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-lg">
           {isOnline 
-            ? 'We have received your order details. Our team will manually verify your UPI payment and send you a confirmation message once verified. Order ID: #ORD-98234'
-            : 'Thank you for your purchase. Your elegant sarees will reach you soon. Order ID: #ORD-98234'
+            ? `We have received your order details. Our team will manually verify your UPI payment and send you a confirmation message once verified. Order ID: #${orderId}`
+            : `Thank you for your purchase. Your elegant sarees will reach you soon. Order ID: #${orderId}`
           }
         </p>
         <button onClick={() => router.push('/shop')} className="bg-[var(--color-primary)] text-white px-8 py-3 rounded-md font-medium">
@@ -190,16 +224,18 @@ export default function CheckoutPage() {
                   {formData.paymentMethod === 'ONLINE' ? (
                     <button 
                       onClick={handlePayment} 
-                      className="px-6 py-3 rounded-md font-bold flex-grow shadow-md flex items-center justify-center gap-2 transition-colors bg-orange-500 text-white hover:bg-orange-600"
+                      disabled={isProcessing}
+                      className="px-6 py-3 rounded-md font-bold flex-grow shadow-md flex items-center justify-center gap-2 transition-colors bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50"
                     >
-                      <ShieldCheck className="w-5 h-5" /> I have completed the payment
+                      <ShieldCheck className="w-5 h-5" /> {isProcessing ? 'Processing...' : 'I have completed the payment'}
                     </button>
                   ) : (
                     <button 
                       onClick={handlePayment} 
-                      className="px-6 py-3 rounded-md font-bold flex-grow shadow-md flex items-center justify-center gap-2 transition-colors bg-[var(--color-indian-gold)] text-gray-900 hover:bg-[#E6C200]"
+                      disabled={isProcessing}
+                      className="px-6 py-3 rounded-md font-bold flex-grow shadow-md flex items-center justify-center gap-2 transition-colors bg-[var(--color-indian-gold)] text-gray-900 hover:bg-[#E6C200] disabled:opacity-50"
                     >
-                      <ShieldCheck className="w-5 h-5" /> Place Order
+                      <ShieldCheck className="w-5 h-5" /> {isProcessing ? 'Processing...' : 'Place Order'}
                     </button>
                   )}
                 </div>
