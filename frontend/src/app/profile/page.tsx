@@ -39,8 +39,8 @@ export default function ProfilePage() {
         
         {/* Sidebar */}
         <div className="w-full md:w-1/4">
-          <div className="bg-white dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm p-6">
-            <div className="flex flex-col items-center text-center border-b border-gray-200 dark:border-gray-800 pb-6 mb-6">
+          <div className="bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm p-6">
+            <div className="flex flex-col items-center text-center border-b border-[var(--color-primary)] border-opacity-30 pb-6 mb-6">
               <div className="w-20 h-20 bg-[var(--color-primary)] text-white rounded-full flex items-center justify-center text-2xl font-bold mb-4">
                 {profileData?.name?.charAt(0) || 'U'}
               </div>
@@ -50,17 +50,17 @@ export default function ProfilePage() {
             </div>
             
             <nav className="space-y-2">
-              <button className="w-full flex items-center gap-3 px-4 py-2 bg-gray-50 dark:bg-gray-900 rounded-lg text-gray-900 dark:text-white font-medium">
+              <button className="w-full flex items-center gap-3 px-4 py-2 bg-gray-50 dark:bg-gray-900 rounded-lg text-white font-medium">
                 <UserIcon className="w-5 h-5 text-[var(--color-primary)]" /> My Profile
               </button>
-              <button className="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-lg text-gray-600 dark:text-gray-400 font-medium transition-colors">
+              <button className="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-lg text-gray-400 font-medium transition-colors">
                 <Package className="w-5 h-5" /> My Orders
               </button>
-              <button className="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-lg text-gray-600 dark:text-gray-400 font-medium transition-colors">
+              <button className="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-lg text-gray-400 font-medium transition-colors">
                 <MapPin className="w-5 h-5" /> Addresses
               </button>
               
-              <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-800">
+              <div className="pt-4 mt-4 border-t border-[var(--color-primary)] border-opacity-30">
                 <button 
                   onClick={handleLogout}
                   className="w-full flex items-center gap-3 px-4 py-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 rounded-lg font-medium transition-colors"
@@ -74,33 +74,33 @@ export default function ProfilePage() {
 
         {/* Main Content */}
         <div className="w-full md:w-3/4">
-          <div className="bg-white dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm p-6 sm:p-8">
+          <div className="bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm p-6 sm:p-8">
             <h1 className="text-2xl font-bold mb-6">Account Details</h1>
             
             <div className="space-y-6 max-w-xl">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Full Name</label>
                 <input 
                   type="text" 
                   value={profileData?.name || ''} 
                   readOnly 
-                  className="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg"
+                  className="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-[var(--color-primary)] border-opacity-50 rounded-lg"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Email Address</label>
                 <input 
                   type="email" 
                   value={profileData?.email || ''} 
                   readOnly 
-                  className="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg"
+                  className="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-[var(--color-primary)] border-opacity-50 rounded-lg"
                 />
               </div>
             </div>
             
-            <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800">
+            <div className="mt-12 pt-8 border-t border-[var(--color-primary)] border-opacity-30">
               <h2 className="text-xl font-bold mb-6">Recent Orders</h2>
-              <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-xl border border-dashed border-gray-300 dark:border-gray-700">
+              <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-xl border border-dashed border-[var(--color-primary)] border-opacity-50">
                 <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium mb-2">No orders yet</h3>
                 <p className="text-gray-500 mb-6 max-w-sm mx-auto">When you purchase your first premium saree, the order details will appear here.</p>

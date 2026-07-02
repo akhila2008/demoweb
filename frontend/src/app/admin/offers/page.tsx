@@ -109,7 +109,7 @@ export default function AdminOffersPage() {
     <div>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Offers & Coupons</h1>
+          <h1 className="text-3xl font-bold text-white">Offers & Coupons</h1>
           <p className="text-gray-500">Manage your sales, promotional banners, and discount codes.</p>
         </div>
         <button 
@@ -125,14 +125,14 @@ export default function AdminOffersPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {offers.length === 0 ? (
-          <div className="col-span-full py-16 text-center bg-white dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-gray-800">
+          <div className="col-span-full py-16 text-center bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30">
             <Tag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-1">No offers available</h3>
+            <h3 className="text-lg font-medium text-white mb-1">No offers available</h3>
             <p className="text-gray-500">Click "Add New Offer" to create your first promotion.</p>
           </div>
         ) : (
           offers.map((offer) => (
-            <div key={offer.id} className="bg-white dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden flex flex-col">
+            <div key={offer.id} className="bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm overflow-hidden flex flex-col">
               {offer.image ? (
                 <div className="h-40 w-full bg-gray-100 overflow-hidden">
                   <img src={offer.image} alt={offer.title} className="w-full h-full object-cover" />
@@ -146,7 +146,7 @@ export default function AdminOffersPage() {
               <div className="p-5 flex-grow flex flex-col justify-between">
                 <div>
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">{offer.title}</h3>
+                    <h3 className="text-xl font-bold text-white">{offer.title}</h3>
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                       offer.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
                     }`}>
@@ -159,13 +159,13 @@ export default function AdminOffersPage() {
                   </div>
                   
                   {offer.code && (
-                    <div className="inline-block border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-md px-3 py-1 bg-gray-50 dark:bg-gray-900 text-sm font-mono tracking-wider font-bold mb-4">
+                    <div className="inline-block border-2 border-dashed border-[var(--color-primary)] border-opacity-50 rounded-md px-3 py-1 bg-gray-50 dark:bg-gray-900 text-sm font-mono tracking-wider font-bold mb-4">
                       {offer.code}
                     </div>
                   )}
                 </div>
                 
-                <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-800 mt-4">
+                <div className="flex justify-end gap-3 pt-4 border-t border-[var(--color-primary)] border-opacity-30 mt-4">
                   <button 
                     onClick={() => openEditModal(offer)}
                     className="text-blue-600 hover:text-blue-800 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-md transition-colors"
@@ -193,9 +193,9 @@ export default function AdminOffersPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-[#121212] rounded-xl shadow-xl w-full max-w-md overflow-hidden"
+              className="bg-gray-900 rounded-xl shadow-xl w-full max-w-md overflow-hidden"
             >
-              <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
+              <div className="p-6 border-b border-[var(--color-primary)] border-opacity-30 flex justify-between items-center">
                 <h2 className="text-xl font-bold">{editingOfferId ? 'Edit Offer' : 'Add New Offer'}</h2>
                 <button onClick={resetForm} className="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200">
                   <X className="w-6 h-6" />
@@ -204,8 +204,8 @@ export default function AdminOffersPage() {
               
               <form onSubmit={handleAddOffer} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Banner Image (Optional)</label>
-                  <label className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-700 border-dashed rounded-md hover:border-[var(--color-primary)] transition-colors cursor-pointer relative w-full">
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Banner Image (Optional)</label>
+                  <label className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-[var(--color-primary)] border-opacity-50 border-dashed rounded-md hover:border-[var(--color-primary)] transition-colors cursor-pointer relative w-full">
                     <div className="space-y-1 text-center w-full">
                       {previewImage ? (
                         <div className="w-full h-32 mx-auto rounded overflow-hidden relative">
@@ -216,7 +216,7 @@ export default function AdminOffersPage() {
                           <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       )}
-                      <div className="flex text-sm text-gray-600 dark:text-gray-400 justify-center mt-2">
+                      <div className="flex text-sm text-gray-400 justify-center mt-2">
                         <span className="font-medium text-[var(--color-primary)] hover:text-[#600000]">Click to upload a banner</span>
                         <input type="file" accept="image/*" className="sr-only" onChange={handleImageChange} />
                       </div>
@@ -225,47 +225,47 @@ export default function AdminOffersPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Offer Title</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Offer Title</label>
                   <input 
                     required
                     type="text" 
                     value={newOffer.title}
                     onChange={(e) => setNewOffer({...newOffer, title: e.target.value})}
-                    className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
+                    className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
                     placeholder="e.g. Diwali Mega Sale"
                   />
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Discount Details</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Discount Details</label>
                     <input 
                       required
                       type="text" 
                       value={newOffer.discount}
                       onChange={(e) => setNewOffer({...newOffer, discount: e.target.value})}
-                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
                       placeholder="e.g. 50% OFF"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Coupon Code (Optional)</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Coupon Code (Optional)</label>
                     <input 
                       type="text" 
                       value={newOffer.code}
                       onChange={(e) => setNewOffer({...newOffer, code: e.target.value.toUpperCase()})}
-                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)] font-mono uppercase" 
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)] font-mono uppercase" 
                       placeholder="DIWALI50"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Status</label>
                   <select 
                     value={newOffer.status}
                     onChange={(e) => setNewOffer({...newOffer, status: e.target.value})}
-                    className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                    className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
                   >
                     <option value="Active">Active</option>
                     <option value="Expired">Expired</option>
@@ -277,7 +277,7 @@ export default function AdminOffersPage() {
                   <button 
                     type="button" 
                     onClick={resetForm}
-                    className="flex-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-4 py-3 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    className="flex-1 bg-gray-100 dark:bg-gray-800 text-gray-300 px-4 py-3 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                   >
                     Cancel
                   </button>

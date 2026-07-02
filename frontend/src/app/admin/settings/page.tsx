@@ -115,7 +115,7 @@ export default function AdminSettingsPage() {
     <div className="max-w-4xl mx-auto">
       <div className="mb-8 flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Settings</h1>
+          <h1 className="text-3xl font-bold text-white">Settings</h1>
           <p className="text-gray-500">Manage your store preferences and account settings.</p>
         </div>
         {showSuccess && (
@@ -134,7 +134,7 @@ export default function AdminSettingsPage() {
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-colors text-left ${
               activeTab === 'store' 
                 ? 'bg-[var(--color-primary)] text-white' 
-                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
+                : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
             }`}
           >
             <Store className="w-4 h-4" /> Store Details
@@ -144,7 +144,7 @@ export default function AdminSettingsPage() {
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-colors text-left ${
               activeTab === 'payments' 
                 ? 'bg-[var(--color-primary)] text-white' 
-                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
+                : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
             }`}
           >
             <CreditCard className="w-4 h-4" /> Payments
@@ -154,12 +154,12 @@ export default function AdminSettingsPage() {
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-colors text-left ${
               activeTab === 'security' 
                 ? 'bg-[var(--color-primary)] text-white' 
-                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
+                : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
             }`}
           >
             <Lock className="w-4 h-4" /> Security
           </button>
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg font-medium text-sm transition-colors text-left opacity-50 cursor-not-allowed">
+          <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg font-medium text-sm transition-colors text-left opacity-50 cursor-not-allowed">
             <Bell className="w-4 h-4" /> Notifications (Coming Soon)
           </button>
         </div>
@@ -168,47 +168,47 @@ export default function AdminSettingsPage() {
         <div className="md:col-span-3 space-y-6">
           {activeTab === 'store' && (
             <>
-              <div className="bg-white dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm p-6">
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">Store Profile</h2>
+              <div className="bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm p-6">
+            <h2 className="text-lg font-bold text-white mb-4 border-b border-[var(--color-primary)] border-opacity-30 pb-2">Store Profile</h2>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Store Name</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Store Name</label>
                 <input 
                   type="text" 
                   value={storeName}
                   onChange={(e) => setStoreName(e.target.value)}
-                  className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                  className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Help Center Email</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Help Center Email</label>
                 <input 
                   type="email" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                  className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Help Center Phone</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Help Center Phone</label>
                 <input 
                   type="text" 
                   value={contactPhone}
                   onChange={(e) => setContactPhone(e.target.value)}
                   placeholder="e.g. +91 9876543210"
-                  className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                  className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Store Currency</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Store Currency</label>
                 <select 
                   value={currency}
                   onChange={(e) => setCurrency(e.target.value)}
-                  className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                  className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
                 >
                   <option value="INR">Indian Rupee (₹)</option>
                   <option value="USD">US Dollar ($)</option>
@@ -218,29 +218,29 @@ export default function AdminSettingsPage() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm p-6">
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">Shipping Configuration</h2>
+          <div className="bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm p-6">
+            <h2 className="text-lg font-bold text-white mb-4 border-b border-[var(--color-primary)] border-opacity-30 pb-2">Shipping Configuration</h2>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Standard Delivery Charge (₹)</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Standard Delivery Charge (₹)</label>
                 <input 
                   type="number" 
                   value={deliveryCharge}
                   onChange={(e) => setDeliveryCharge(Number(e.target.value))}
                   onWheel={(e) => (e.target as HTMLInputElement).blur()}
-                  className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                  className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Free Shipping Threshold (₹) - Enter 0 to disable</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Free Shipping Threshold (₹) - Enter 0 to disable</label>
                 <input 
                   type="number" 
                   value={freeShippingThreshold}
                   onChange={(e) => setFreeShippingThreshold(Number(e.target.value))}
                   onWheel={(e) => (e.target as HTMLInputElement).blur()}
-                  className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                  className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
                 />
               </div>
             </div>
@@ -250,35 +250,35 @@ export default function AdminSettingsPage() {
 
           {activeTab === 'payments' && (
             <>
-              <div className="bg-white dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm p-6">
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">UPI Settings</h2>
+              <div className="bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm p-6">
+                <h2 className="text-lg font-bold text-white mb-4 border-b border-[var(--color-primary)] border-opacity-30 pb-2">UPI Settings</h2>
                 <p className="text-sm text-gray-500 mb-4">Enter your store's UPI ID. Customers choosing Pay Online will be asked to pay to this UPI ID.</p>
                 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">UPI ID (e.g., store@okhdfcbank)</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">UPI ID (e.g., store@okhdfcbank)</label>
                     <input 
                       type="text" 
                       value={upiId}
                       onChange={(e) => setUpiId(e.target.value)}
                       placeholder="Enter UPI ID"
-                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm p-6">
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">Bank Details (Optional)</h2>
+              <div className="bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm p-6">
+                <h2 className="text-lg font-bold text-white mb-4 border-b border-[var(--color-primary)] border-opacity-30 pb-2">Bank Details (Optional)</h2>
                 <p className="text-sm text-gray-500 mb-4">Enter your bank details for direct transfers. Leave blank if you only want to accept UPI.</p>
                 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bank Name</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Bank Name</label>
                     <select 
                       value={bankName}
                       onChange={(e) => setBankName(e.target.value)}
-                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
                     >
                       <option value="">Select a Bank...</option>
                       <option value="State Bank of India (SBI)">State Bank of India (SBI)</option>
@@ -301,23 +301,23 @@ export default function AdminSettingsPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Account Number</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Account Number</label>
                     <input 
                       type="text" 
                       value={accountNumber}
                       onChange={(e) => setAccountNumber(e.target.value)}
                       placeholder="Enter Account Number"
-                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">IFSC Code</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">IFSC Code</label>
                     <input 
                       type="text" 
                       value={ifscCode}
                       onChange={(e) => setIfscCode(e.target.value)}
                       placeholder="Enter IFSC Code"
-                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
                     />
                   </div>
                 </div>
@@ -326,8 +326,8 @@ export default function AdminSettingsPage() {
           )}
 
           {activeTab === 'security' && (
-            <div className="bg-white dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm p-6">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">Change Password</h2>
+            <div className="bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm p-6">
+              <h2 className="text-lg font-bold text-white mb-4 border-b border-[var(--color-primary)] border-opacity-30 pb-2">Change Password</h2>
               
               <form onSubmit={handleUpdatePassword} className="space-y-4 max-w-md">
                 {passwordError && (
@@ -342,14 +342,14 @@ export default function AdminSettingsPage() {
                 )}
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Old Password</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Old Password</label>
                   <div className="relative">
                     <input 
                       type={showPassword ? "text" : "password"} 
                       value={oldPassword}
                       onChange={(e) => setOldPassword(e.target.value)}
                       required
-                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 pr-10 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 pr-10 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
                     />
                     <button
                       type="button"
@@ -362,14 +362,14 @@ export default function AdminSettingsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">New Password</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">New Password</label>
                   <div className="relative">
                     <input 
                       type={showPassword ? "text" : "password"} 
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       required
-                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 pr-10 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 pr-10 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
                     />
                     <button
                       type="button"
@@ -382,14 +382,14 @@ export default function AdminSettingsPage() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirm New Password</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Confirm New Password</label>
                   <div className="relative">
                     <input 
                       type={showPassword ? "text" : "password"} 
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
-                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 pr-10 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 pr-10 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
                     />
                     <button
                       type="button"
@@ -417,7 +417,7 @@ export default function AdminSettingsPage() {
 
           {activeTab !== 'security' && (
             <div className="flex justify-end gap-3">
-              <button className="px-6 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+              <button className="px-6 py-2 bg-gray-100 dark:bg-gray-800 text-gray-300 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
                 Cancel
               </button>
               <button 

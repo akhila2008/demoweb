@@ -100,21 +100,21 @@ export default function Home() {
       </section>
 
       {/* Highlights Section */}
-      <section className="py-20 bg-gray-50 dark:bg-[#1A1A1A]">
+      <section className="py-20 bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900 dark:text-white">Crafted with Passion & Tradition</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed text-lg">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">Crafted with Passion & Tradition</h2>
+            <p className="text-gray-400 mb-8 leading-relaxed text-lg">
               Every saree in our collection tells a story. Woven by master artisans across India, our pieces are more than just clothing—they are a celebration of centuries-old techniques passed down through generations.
             </p>
             <ul className="space-y-4 mb-8">
-              <li className="flex items-center text-gray-700 dark:text-gray-300">
+              <li className="flex items-center text-gray-300">
                 <span className="w-2 h-2 bg-[var(--color-primary)] rounded-full mr-3"></span> Authentic Handloom
               </li>
-              <li className="flex items-center text-gray-700 dark:text-gray-300">
+              <li className="flex items-center text-gray-300">
                 <span className="w-2 h-2 bg-[var(--color-primary)] rounded-full mr-3"></span> Premium Quality Fabrics
               </li>
-              <li className="flex items-center text-gray-700 dark:text-gray-300">
+              <li className="flex items-center text-gray-300">
                 <span className="w-2 h-2 bg-[var(--color-primary)] rounded-full mr-3"></span> Direct from Weavers
               </li>
             </ul>

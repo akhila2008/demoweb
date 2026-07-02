@@ -16,7 +16,7 @@ export default function AdminDashboardPage() {
     <div>
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard Overview</h1>
+          <h1 className="text-3xl font-bold text-white">Dashboard Overview</h1>
           <p className="text-gray-500">Welcome back, Admin. Here is your store's performance.</p>
         </div>
       </div>
@@ -31,7 +31,7 @@ export default function AdminDashboardPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="bg-white dark:bg-[#121212] p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm"
+              className="bg-gray-900 p-6 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${stat.color}`}>
@@ -40,7 +40,7 @@ export default function AdminDashboardPage() {
                 <span className="text-sm font-medium text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full">0%</span>
               </div>
               <h3 className="text-gray-500 text-sm font-medium">{stat.label}</h3>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{stat.value}</p>
+              <p className="text-2xl font-bold text-white mt-1">{stat.value}</p>
             </motion.div>
           );
         })}
@@ -48,12 +48,12 @@ export default function AdminDashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Orders */}
-        <div className="lg:col-span-2 bg-white dark:bg-[#121212] p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+        <div className="lg:col-span-2 bg-gray-900 p-6 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm">
           <h2 className="text-xl font-bold mb-6">Recent Orders</h2>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left text-sm text-gray-500 border-b border-gray-200 dark:border-gray-800">
+                <tr className="text-left text-sm text-gray-500 border-b border-[var(--color-primary)] border-opacity-30">
                   <th className="pb-3 font-medium">Order ID</th>
                   <th className="pb-3 font-medium">Customer</th>
                   <th className="pb-3 font-medium">Date</th>
@@ -74,14 +74,14 @@ export default function AdminDashboardPage() {
 
         {/* Alerts & Low Stock */}
         <div className="space-y-6">
-          <div className="bg-white dark:bg-[#121212] p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm border-l-4 border-l-red-500">
-            <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-gray-900 dark:text-white">
+          <div className="bg-gray-900 p-6 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm border-l-4 border-l-red-500">
+            <h2 className="text-lg font-bold mb-4 flex items-center gap-2 text-white">
               <AlertCircle className="text-red-500 w-5 h-5" /> Low Stock Alerts
             </h2>
             <div className="space-y-4">
               {LOW_STOCK.length > 0 ? LOW_STOCK.map(item => (
                 <div key={item.name} className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">{item.name}</span>
+                  <span className="text-sm text-gray-400">{item.name}</span>
                   <span className={`text-xs font-bold px-2 py-1 rounded ${item.stock === 0 ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'}`}>
                     {item.stock === 0 ? 'Out of Stock' : `${item.stock} left`}
                   </span>

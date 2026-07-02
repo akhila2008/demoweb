@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-100 dark:bg-zinc-950 pt-16 pb-8 border-t border-gray-200 dark:border-gray-800">
+    <footer className="bg-gray-100 dark:bg-zinc-950 pt-16 pb-8 border-t border-[var(--color-primary)] border-opacity-30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
@@ -11,15 +11,15 @@ export default function Footer() {
               <img src="/logo.png" alt="Akhila Sarees Logo" className="h-10 w-10 object-contain mix-blend-multiply dark:mix-blend-screen dark:invert rounded-full" />
               AKHILA SAREES
             </Link>
-            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-6">
+            <p className="text-gray-400 text-sm leading-relaxed mb-6">
               Embrace the elegance of traditional Indian heritage with our premium collection of handcrafted sarees. Perfect for every occasion.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Shop</h4>
-            <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
+            <h4 className="text-lg font-semibold text-white mb-4">Shop</h4>
+            <ul className="space-y-3 text-sm text-gray-400">
               <li><Link href="/shop?category=new" className="hover:text-[var(--color-primary)] transition-colors">New Arrivals</Link></li>
               <li><Link href="/shop?category=bestsellers" className="hover:text-[var(--color-primary)] transition-colors">Best Sellers</Link></li>
               <li><Link href="/shop?category=wedding" className="hover:text-[var(--color-primary)] transition-colors">Wedding Collection</Link></li>
@@ -29,8 +29,8 @@ export default function Footer() {
 
           {/* Support */}
           <div>
-            <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Support</h4>
-            <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
+            <h4 className="text-lg font-semibold text-white mb-4">Support</h4>
+            <ul className="space-y-3 text-sm text-gray-400">
               <li><Link href="/contact" className="hover:text-[var(--color-primary)] transition-colors">Contact Us</Link></li>
               <li><Link href="/faq" className="hover:text-[var(--color-primary)] transition-colors">FAQs</Link></li>
               <li><Link href="/shipping" className="hover:text-[var(--color-primary)] transition-colors">Shipping & Returns</Link></li>
@@ -40,13 +40,13 @@ export default function Footer() {
 
           {/* Newsletter */}
           <div>
-            <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Newsletter</h4>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Subscribe to receive updates, access to exclusive deals, and more.</p>
+            <h4 className="text-lg font-semibold text-white mb-4">Newsletter</h4>
+            <p className="text-sm text-gray-400 mb-4">Subscribe to receive updates, access to exclusive deals, and more.</p>
             <form className="flex flex-col sm:flex-row gap-2">
               <input 
                 type="email" 
                 placeholder="Enter your email" 
-                className="px-4 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] flex-grow text-sm"
+                className="px-4 py-2 bg-white dark:bg-gray-900 border border-[var(--color-primary)] border-opacity-50 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] flex-grow text-sm"
               />
               <button 
                 type="submit" 
@@ -58,7 +58,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-200 dark:border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <div className="border-t border-[var(--color-primary)] border-opacity-30 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-gray-500 dark:text-gray-500">
             &copy; {new Date().getFullYear()} Akhila Sarees. All rights reserved.
           </p>

@@ -161,7 +161,7 @@ export default function AdminProductsPage() {
     <div>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Products Management</h1>
+          <h1 className="text-3xl font-bold text-white">Products Management</h1>
           <p className="text-gray-500">Manage your saree inventory and categories.</p>
         </div>
         <button 
@@ -178,10 +178,10 @@ export default function AdminProductsPage() {
         </button>
       </div>
 
-      <div className="bg-white dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
+      <div className="bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm overflow-hidden">
         
         {/* Toolbar */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row gap-4 justify-between items-center bg-gray-50 dark:bg-[#1A1A1A]">
+        <div className="p-4 border-b border-[var(--color-primary)] border-opacity-30 flex flex-col sm:flex-row gap-4 justify-between items-center bg-black">
           <div className="relative w-full sm:w-96">
             <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input 
@@ -189,11 +189,11 @@ export default function AdminProductsPage() {
               placeholder="Search products..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+              className="w-full pl-10 pr-4 py-2 border border-[var(--color-primary)] border-opacity-50 rounded-lg dark:bg-gray-900 focus:ring-[var(--color-primary)]"
             />
           </div>
           <div className="flex gap-2 w-full sm:w-auto">
-            <select className="border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 dark:bg-gray-900 focus:ring-[var(--color-primary)] w-full sm:w-auto">
+            <select className="border border-[var(--color-primary)] border-opacity-50 rounded-lg py-2 px-4 dark:bg-gray-900 focus:ring-[var(--color-primary)] w-full sm:w-auto">
               <option>All Categories</option>
               <option>Silk</option>
               <option>Cotton</option>
@@ -207,7 +207,7 @@ export default function AdminProductsPage() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-[#121212]">
+              <tr className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-[var(--color-primary)] border-opacity-30 bg-gray-900">
                 <th className="p-4 w-16">Image</th>
                 <th className="p-4">Product Name</th>
                 <th className="p-4">Category</th>
@@ -236,7 +236,7 @@ export default function AdminProductsPage() {
                         )}
                       </Link>
                     </td>
-                    <td className="p-4 font-medium text-gray-900 dark:text-white">
+                    <td className="p-4 font-medium text-white">
                       <Link href={`/product/${product.id}`} className="hover:text-[var(--color-primary)] hover:underline transition-colors">
                         {product.name}
                       </Link>
@@ -258,7 +258,7 @@ export default function AdminProductsPage() {
                         {(!product.colors || product.colors.length === 0) && <span className="text-xs text-gray-400">None</span>}
                       </div>
                     </td>
-                    <td className="p-4 text-gray-900 dark:text-white font-medium">₹{product.price.toLocaleString('en-IN')}</td>
+                    <td className="p-4 text-white font-medium">₹{product.price.toLocaleString('en-IN')}</td>
                     <td className="p-4">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                         product.stock > 10 ? 'bg-green-100 text-green-700' : 
@@ -298,9 +298,9 @@ export default function AdminProductsPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-[#121212] rounded-xl shadow-xl w-full max-w-md overflow-hidden"
+              className="bg-gray-900 rounded-xl shadow-xl w-full max-w-md overflow-hidden"
             >
-              <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
+              <div className="p-6 border-b border-[var(--color-primary)] border-opacity-30 flex justify-between items-center">
                 <h2 className="text-xl font-bold">{editingProductId ? 'Edit Saree' : 'Add New Saree'}</h2>
                 <button onClick={() => { setIsAddModalOpen(false); setPreviewImages([]); setEditingProductId(null); }} className="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200">
                   <X className="w-6 h-6" />
@@ -309,8 +309,8 @@ export default function AdminProductsPage() {
               
               <form onSubmit={handleAddProduct} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Product Media (Carousel)</label>
-                  <label className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-700 border-dashed rounded-md hover:border-[var(--color-primary)] transition-colors cursor-pointer relative w-full">
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Product Media (Carousel)</label>
+                  <label className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-[var(--color-primary)] border-opacity-50 border-dashed rounded-md hover:border-[var(--color-primary)] transition-colors cursor-pointer relative w-full">
                     <div className="space-y-1 text-center w-full">
                       {previewImages.length > 0 ? (
                         <div className="flex gap-2 overflow-x-auto pb-2 w-full">
@@ -336,7 +336,7 @@ export default function AdminProductsPage() {
                           <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       )}
-                      <div className="flex text-sm text-gray-600 dark:text-gray-400 justify-center mt-2">
+                      <div className="flex text-sm text-gray-400 justify-center mt-2">
                         <span className="font-medium text-[var(--color-primary)] hover:text-[#600000]">Select multiple photos/videos</span>
                         <input type="file" multiple accept="image/*,video/*" className="sr-only" onChange={handleImageChange} />
                       </div>
@@ -345,39 +345,39 @@ export default function AdminProductsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Saree Name</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Saree Name</label>
                   <input 
                     required
                     type="text" 
                     value={newProduct.name}
                     onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
-                    className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
+                    className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
                     placeholder="e.g. Red Banarasi Silk"
                   />
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Price (₹)</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Price (₹)</label>
                     <input 
                       required
                       type="number" 
                       onWheel={(e) => (e.target as HTMLInputElement).blur()}
                       value={newProduct.price}
                       onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
-                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
                       placeholder="9999"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Stock Quantity</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Stock Quantity</label>
                     <input 
                       required
                       type="number" 
                       onWheel={(e) => (e.target as HTMLInputElement).blur()}
                       value={newProduct.stock}
                       onChange={(e) => setNewProduct({...newProduct, stock: e.target.value})}
-                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
                       placeholder="10"
                     />
                   </div>
@@ -385,11 +385,11 @@ export default function AdminProductsPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Category</label>
                     <select 
                       value={newProduct.category}
                       onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
-                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
                     >
                       <option value="Silk">Silk</option>
                       <option value="Cotton">Cotton</option>
@@ -400,20 +400,20 @@ export default function AdminProductsPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" title="Give identical Model Numbers to group variants together.">Model Number</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1" title="Give identical Model Numbers to group variants together.">Model Number</label>
                     <input 
                       required
                       type="text" 
                       value={newProduct.groupId}
                       onChange={(e) => setNewProduct({...newProduct, groupId: e.target.value})}
-                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
                       placeholder="e.g. Saree-123"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Available Colors</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Available Colors</label>
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
                     {AVAILABLE_COLORS.map(color => (
                       <label 
@@ -432,7 +432,7 @@ export default function AdminProductsPage() {
                         />
                         <div className="flex flex-col items-center gap-1">
                           <div className="w-5 h-5 rounded-full border border-gray-300 shadow-sm" style={{ backgroundColor: color.hex }}></div>
-                          <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">{color.name}</span>
+                          <span className="text-xs text-gray-400 font-medium">{color.name}</span>
                         </div>
                       </label>
                     ))}
@@ -440,7 +440,7 @@ export default function AdminProductsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Occasions</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Occasions</label>
                   <div className="flex flex-wrap gap-2">
                     {['Party', 'Daily Wear', 'Wedding', 'Haldi', 'Festive', 'Casual'].map(occasion => (
                       <label 
@@ -448,7 +448,7 @@ export default function AdminProductsPage() {
                         className={`px-3 py-1.5 rounded-full border cursor-pointer text-sm font-medium transition-colors ${
                           newProduct.occasions.includes(occasion) 
                             ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-white' 
-                            : 'border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-400'
+                            : 'border-[var(--color-primary)] border-opacity-50 text-gray-400 hover:border-gray-400'
                         }`}
                       >
                         <input 
@@ -467,7 +467,7 @@ export default function AdminProductsPage() {
                   <button 
                     type="button" 
                     onClick={() => setIsAddModalOpen(false)}
-                    className="flex-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-4 py-3 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    className="flex-1 bg-gray-100 dark:bg-gray-800 text-gray-300 px-4 py-3 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                   >
                     Cancel
                   </button>

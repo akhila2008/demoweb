@@ -152,7 +152,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
               </button>
             ))}
           </div>
-          <div className="flex-grow bg-gray-100 dark:bg-gray-900 rounded-2xl overflow-hidden aspect-[3/4] relative group cursor-zoom-in">
+          <div className="flex-grow bg-gray-900 rounded-2xl overflow-hidden aspect-[3/4] relative group cursor-zoom-in">
             <motion.div
               key={activeImage}
               initial={{ opacity: 0 }}
@@ -172,14 +172,14 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
               <>
                 <button 
                   onClick={(e) => { e.stopPropagation(); setActiveImage(prev => prev === 0 ? product.images.length - 1 : prev - 1); }}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-black/80 p-2 rounded-full shadow-md text-gray-800 dark:text-white hover:bg-white md:hidden"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/80 p-2 rounded-full shadow-md text-gray-100 hover:bg-white md:hidden"
                   aria-label="Previous image"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
                 <button 
                   onClick={(e) => { e.stopPropagation(); setActiveImage(prev => prev === product.images.length - 1 ? 0 : prev + 1); }}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-black/80 p-2 rounded-full shadow-md text-gray-800 dark:text-white hover:bg-white md:hidden"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/80 p-2 rounded-full shadow-md text-gray-100 hover:bg-white md:hidden"
                   aria-label="Next image"
                 >
                   <ChevronRight className="w-5 h-5" />
@@ -201,7 +201,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
 
         {/* Product Info */}
         <div className="w-full lg:w-1/2 flex flex-col">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">{product.name}</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">{product.name}</h1>
           
           <div className="flex items-center gap-4 mb-6">
             <div className="flex items-center text-[var(--color-indian-gold)]">
@@ -210,7 +210,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
               <Star className="w-5 h-5 fill-current" />
               <Star className="w-5 h-5 fill-current" />
               <Star className="w-5 h-5 fill-current text-gray-300" />
-              <span className="text-gray-600 dark:text-gray-400 text-sm ml-2">(42 Reviews)</span>
+              <span className="text-gray-400 text-sm ml-2">(42 Reviews)</span>
             </div>
             <span className="text-green-600 dark:text-green-400 text-sm font-medium">In Stock ({product.stock})</span>
           </div>
@@ -251,7 +251,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
 
           {/* Quantity and Actions */}
           <div className="flex flex-col sm:flex-row gap-4 mb-8">
-            <div className="flex items-center border border-gray-300 dark:border-gray-700 rounded-lg h-12 w-32 shrink-0">
+            <div className="flex items-center border border-[var(--color-primary)] border-opacity-50 rounded-lg h-12 w-32 shrink-0">
               <button 
                 type="button"
                 onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
@@ -261,7 +261,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
                 type="number" 
                 value={quantity}
                 readOnly
-                className="w-full text-center bg-transparent border-none focus:ring-0 text-gray-900 dark:text-white font-medium cursor-default" 
+                className="w-full text-center bg-transparent border-none focus:ring-0 text-white font-medium cursor-default" 
               />
               <button 
                 type="button"
@@ -299,7 +299,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
               className={`h-12 w-12 flex items-center justify-center border rounded-lg transition-colors shrink-0 ${
                 isInWishlist(product.id) 
                   ? 'border-red-500 text-red-500 bg-red-50 dark:bg-red-900/20' 
-                  : 'border-gray-300 dark:border-gray-700 hover:border-red-500 hover:text-red-500'
+                  : 'border-[var(--color-primary)] border-opacity-50 hover:border-red-500 hover:text-red-500'
               }`}
             >
               <Heart className={`w-5 h-5 ${isInWishlist(product.id) ? 'fill-current' : ''}`} />
@@ -307,34 +307,34 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
           </div>
 
           {/* Additional Info */}
-          <div className="border-t border-gray-200 dark:border-gray-800 pt-8 space-y-6">
+          <div className="border-t border-[var(--color-primary)] border-opacity-30 pt-8 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div className="flex flex-col gap-1">
                 <span className="text-gray-500">Fabric</span>
-                <span className="font-medium text-gray-900 dark:text-white">{product.fabric}</span>
+                <span className="font-medium text-white">{product.fabric}</span>
               </div>
               <div className="flex flex-col gap-1">
                 <span className="text-gray-500">Color</span>
-                <span className="font-medium text-gray-900 dark:text-white">{product.color}</span>
+                <span className="font-medium text-white">{product.color}</span>
               </div>
               <div className="flex flex-col gap-1">
                 <span className="text-gray-500">Blouse Piece</span>
-                <span className="font-medium text-gray-900 dark:text-white">{product.blouse}</span>
+                <span className="font-medium text-white">{product.blouse}</span>
               </div>
               <div className="flex flex-col gap-1">
                 <span className="text-gray-500">Wash Care</span>
-                <span className="font-medium text-gray-900 dark:text-white">{product.washCare}</span>
+                <span className="font-medium text-white">{product.washCare}</span>
               </div>
             </div>
             
-            <div className="flex flex-wrap gap-4 pt-4 border-t border-gray-100 dark:border-gray-800">
-              <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex flex-wrap gap-4 pt-4 border-t border-[var(--color-primary)] border-opacity-30">
+              <div className="flex items-center text-sm text-gray-400">
                 <Truck className="w-4 h-4 mr-2 text-[var(--color-primary)]" /> Free Shipping
               </div>
-              <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+              <div className="flex items-center text-sm text-gray-400">
                 <ShieldCheck className="w-4 h-4 mr-2 text-[var(--color-primary)]" /> Secure Checkout
               </div>
-              <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 cursor-pointer hover:text-[var(--color-primary)]">
+              <div className="flex items-center text-sm text-gray-400 cursor-pointer hover:text-[var(--color-primary)]">
                 <Share2 className="w-4 h-4 mr-2" /> Share
               </div>
             </div>

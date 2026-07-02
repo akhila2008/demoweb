@@ -6,25 +6,25 @@ export default function AdminCustomersPage() {
     <div>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Customers</h1>
+          <h1 className="text-3xl font-bold text-white">Customers</h1>
           <p className="text-gray-500">View and manage your registered customers.</p>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-[#121212] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
+      <div className="bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm overflow-hidden">
         
         {/* Toolbar */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row gap-4 justify-between items-center bg-gray-50 dark:bg-[#1A1A1A]">
+        <div className="p-4 border-b border-[var(--color-primary)] border-opacity-30 flex flex-col sm:flex-row gap-4 justify-between items-center bg-black">
           <div className="relative w-full sm:w-96">
             <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input 
               type="text" 
               placeholder="Search customers by name or email..." 
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+              className="w-full pl-10 pr-4 py-2 border border-[var(--color-primary)] border-opacity-50 rounded-lg dark:bg-gray-900 focus:ring-[var(--color-primary)]"
             />
           </div>
           <div className="flex gap-2 w-full sm:w-auto">
-            <button className="flex items-center gap-2 border border-gray-300 dark:border-gray-700 rounded-lg py-2 px-4 dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors w-full sm:w-auto justify-center">
+            <button className="flex items-center gap-2 border border-[var(--color-primary)] border-opacity-50 rounded-lg py-2 px-4 dark:bg-gray-900 hover:bg-gray-800 hover:bg-gray-700 transition-colors w-full sm:w-auto justify-center">
               <Filter className="w-4 h-4" /> Filter
             </button>
           </div>
@@ -35,8 +35,8 @@ export default function AdminCustomersPage() {
           <div className="w-20 h-20 bg-[var(--color-primary)]/10 dark:bg-[var(--color-primary)]/20 rounded-full flex items-center justify-center mb-6 border-4 border-white dark:border-[#121212] shadow-sm">
             <Users className="w-10 h-10 text-[var(--color-primary)]" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">Customer Database Secured</h2>
-          <p className="text-gray-600 dark:text-gray-400 max-w-md mb-8 leading-relaxed">
+          <h2 className="text-2xl font-bold text-white mb-3">Customer Database Secured</h2>
+          <p className="text-gray-400 max-w-md mb-8 leading-relaxed">
             For maximum security and privacy, your customer profiles, passwords, and sensitive information are securely managed directly inside your Supabase Vault.
           </p>
           <a 

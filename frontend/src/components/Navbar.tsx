@@ -60,26 +60,26 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/shop" className="text-gray-700 dark:text-gray-300 hover:text-[var(--color-primary)] dark:hover:text-[var(--color-accent)] font-medium transition-colors">
+            <Link href="/shop" className="text-gray-300 hover:text-[var(--color-primary)] dark:hover:text-[var(--color-accent)] font-medium transition-colors">
               Collections
             </Link>
-            <Link href="/shop?category=wedding" className="text-gray-700 dark:text-gray-300 hover:text-[var(--color-primary)] dark:hover:text-[var(--color-accent)] font-medium transition-colors">
+            <Link href="/shop?category=wedding" className="text-gray-300 hover:text-[var(--color-primary)] dark:hover:text-[var(--color-accent)] font-medium transition-colors">
               Wedding
             </Link>
-            <Link href="/shop?category=silk" className="text-gray-700 dark:text-gray-300 hover:text-[var(--color-primary)] dark:hover:text-[var(--color-accent)] font-medium transition-colors">
+            <Link href="/shop?category=silk" className="text-gray-300 hover:text-[var(--color-primary)] dark:hover:text-[var(--color-accent)] font-medium transition-colors">
               Silk Sarees
             </Link>
           </div>
 
           {/* Desktop Icons */}
           <div className="hidden md:flex items-center space-x-6">
-            <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
+            <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="text-gray-400 hover:text-[var(--color-primary)] transition-colors">
               <Search className="w-5 h-5" />
             </button>
-            <button onClick={handleShareSite} title="Share Website" className="text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
+            <button onClick={handleShareSite} title="Share Website" className="text-gray-400 hover:text-[var(--color-primary)] transition-colors">
               <Share2 className="w-5 h-5" />
             </button>
-            <Link href="/cart" className="relative text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
+            <Link href="/cart" className="relative text-gray-400 hover:text-[var(--color-primary)] transition-colors">
               <ShoppingCart className="w-5 h-5" />
               {totalItems > 0 && (
                 <span className="absolute -top-2 -right-2 bg-[var(--color-primary)] text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
@@ -87,17 +87,17 @@ export default function Navbar() {
                 </span>
               )}
             </Link>
-            <button onClick={() => setIsOpen(!isOpen)} className="text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] focus:outline-none ml-2">
+            <button onClick={() => setIsOpen(!isOpen)} className="text-gray-400 hover:text-[var(--color-primary)] focus:outline-none ml-2">
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
 
           {/* Mobile menu and icons */}
           <div className="md:hidden flex items-center space-x-4">
-            <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
+            <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="text-gray-400 hover:text-[var(--color-primary)] transition-colors">
               <Search className="w-5 h-5" />
             </button>
-            <Link href="/cart" className="relative text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
+            <Link href="/cart" className="relative text-gray-400 hover:text-[var(--color-primary)] transition-colors">
               <ShoppingCart className="w-5 h-5" />
               {totalItems > 0 && (
                 <span className="absolute -top-2 -right-2 bg-[var(--color-primary)] text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
@@ -105,7 +105,7 @@ export default function Navbar() {
                 </span>
               )}
             </Link>
-            <button onClick={() => setIsOpen(!isOpen)} className="text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] focus:outline-none">
+            <button onClick={() => setIsOpen(!isOpen)} className="text-gray-400 hover:text-[var(--color-primary)] focus:outline-none">
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
@@ -120,7 +120,7 @@ export default function Navbar() {
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
-              <form onSubmit={handleSearchSubmit} className="py-4 border-t border-gray-100 dark:border-gray-800 flex items-center gap-4">
+              <form onSubmit={handleSearchSubmit} className="py-4 border-t border-[var(--color-primary)] border-opacity-30 flex items-center gap-4">
                 <div className="relative flex-grow">
                   <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input 
