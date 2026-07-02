@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { ShoppingCart, Heart, Share2, Star, Truck, ShieldCheck, Check } from 'lucide-react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
+import { AVAILABLE_COLORS } from '@/lib/colors';
 
 const MOCK_PRODUCT = {
   id: '1',
@@ -184,12 +185,6 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
                 {linkedVariants.map((variant) => {
                   const isCurrent = variant.id === product.id;
                   const mainColor = variant.colors?.[0] || 'Unknown';
-                  const AVAILABLE_COLORS = [
-                    { name: 'Red', hex: '#EF4444' }, { name: 'Maroon', hex: '#800000' },
-                    { name: 'Blue', hex: '#3B82F6' }, { name: 'Green', hex: '#10B981' },
-                    { name: 'Gold', hex: '#F59E0B' }, { name: 'Pink', hex: '#EC4899' },
-                    { name: 'Purple', hex: '#8B5CF6' }, { name: 'Black', hex: '#1F2937' },
-                  ];
                   const hex = AVAILABLE_COLORS.find(c => c.name === mainColor)?.hex || '#ccc';
                   
                   return (

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { loadProducts, saveProducts } from '@/lib/storage';
 import { Plus, Search, Edit, Trash2, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { AVAILABLE_COLORS } from '@/lib/colors';
 
 const INITIAL_PRODUCTS: any[] = [];
 
@@ -47,17 +48,6 @@ export default function AdminProductsPage() {
     groupId: '',
     colors: [] as string[]
   });
-
-  const AVAILABLE_COLORS = [
-    { name: 'Red', hex: '#EF4444' },
-    { name: 'Maroon', hex: '#800000' },
-    { name: 'Blue', hex: '#3B82F6' },
-    { name: 'Green', hex: '#10B981' },
-    { name: 'Gold', hex: '#F59E0B' },
-    { name: 'Pink', hex: '#EC4899' },
-    { name: 'Purple', hex: '#8B5CF6' },
-    { name: 'Black', hex: '#1F2937' },
-  ];
 
   const handleColorToggle = (colorName: string) => {
     setNewProduct(prev => {
@@ -415,7 +405,7 @@ export default function AdminProductsPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Available Colors</label>
-                  <div className="grid grid-cols-4 gap-3">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
                     {AVAILABLE_COLORS.map(color => (
                       <label 
                         key={color.name} 
