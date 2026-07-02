@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Settings, Save, Lock, Store, Bell, CreditCard, Eye, EyeOff } from 'lucide-react';
-import { supabase } from '@/lib/supabaseClient';
 
 export default function AdminSettingsPage() {
   const [storeName, setStoreName] = useState('Akhila Sarees');
@@ -22,6 +21,7 @@ export default function AdminSettingsPage() {
   const [activeTab, setActiveTab] = useState('store');
 
   // Security Settings
+  const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -79,6 +79,13 @@ export default function AdminSettingsPage() {
     setPasswordError('');
     setPasswordSuccess(false);
 
+    const currentPassword = localStorage.getItem('admin_password') || 'admin123';
+
+    if (oldPassword !== currentPassword) {
+      setPasswordError('Old password is incorrect.');
+      return;
+    }
+
     if (newPassword.length < 6) {
       setPasswordError('Password must be at least 6 characters long.');
       return;
@@ -90,22 +97,18 @@ export default function AdminSettingsPage() {
     }
 
     setIsUpdatingPassword(true);
-    try {
-      const { error } = await supabase.auth.updateUser({
-        password: newPassword
-      });
-
-      if (error) throw error;
-      
-      setPasswordSuccess(true);
-      setNewPassword('');
-      setConfirmPassword('');
-      setTimeout(() => setPasswordSuccess(false), 3000);
-    } catch (err: any) {
-      setPasswordError(err.message || 'Failed to update password.');
-    } finally {
-      setIsUpdatingPassword(false);
-    }
+    
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    localStorage.setItem('admin_password', newPassword);
+    
+    setPasswordSuccess(true);
+    setOldPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+    setIsUpdatingPassword(false);
+    setTimeout(() => setPasswordSuccess(false), 3000);
   };
 
   return (
@@ -320,6 +323,26 @@ export default function AdminSettingsPage() {
                     Password updated successfully!
                   </div>
                 )}
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Old Password</label>
+                  <div className="relative">
+                    <input 
+                      type={showPassword ? "text" : "password"} 
+                      value={oldPassword}
+                      onChange={(e) => setOldPassword(e.target.value)}
+                      required
+                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 pr-10 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    >
+                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
+                </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">New Password</label>
