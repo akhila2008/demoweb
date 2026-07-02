@@ -1,0 +1,6 @@
+# Supabase configuration file
+
+[functions.todos]
+verify_jwt = false
+# Set verify_jwt = false for non-"user" auth modes to bypass platform-level JWT check.
+# Functions using `auth: "user"` can leave verify_jwt = true.
