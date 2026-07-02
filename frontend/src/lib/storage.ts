@@ -69,9 +69,9 @@ export async function saveProducts(products: any[]): Promise<boolean> {
 
     window.dispatchEvent(new Event('akhila_products_updated'));
     return true;
-  } catch (e) {
+  } catch (e: any) {
     console.error('Error saving to Supabase:', e);
-    console.error('Error details:', JSON.stringify(e), e.message || e.details || e.hint);
+    console.error('Error details:', JSON.stringify(e), e?.message || e?.details || e?.hint);
     return false;
   }
 }
