@@ -58,13 +58,21 @@ export default function CheckoutPage() {
   );
 
   if (step === 3) {
+    const isOnline = formData.paymentMethod === 'ONLINE';
     return (
       <div className="max-w-3xl mx-auto px-4 py-20 text-center min-h-[60vh] flex flex-col justify-center items-center">
-        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6">
+        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className={`w-24 h-24 rounded-full flex items-center justify-center mb-6 ${isOnline ? 'bg-orange-100 text-orange-600' : 'bg-green-100 text-green-600'}`}>
           <CheckCircle2 className="w-12 h-12" />
         </motion.div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Order Confirmed!</h1>
-        <p className="text-gray-600 dark:text-gray-400 mb-8">Thank you for your purchase. Your elegant sarees will reach you soon. Order ID: #ORD-98234</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          {isOnline ? 'Order Pending Verification' : 'Order Confirmed!'}
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-lg">
+          {isOnline 
+            ? 'We have received your order details. Our team will manually verify your UPI payment and send you a confirmation message once verified. Order ID: #ORD-98234'
+            : 'Thank you for your purchase. Your elegant sarees will reach you soon. Order ID: #ORD-98234'
+          }
+        </p>
         <button onClick={() => router.push('/shop')} className="bg-[var(--color-primary)] text-white px-8 py-3 rounded-md font-medium">
           Continue Shopping
         </button>
@@ -147,10 +155,10 @@ export default function CheckoutPage() {
                         <div className="text-xs text-gray-500 mb-1">Pay via UPI</div>
                         <div className="font-bold text-lg select-all">{storeSettings.upiId}</div>
                         <div className="flex flex-wrap gap-2 mt-3">
-                          <a href={`upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}&cu=INR`} className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded text-xs font-medium transition-colors">Google Pay</a>
-                          <a href={`upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}&cu=INR`} className="px-3 py-1.5 bg-purple-100 text-purple-800 hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-300 rounded text-xs font-medium transition-colors">PhonePe</a>
-                          <a href={`upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}&cu=INR`} className="px-3 py-1.5 bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-300 rounded text-xs font-medium transition-colors">Paytm</a>
-                          <a href={`upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}&cu=INR`} className="px-3 py-1.5 bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300 rounded text-xs font-medium transition-colors">Navi</a>
+                          <button onClick={() => { window.location.href = `upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}&cu=INR`; handlePayment(); }} className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded text-xs font-medium transition-colors">Google Pay</button>
+                          <button onClick={() => { window.location.href = `upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}&cu=INR`; handlePayment(); }} className="px-3 py-1.5 bg-purple-100 text-purple-800 hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-300 rounded text-xs font-medium transition-colors">PhonePe</button>
+                          <button onClick={() => { window.location.href = `upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}&cu=INR`; handlePayment(); }} className="px-3 py-1.5 bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-300 rounded text-xs font-medium transition-colors">Paytm</button>
+                          <button onClick={() => { window.location.href = `upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}&cu=INR`; handlePayment(); }} className="px-3 py-1.5 bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300 rounded text-xs font-medium transition-colors">Navi</button>
                         </div>
                       </div>
                     )}
@@ -181,12 +189,21 @@ export default function CheckoutPage() {
                   <button onClick={() => setStep(1)} className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-md font-medium">
                     Back
                   </button>
-                  <button 
-                    onClick={handlePayment} 
-                    className="px-6 py-3 rounded-md font-bold flex-grow shadow-md flex items-center justify-center gap-2 transition-colors bg-[var(--color-indian-gold)] text-gray-900 hover:bg-[#E6C200]"
-                  >
-                    <ShieldCheck className="w-5 h-5" /> Place Order
-                  </button>
+                  {formData.paymentMethod === 'ONLINE' ? (
+                    <button 
+                      onClick={handlePayment} 
+                      className="px-6 py-3 rounded-md font-bold flex-grow shadow-md flex items-center justify-center gap-2 transition-colors bg-orange-500 text-white hover:bg-orange-600"
+                    >
+                      <ShieldCheck className="w-5 h-5" /> I have completed the payment
+                    </button>
+                  ) : (
+                    <button 
+                      onClick={handlePayment} 
+                      className="px-6 py-3 rounded-md font-bold flex-grow shadow-md flex items-center justify-center gap-2 transition-colors bg-[var(--color-indian-gold)] text-gray-900 hover:bg-[#E6C200]"
+                    >
+                      <ShieldCheck className="w-5 h-5" /> Place Order
+                    </button>
+                  )}
                 </div>
               </motion.div>
             )}
