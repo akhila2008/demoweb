@@ -15,7 +15,6 @@ export default function CheckoutPage() {
     address: '', city: '', state: '', pincode: '',
     paymentMethod: 'ONLINE'
   });
-  const [transactionId, setTransactionId] = useState('');
   const [storeSettings, setStoreSettings] = useState<any>(null);
 
   useEffect(() => {
@@ -140,7 +139,7 @@ export default function CheckoutPage() {
                 {formData.paymentMethod === 'ONLINE' && (
                   <div className="ml-8 p-4 bg-gray-50 dark:bg-gray-900 rounded-md border border-gray-200 dark:border-gray-800 space-y-4">
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Please make a payment of <strong>₹{grandTotal.toLocaleString('en-IN')}</strong> to our UPI ID or Bank Account and enter the Transaction ID below to place your order.
+                      Select your preferred UPI app below to make a secure payment of <strong>₹{grandTotal.toLocaleString('en-IN')}</strong>, then click Place Order.
                     </p>
                     
                     {storeSettings?.upiId && (
@@ -148,10 +147,10 @@ export default function CheckoutPage() {
                         <div className="text-xs text-gray-500 mb-1">Pay via UPI</div>
                         <div className="font-bold text-lg select-all">{storeSettings.upiId}</div>
                         <div className="flex flex-wrap gap-2 mt-3">
-                          <a href={`upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}`} className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded text-xs font-medium transition-colors">Google Pay</a>
-                          <a href={`upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}`} className="px-3 py-1.5 bg-purple-100 text-purple-800 hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-300 rounded text-xs font-medium transition-colors">PhonePe</a>
-                          <a href={`upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}`} className="px-3 py-1.5 bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-300 rounded text-xs font-medium transition-colors">Paytm</a>
-                          <a href={`upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}`} className="px-3 py-1.5 bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300 rounded text-xs font-medium transition-colors">Navi</a>
+                          <a href={`upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}&cu=INR`} className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded text-xs font-medium transition-colors">Google Pay</a>
+                          <a href={`upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}&cu=INR`} className="px-3 py-1.5 bg-purple-100 text-purple-800 hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-300 rounded text-xs font-medium transition-colors">PhonePe</a>
+                          <a href={`upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}&cu=INR`} className="px-3 py-1.5 bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-300 rounded text-xs font-medium transition-colors">Paytm</a>
+                          <a href={`upi://pay?pa=${storeSettings.upiId}&pn=AkhilaSarees&am=${grandTotal}&cu=INR`} className="px-3 py-1.5 bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300 rounded text-xs font-medium transition-colors">Navi</a>
                         </div>
                       </div>
                     )}
@@ -166,20 +165,6 @@ export default function CheckoutPage() {
                         </div>
                       </div>
                     )}
-
-                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Transaction ID (UTR Number) <span className="text-red-500">*</span>
-                      </label>
-                      <input 
-                        type="text" 
-                        value={transactionId}
-                        onChange={(e) => setTransactionId(e.target.value)}
-                        placeholder="Enter 12-digit UTR or Transaction ID"
-                        className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-800 focus:ring-[var(--color-primary)]"
-                        required
-                      />
-                    </div>
                   </div>
                 )}
                 
@@ -198,12 +183,7 @@ export default function CheckoutPage() {
                   </button>
                   <button 
                     onClick={handlePayment} 
-                    disabled={formData.paymentMethod === 'ONLINE' && transactionId.trim().length < 8}
-                    className={`px-6 py-3 rounded-md font-bold flex-grow shadow-md flex items-center justify-center gap-2 transition-colors ${
-                      formData.paymentMethod === 'ONLINE' && transactionId.trim().length < 8
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-[var(--color-indian-gold)] text-gray-900 hover:bg-[#E6C200]'
-                    }`}
+                    className="px-6 py-3 rounded-md font-bold flex-grow shadow-md flex items-center justify-center gap-2 transition-colors bg-[var(--color-indian-gold)] text-gray-900 hover:bg-[#E6C200]"
                   >
                     <ShieldCheck className="w-5 h-5" /> Place Order
                   </button>
