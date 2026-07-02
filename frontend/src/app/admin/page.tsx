@@ -3,16 +3,13 @@ import { motion } from 'framer-motion';
 import { TrendingUp, ShoppingBag, Users, IndianRupee, AlertCircle } from 'lucide-react';
 
 const STATS = [
-  { label: 'Total Revenue', value: '₹12,45,000', icon: IndianRupee, color: 'bg-green-100 text-green-700' },
-  { label: 'Total Orders', value: '342', icon: ShoppingBag, color: 'bg-blue-100 text-blue-700' },
-  { label: 'Active Customers', value: '1,204', icon: Users, color: 'bg-purple-100 text-purple-700' },
-  { label: 'Avg. Order Value', value: '₹14,500', icon: TrendingUp, color: 'bg-orange-100 text-orange-700' },
+  { label: 'Total Revenue', value: '₹0', icon: IndianRupee, color: 'bg-green-100 text-green-700' },
+  { label: 'Total Orders', value: '0', icon: ShoppingBag, color: 'bg-blue-100 text-blue-700' },
+  { label: 'Active Customers', value: '0', icon: Users, color: 'bg-purple-100 text-purple-700' },
+  { label: 'Avg. Order Value', value: '₹0', icon: TrendingUp, color: 'bg-orange-100 text-orange-700' },
 ];
 
-const LOW_STOCK = [
-  { name: 'Kanjivaram Bridal Red', stock: 2, threshold: 5 },
-  { name: 'Banarasi Handloom Gold', stock: 0, threshold: 3 },
-];
+const LOW_STOCK: any[] = [];
 
 export default function AdminDashboardPage() {
   return (
@@ -40,7 +37,7 @@ export default function AdminDashboardPage() {
                 <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${stat.color}`}>
                   <Icon className="w-6 h-6" />
                 </div>
-                <span className="text-sm font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">+12%</span>
+                <span className="text-sm font-medium text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full">0%</span>
               </div>
               <h3 className="text-gray-500 text-sm font-medium">{stat.label}</h3>
               <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{stat.value}</p>
@@ -65,17 +62,11 @@ export default function AdminDashboardPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <tr key={i} className="text-sm">
-                    <td className="py-4 font-medium text-gray-900 dark:text-white">#ORD-00{i}</td>
-                    <td className="py-4 text-gray-600 dark:text-gray-400">Customer Name</td>
-                    <td className="py-4 text-gray-600 dark:text-gray-400">Today</td>
-                    <td className="py-4 font-medium text-[var(--color-primary)]">₹12,000</td>
-                    <td className="py-4">
-                      <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-medium">Processing</span>
-                    </td>
-                  </tr>
-                ))}
+                <tr>
+                  <td colSpan={5} className="py-8 text-center text-gray-500">
+                    No orders have been placed yet.
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -88,14 +79,16 @@ export default function AdminDashboardPage() {
               <AlertCircle className="text-red-500 w-5 h-5" /> Low Stock Alerts
             </h2>
             <div className="space-y-4">
-              {LOW_STOCK.map(item => (
+              {LOW_STOCK.length > 0 ? LOW_STOCK.map(item => (
                 <div key={item.name} className="flex justify-between items-center">
                   <span className="text-sm text-gray-600 dark:text-gray-400">{item.name}</span>
                   <span className={`text-xs font-bold px-2 py-1 rounded ${item.stock === 0 ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'}`}>
                     {item.stock === 0 ? 'Out of Stock' : `${item.stock} left`}
                   </span>
                 </div>
-              ))}
+              )) : (
+                <div className="text-sm text-gray-500">All products have sufficient stock.</div>
+              )}
             </div>
             <button className="w-full mt-4 text-sm font-medium text-[var(--color-primary)] hover:underline">
               View Inventory Report &rarr;

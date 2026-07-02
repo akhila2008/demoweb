@@ -1,21 +1,37 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { loadProducts } from '@/lib/storage';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Filter, ChevronDown, SlidersHorizontal } from 'lucide-react';
 
-// Mock data for initial UI
-const MOCK_PRODUCTS = [
-  { id: '1', name: 'Kanjivaram Silk Saree', price: 15999, image: 'https://images.unsplash.com/photo-1610189013233-0c46643fc08a?q=80&w=600&auto=format&fit=crop', category: 'Silk', color: 'Maroon' },
-  { id: '2', name: 'Banarasi Brocade Saree', price: 12500, image: 'https://images.unsplash.com/photo-1583391733958-d150dcddf723?q=80&w=600&auto=format&fit=crop', category: 'Banarasi', color: 'Gold' },
-  { id: '3', name: 'Pure Cotton Handloom', price: 3500, image: 'https://images.unsplash.com/photo-1596455607563-ad6193f78b78?q=80&w=600&auto=format&fit=crop', category: 'Cotton', color: 'Blue' },
-  { id: '4', name: 'Organza Party Wear', price: 8900, image: 'https://images.unsplash.com/photo-1617261313411-9653195f1fa4?q=80&w=600&auto=format&fit=crop', category: 'Organza', color: 'Pink' },
-  { id: '5', name: 'Chiffon Elegance', price: 6200, image: 'https://images.unsplash.com/photo-1589465885857-44edb59bbff2?q=80&w=600&auto=format&fit=crop', category: 'Chiffon', color: 'Green' },
-  { id: '6', name: 'Bridal Heavy Work', price: 25000, image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=600&auto=format&fit=crop', category: 'Silk', color: 'Red' },
-];
+// Mock data for initial UI (now loaded dynamically)
+const INITIAL_PRODUCTS: any[] = [];
 
 export default function ShopPage() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [products, setProducts] = useState<any[]>(INITIAL_PRODUCTS);
+
+  useEffect(() => {
+    // Sync with products added in the admin panel via IndexedDB
+    const fetchInitialData = async () => {
+      try {
+        const savedProducts = await loadProducts();
+        if (savedProducts && savedProducts.length > 0) {
+          setProducts(savedProducts);
+        }
+      } catch (e) {
+        console.error('Failed to load products in shop', e);
+      }
+    };
+    
+    fetchInitialData();
+    
+    // Listen for cross-component updates
+    const handleUpdate = () => fetchInitialData();
+    window.addEventListener('akhila_products_updated', handleUpdate);
+    return () => window.removeEventListener('akhila_products_updated', handleUpdate);
+  }, []);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col md:flex-row gap-8">
@@ -45,7 +61,7 @@ export default function ShopPage() {
                 Fabric <ChevronDown className="w-4 h-4" />
               </h3>
               <div className="space-y-2">
-                {['Silk', 'Cotton', 'Banarasi', 'Organza', 'Chiffon'].map(category => (
+                {['Silk', 'Cotton', 'Banarasi', 'Organza', 'Chiffon', 'Georgette'].map(category => (
                   <label key={category} className="flex items-center space-x-2 cursor-pointer">
                     <input type="checkbox" className="rounded text-[var(--color-primary)] focus:ring-[var(--color-primary)]" />
                     <span className="text-gray-600 dark:text-gray-300">{category}</span>
@@ -109,34 +125,82 @@ export default function ShopPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {MOCK_PRODUCTS.map((product) => (
-            <motion.div 
-              key={product.id}
-              whileHover={{ y: -5 }}
-              className="bg-white dark:bg-[#121212] rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-all group"
-            >
-              <Link href={`/product/${product.id}`}>
-                <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 dark:bg-gray-900">
-                  <img 
-                    src={product.image} 
-                    alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  {/* Quick Add Button */}
-                  <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <button className="bg-white/90 dark:bg-black/90 text-gray-900 dark:text-white backdrop-blur-sm px-6 py-2 rounded-full font-medium shadow-lg hover:bg-[var(--color-primary)] hover:text-white transition-colors">
-                      Quick View
-                    </button>
+          {products.length === 0 ? (
+            <div className="col-span-full py-20 text-center">
+              <p className="text-xl text-gray-500 mb-4">No sarees available at the moment.</p>
+              <p className="text-gray-400">Please check back soon for our new collection!</p>
+            </div>
+          ) : (
+            products.map((product) => (
+              <motion.div 
+                key={product.id}
+                whileHover={{ y: -5 }}
+                className="bg-white dark:bg-[#121212] rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-all group"
+              >
+                <Link href={`/product/${product.id}`}>
+                  <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 dark:bg-gray-900">
+                    {product.isVideo ? (
+                      <video 
+                        src={product.image} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                        autoPlay 
+                        loop 
+                        muted 
+                        playsInline 
+                      />
+                    ) : (
+                      <img 
+                        src={product.image} 
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    )}
+                    {/* Quick Add Button */}
+                    <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <button className="bg-white/90 dark:bg-black/90 text-gray-900 dark:text-white backdrop-blur-sm px-6 py-2 rounded-full font-medium shadow-lg hover:bg-[var(--color-primary)] hover:text-white transition-colors">
+                        Quick View
+                      </button>
+                    </div>
+                  </div>
+                  <div className="p-4 flex flex-col h-full justify-between">
+                  <div>
+                    <div className="text-xs text-gray-500 mb-1">{product.category}</div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white truncate">{product.name}</h3>
+                  </div>
+                  <div className="mt-2 flex items-center justify-between">
+                    <div className="text-[var(--color-primary)] font-bold">₹{product.price.toLocaleString('en-IN')}</div>
+                    
+                    {product.colors && product.colors.length > 0 && (
+                      <div className="flex gap-1">
+                        {product.colors.slice(0, 3).map((colorName: string) => {
+                          // Simple mapping for demo purposes. Real app would share the const array
+                          const hexMap: Record<string, string> = {
+                            'Red': '#EF4444', 'Maroon': '#800000', 'Blue': '#3B82F6', 
+                            'Green': '#10B981', 'Gold': '#F59E0B', 'Pink': '#EC4899', 
+                            'Purple': '#8B5CF6', 'Black': '#1F2937'
+                          };
+                          return (
+                            <div 
+                              key={colorName}
+                              className="w-3.5 h-3.5 rounded-full border border-gray-300 dark:border-gray-600 shadow-sm"
+                              style={{ backgroundColor: hexMap[colorName] || '#ccc' }}
+                              title={colorName}
+                            />
+                          );
+                        })}
+                        {product.colors.length > 3 && (
+                          <div className="w-3.5 h-3.5 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-[8px] text-gray-500 border border-gray-200 dark:border-gray-700">
+                            +
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
-                <div className="p-4">
-                  <div className="text-xs text-gray-500 mb-1">{product.category}</div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white truncate">{product.name}</h3>
-                  <div className="mt-2 text-[var(--color-primary)] font-bold">₹{product.price.toLocaleString('en-IN')}</div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
+                </Link>
+              </motion.div>
+            ))
+          )}
         </div>
       </div>
     </div>

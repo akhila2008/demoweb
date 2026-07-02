@@ -1,18 +1,88 @@
 'use client';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, ShoppingBag, Users, Settings, Package, LogOut } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, Users, Settings, Package, LogOut, Lock, Tag } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  // Check if already authenticated in this session
+  useEffect(() => {
+    const auth = sessionStorage.getItem('admin_auth');
+    if (auth === 'true') {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === 'admin123') { // Simple password for now
+      setIsAuthenticated(true);
+      sessionStorage.setItem('admin_auth', 'true');
+      setError('');
+    } else {
+      setError('Incorrect password');
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    sessionStorage.removeItem('admin_auth');
+  };
 
   const navItems = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { name: 'Products', href: '/admin/products', icon: Package },
+    { name: 'Offers & Coupons', href: '/admin/offers', icon: Tag },
     { name: 'Orders', href: '/admin/orders', icon: ShoppingBag },
     { name: 'Customers', href: '/admin/customers', icon: Users },
     { name: 'Settings', href: '/admin/settings', icon: Settings },
   ];
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black p-4">
+        <div className="bg-white dark:bg-[#121212] p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-800 w-full max-w-md">
+          <div className="flex justify-center mb-6">
+            <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+              <Lock className="w-8 h-8 text-[var(--color-primary)]" />
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold text-center mb-2">Admin Access</h2>
+          <p className="text-center text-gray-500 mb-8">Please enter the master password to access the dashboard.</p>
+          
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <input 
+                type="password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter password..." 
+                className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                autoFocus
+              />
+            </div>
+            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+            <button 
+              type="submit" 
+              className="w-full bg-[var(--color-primary)] hover:bg-[#600000] text-white py-3 rounded-lg font-medium transition-colors"
+            >
+              Unlock Dashboard
+            </button>
+            <div className="text-center mt-4">
+              <Link href="/" className="text-sm text-gray-500 hover:text-[var(--color-primary)]">
+                &larr; Return to main website
+              </Link>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-black">
@@ -42,7 +112,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
         
         <div className="p-4 border-t border-gray-200 dark:border-gray-800">
-          <button className="flex items-center px-4 py-3 w-full rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+          <button 
+            onClick={handleLogout}
+            className="flex items-center px-4 py-3 w-full rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+          >
             <LogOut className="w-5 h-5 mr-3" />
             Logout
           </button>

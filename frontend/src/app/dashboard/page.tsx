@@ -4,26 +4,7 @@ import Link from 'next/link';
 import { Package, User, Heart, MapPin, LogOut, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const MOCK_ORDERS = [
-  {
-    id: 'ORD-98234',
-    date: '24 Oct 2023',
-    total: 18500,
-    status: 'Delivered',
-    items: [
-      { name: 'Kanjivaram Silk Saree', image: 'https://images.unsplash.com/photo-1610189013233-0c46643fc08a?q=80&w=200&auto=format&fit=crop' }
-    ]
-  },
-  {
-    id: 'ORD-87123',
-    date: '12 Sep 2023',
-    total: 4500,
-    status: 'Processing',
-    items: [
-      { name: 'Pure Cotton Handloom', image: 'https://images.unsplash.com/photo-1596455607563-ad6193f78b78?q=80&w=200&auto=format&fit=crop' }
-    ]
-  }
-];
+const MOCK_ORDERS: any[] = [];
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState('orders');

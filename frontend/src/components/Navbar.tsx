@@ -1,11 +1,30 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { ShoppingCart, User, Menu, X, Search } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, Search, Share2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleShareSite = async () => {
+    const shareData = {
+      title: 'Akhila Sarees',
+      text: 'Check out these beautiful premium sarees at Akhila Sarees!',
+      url: window.location.origin
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.origin);
+      alert('Website link copied to clipboard!');
+    }
+  };
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors">
@@ -37,6 +56,9 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-6">
             <button className="text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
               <Search className="w-5 h-5" />
+            </button>
+            <button onClick={handleShareSite} title="Share Website" className="text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
+              <Share2 className="w-5 h-5" />
             </button>
             <Link href="/cart" className="relative text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
               <ShoppingCart className="w-5 h-5" />
@@ -82,6 +104,9 @@ export default function Navbar() {
               <Link href="/login" className="flex items-center text-gray-600 dark:text-gray-400">
                 <User className="w-5 h-5 mr-2" /> Profile
               </Link>
+              <button onClick={handleShareSite} className="flex items-center text-gray-600 dark:text-gray-400">
+                <Share2 className="w-5 h-5 mr-2" /> Share
+              </button>
             </div>
           </div>
         </motion.div>

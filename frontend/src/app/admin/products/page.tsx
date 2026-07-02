@@ -1,15 +1,144 @@
 'use client';
-import { useState } from 'react';
-import { Plus, Search, Edit, Trash2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { loadProducts, saveProducts } from '@/lib/storage';
+import { Plus, Search, Edit, Trash2, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const MOCK_PRODUCTS = [
-  { id: '1', name: 'Kanjivaram Silk', price: 15999, stock: 12, category: 'Silk' },
-  { id: '2', name: 'Banarasi Brocade', price: 12500, stock: 0, category: 'Banarasi' },
-  { id: '3', name: 'Pure Cotton Handloom', price: 3500, stock: 45, category: 'Cotton' },
-];
+const INITIAL_PRODUCTS: any[] = [];
 
 export default function AdminProductsPage() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [products, setProducts] = useState<any[]>([]);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [previewImageFile, setPreviewImageFile] = useState<File | null>(null);
+  const [previewIsVideo, setPreviewIsVideo] = useState(false);
+
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Load products from IndexedDB on mount
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const savedProducts = await loadProducts();
+        if (savedProducts && savedProducts.length > 0) {
+          setProducts(savedProducts);
+        }
+      } catch (e) {
+        console.error('Failed to load products from IndexedDB', e);
+      }
+      setIsInitialized(true);
+    };
+    fetchInitialData();
+  }, []);
+
+  // Save products to IndexedDB whenever they change
+  useEffect(() => {
+    if (isInitialized) {
+      saveProducts(products).catch(e => console.error('Failed to save to IndexedDB', e));
+    }
+  }, [products, isInitialized]);
+  
+  const [newProduct, setNewProduct] = useState({
+    name: '',
+    price: '',
+    stock: '',
+    category: 'Silk',
+    colors: [] as string[]
+  });
+
+  const AVAILABLE_COLORS = [
+    { name: 'Red', hex: '#EF4444' },
+    { name: 'Maroon', hex: '#800000' },
+    { name: 'Blue', hex: '#3B82F6' },
+    { name: 'Green', hex: '#10B981' },
+    { name: 'Gold', hex: '#F59E0B' },
+    { name: 'Pink', hex: '#EC4899' },
+    { name: 'Purple', hex: '#8B5CF6' },
+    { name: 'Black', hex: '#1F2937' },
+  ];
+
+  const handleColorToggle = (colorName: string) => {
+    setNewProduct(prev => {
+      if (prev.colors.includes(colorName)) {
+        return { ...prev, colors: prev.colors.filter(c => c !== colorName) };
+      } else {
+        return { ...prev, colors: [...prev.colors, colorName] };
+      }
+    });
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPreviewIsVideo(file.type.startsWith('video/'));
+      setPreviewImageFile(file);
+      setPreviewImage(URL.createObjectURL(file));
+    }
+  };
+
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
+
+  const handleAddProduct = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newProduct.name || !newProduct.price || !newProduct.stock) return;
+    
+    if (editingProductId) {
+      // Update existing product
+      setProducts(products.map(p => {
+        if (p.id === editingProductId) {
+          return {
+            ...p,
+            name: newProduct.name,
+            price: Number(newProduct.price),
+            stock: Number(newProduct.stock),
+            category: newProduct.category,
+            colors: newProduct.colors,
+            image: previewImage || p.image,
+            imageFile: previewImageFile || p.imageFile,
+            isVideo: previewImage ? previewIsVideo : p.isVideo
+          };
+        }
+        return p;
+      }));
+    } else {
+      // Add new product
+      const addedProduct = {
+        id: Math.random().toString(36).substr(2, 9),
+        name: newProduct.name,
+        price: Number(newProduct.price),
+        stock: Number(newProduct.stock),
+        category: newProduct.category,
+        colors: newProduct.colors,
+        image: previewImage || 'https://images.unsplash.com/photo-1583391733958-d150dcddf723?q=80&w=200&auto=format&fit=crop',
+        imageFile: previewImageFile,
+        isVideo: previewIsVideo
+      };
+      setProducts([...products, addedProduct]);
+    }
+
+    setIsAddModalOpen(false);
+    setEditingProductId(null);
+    setNewProduct({ name: '', price: '', stock: '', category: 'Silk', colors: [] }); // Reset form
+    setPreviewImage(null);
+    setPreviewImageFile(null);
+    setPreviewIsVideo(false);
+  };
+
+  const openEditModal = (product: any) => {
+    setEditingProductId(product.id);
+    setNewProduct({
+      name: product.name,
+      price: product.price.toString(),
+      stock: product.stock.toString(),
+      category: product.category,
+      colors: product.colors || []
+    });
+    setPreviewImage(product.image);
+    setPreviewImageFile(product.imageFile || null);
+    setPreviewIsVideo(product.isVideo || false);
+    setIsAddModalOpen(true);
+  };
 
   return (
     <div>
@@ -18,7 +147,16 @@ export default function AdminProductsPage() {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Products Management</h1>
           <p className="text-gray-500">Manage your saree inventory and categories.</p>
         </div>
-        <button className="bg-[var(--color-primary)] hover:bg-[#600000] text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors">
+        <button 
+          onClick={() => {
+            setEditingProductId(null);
+            setNewProduct({ name: '', price: '', stock: '', category: 'Silk', colors: [] });
+            setPreviewImage(null);
+            setPreviewImageFile(null);
+            setIsAddModalOpen(true);
+          }}
+          className="bg-[var(--color-primary)] hover:bg-[#600000] text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors"
+        >
           <Plus className="w-5 h-5" /> Add New Saree
         </button>
       </div>
@@ -43,6 +181,7 @@ export default function AdminProductsPage() {
               <option>Silk</option>
               <option>Cotton</option>
               <option>Banarasi</option>
+              <option>Georgette</option>
             </select>
           </div>
         </div>
@@ -52,52 +191,227 @@ export default function AdminProductsPage() {
           <table className="w-full">
             <thead>
               <tr className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-[#121212]">
+                <th className="p-4 w-16">Image</th>
                 <th className="p-4">Product Name</th>
                 <th className="p-4">Category</th>
+                <th className="p-4">Colors</th>
                 <th className="p-4">Price</th>
                 <th className="p-4">Stock</th>
                 <th className="p-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
-              {MOCK_PRODUCTS.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
-                  <td className="p-4 font-medium text-gray-900 dark:text-white">{product.name}</td>
-                  <td className="p-4 text-gray-500">{product.category}</td>
-                  <td className="p-4 text-gray-900 dark:text-white font-medium">₹{product.price.toLocaleString('en-IN')}</td>
-                  <td className="p-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      product.stock > 10 ? 'bg-green-100 text-green-700' : 
-                      product.stock > 0 ? 'bg-orange-100 text-orange-700' : 
-                      'bg-red-100 text-red-700'
-                    }`}>
-                      {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
-                    </span>
-                  </td>
-                  <td className="p-4 text-right flex justify-end gap-3">
-                    <button className="text-blue-600 hover:text-blue-800 bg-blue-50 p-2 rounded-md transition-colors">
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    <button className="text-red-600 hover:text-red-800 bg-red-50 p-2 rounded-md transition-colors">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+              {products.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="p-8 text-center text-gray-500">
+                    No sarees added yet. Click "Add New Saree" to get started.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                products.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase())).map((product) => (
+                  <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
+                    <td className="p-4">
+                      <div className="w-12 h-16 rounded overflow-hidden bg-gray-100">
+                        {product.isVideo ? (
+                          <video src={product.image} className="w-full h-full object-cover" autoPlay loop muted playsInline />
+                        ) : (
+                          <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                        )}
+                      </div>
+                    </td>
+                    <td className="p-4 font-medium text-gray-900 dark:text-white">{product.name}</td>
+                    <td className="p-4 text-gray-500">{product.category}</td>
+                    <td className="p-4">
+                      <div className="flex gap-1 flex-wrap w-24">
+                        {product.colors && product.colors.map((colorName: string) => {
+                          const hex = AVAILABLE_COLORS.find(c => c.name === colorName)?.hex || '#ccc';
+                          return (
+                            <div 
+                              key={colorName} 
+                              className="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600 shadow-sm" 
+                              style={{ backgroundColor: hex }}
+                              title={colorName}
+                            />
+                          );
+                        })}
+                        {(!product.colors || product.colors.length === 0) && <span className="text-xs text-gray-400">None</span>}
+                      </div>
+                    </td>
+                    <td className="p-4 text-gray-900 dark:text-white font-medium">₹{product.price.toLocaleString('en-IN')}</td>
+                    <td className="p-4">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        product.stock > 10 ? 'bg-green-100 text-green-700' : 
+                        product.stock > 0 ? 'bg-orange-100 text-orange-700' : 
+                        'bg-red-100 text-red-700'
+                      }`}>
+                        {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                      </span>
+                    </td>
+                    <td className="p-4 text-right flex justify-end gap-3">
+                      <button 
+                        onClick={() => openEditModal(product)}
+                        className="text-blue-600 hover:text-blue-800 bg-blue-50 p-2 rounded-md transition-colors"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => setProducts(products.filter(p => p.id !== product.id))}
+                        className="text-red-600 hover:text-red-800 bg-red-50 p-2 rounded-md transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
-        
-        {/* Pagination */}
-        <div className="p-4 border-t border-gray-200 dark:border-gray-800 flex items-center justify-between text-sm text-gray-500">
-          <div>Showing 1 to 3 of 3 entries</div>
-          <div className="flex gap-2">
-            <button className="px-3 py-1 border border-gray-300 dark:border-gray-700 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800" disabled>Previous</button>
-            <button className="px-3 py-1 border border-gray-300 dark:border-gray-700 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 bg-gray-50 text-gray-900 font-medium">1</button>
-            <button className="px-3 py-1 border border-gray-300 dark:border-gray-700 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800" disabled>Next</button>
-          </div>
-        </div>
       </div>
+
+      {/* Add Product Modal */}
+      <AnimatePresence>
+        {isAddModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white dark:bg-[#121212] rounded-xl shadow-xl w-full max-w-md overflow-hidden"
+            >
+              <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
+                <h2 className="text-xl font-bold">{editingProductId ? 'Edit Saree' : 'Add New Saree'}</h2>
+                <button onClick={() => { setIsAddModalOpen(false); setPreviewImage(null); setEditingProductId(null); }} className="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200">
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              
+              <form onSubmit={handleAddProduct} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Product Photo</label>
+                  <label className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-700 border-dashed rounded-md hover:border-[var(--color-primary)] transition-colors cursor-pointer relative w-full">
+                    <div className="space-y-1 text-center">
+                      {previewImage ? (
+                        <div className="w-32 h-40 mx-auto rounded overflow-hidden relative">
+                          {previewIsVideo ? (
+                            <video src={previewImage} className="w-full h-full object-cover" autoPlay loop muted playsInline />
+                          ) : (
+                            <img src={previewImage} alt="Preview" className="w-full h-full object-cover" />
+                          )}
+                        </div>
+                      ) : (
+                        <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                          <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      )}
+                      <div className="flex text-sm text-gray-600 dark:text-gray-400 justify-center mt-2">
+                        <span className="font-medium text-[var(--color-primary)] hover:text-[#600000]">Click to upload a photo or video</span>
+                        <input type="file" accept="image/*,video/*" className="sr-only" onChange={handleImageChange} />
+                      </div>
+                    </div>
+                  </label>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Saree Name</label>
+                  <input 
+                    required
+                    type="text" 
+                    value={newProduct.name}
+                    onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
+                    className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
+                    placeholder="e.g. Red Banarasi Silk"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Price (₹)</label>
+                    <input 
+                      required
+                      type="number" 
+                      value={newProduct.price}
+                      onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
+                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
+                      placeholder="9999"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Stock Quantity</label>
+                    <input 
+                      required
+                      type="number" 
+                      value={newProduct.stock}
+                      onChange={(e) => setNewProduct({...newProduct, stock: e.target.value})}
+                      className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
+                      placeholder="10"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
+                  <select 
+                    value={newProduct.category}
+                    onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
+                    className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                  >
+                    <option value="Silk">Silk</option>
+                    <option value="Cotton">Cotton</option>
+                    <option value="Banarasi">Banarasi</option>
+                    <option value="Kanjivaram">Kanjivaram</option>
+                    <option value="Linen">Linen</option>
+                    <option value="Georgette">Georgette</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Available Colors</label>
+                  <div className="grid grid-cols-4 gap-3">
+                    {AVAILABLE_COLORS.map(color => (
+                      <label 
+                        key={color.name} 
+                        className={`flex items-center justify-center p-2 rounded-md border cursor-pointer transition-colors ${
+                          newProduct.colors.includes(color.name) 
+                            ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10 ring-1 ring-[var(--color-primary)]' 
+                            : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                        }`}
+                      >
+                        <input 
+                          type="checkbox" 
+                          className="sr-only" 
+                          checked={newProduct.colors.includes(color.name)}
+                          onChange={() => handleColorToggle(color.name)}
+                        />
+                        <div className="flex flex-col items-center gap-1">
+                          <div className="w-5 h-5 rounded-full border border-gray-300 shadow-sm" style={{ backgroundColor: color.hex }}></div>
+                          <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">{color.name}</span>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-4 flex gap-3">
+                  <button 
+                    type="button" 
+                    onClick={() => setIsAddModalOpen(false)}
+                    className="flex-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-4 py-3 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="flex-1 bg-[var(--color-primary)] hover:bg-[#600000] text-white px-4 py-3 rounded-lg font-medium transition-colors"
+                  >
+                    {editingProductId ? 'Update Saree' : 'Save Saree'}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
