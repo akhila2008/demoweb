@@ -4,6 +4,7 @@ import { loadProducts, saveProducts } from '@/lib/storage';
 import { Plus, Search, Edit, Trash2, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AVAILABLE_COLORS } from '@/lib/colors';
+import Link from 'next/link';
 
 const INITIAL_PRODUCTS: any[] = [];
 
@@ -223,15 +224,19 @@ export default function AdminProductsPage() {
                 products.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase())).map((product) => (
                   <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
                     <td className="p-4">
-                      <div className="w-12 h-16 rounded overflow-hidden bg-gray-100">
+                      <Link href={`/product/${product.id}`} className="block w-12 h-16 rounded overflow-hidden bg-gray-100 hover:opacity-80 transition-opacity">
                         {product.isVideo ? (
                           <video src={product.image} className="w-full h-full object-cover" autoPlay loop muted playsInline />
                         ) : (
                           <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
                         )}
-                      </div>
+                      </Link>
                     </td>
-                    <td className="p-4 font-medium text-gray-900 dark:text-white">{product.name}</td>
+                    <td className="p-4 font-medium text-gray-900 dark:text-white">
+                      <Link href={`/product/${product.id}`} className="hover:text-[var(--color-primary)] hover:underline transition-colors">
+                        {product.name}
+                      </Link>
+                    </td>
                     <td className="p-4 text-gray-500">{product.category}</td>
                     <td className="p-4">
                       <div className="flex gap-1 flex-wrap w-24">
