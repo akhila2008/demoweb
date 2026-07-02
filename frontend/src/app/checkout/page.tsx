@@ -47,6 +47,17 @@ export default function CheckoutPage() {
     clearCart();
   };
 
+  const isAddressValid = !!(
+    formData.firstName.trim() && 
+    formData.lastName.trim() && 
+    formData.email.trim() && 
+    formData.phone.trim() && 
+    formData.address.trim() && 
+    formData.city.trim() && 
+    formData.state.trim() && 
+    formData.pincode.trim()
+  );
+
   if (step === 3) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-20 text-center min-h-[60vh] flex flex-col justify-center items-center">
@@ -80,20 +91,28 @@ export default function CheckoutPage() {
             {step === 1 && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <input name="firstName" placeholder="First Name" onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
-                  <input name="lastName" placeholder="Last Name" onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
+                  <input name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
+                  <input name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <input name="email" type="email" placeholder="Email" onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
-                  <input name="phone" placeholder="Phone Number" onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
+                  <input name="email" type="email" placeholder="Email" value={formData.email} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
+                  <input name="phone" placeholder="Phone Number" value={formData.phone} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
                 </div>
-                <input name="address" placeholder="Complete Address" onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
+                <input name="address" placeholder="Complete Address" value={formData.address} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
                 <div className="grid grid-cols-3 gap-4">
-                  <input name="city" placeholder="City" onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
-                  <input name="state" placeholder="State" onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
-                  <input name="pincode" placeholder="PIN Code" onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
+                  <input name="city" placeholder="City" value={formData.city} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
+                  <input name="state" placeholder="State" value={formData.state} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
+                  <input name="pincode" placeholder="PIN Code" value={formData.pincode} onChange={handleInputChange} className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900" />
                 </div>
-                <button onClick={() => setStep(2)} className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-md font-medium mt-4">
+                <button 
+                  onClick={() => setStep(2)} 
+                  disabled={!isAddressValid}
+                  className={`px-6 py-3 rounded-md font-medium mt-4 transition-colors ${
+                    !isAddressValid 
+                      ? 'bg-gray-300 dark:bg-gray-800 text-gray-500 cursor-not-allowed' 
+                      : 'bg-[var(--color-primary)] text-white hover:bg-[#600000]'
+                  }`}
+                >
                   Proceed to Payment
                 </button>
               </motion.div>
