@@ -21,8 +21,7 @@ export default function WishlistPage() {
       name: item.name,
       price: item.price,
       quantity: 1,
-      image: item.image,
-      fabric: 'Silk' // fallback
+      image: item.image
     });
   };
 
