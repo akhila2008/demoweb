@@ -7,8 +7,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
           <div className="col-span-1 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2 text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-indian-magenta)] mb-4 inline-flex">
-              <img src="/logo.png" alt="Akhila Sarees Logo" className="h-10 w-10 object-contain mix-blend-multiply dark:mix-blend-screen dark:invert rounded-full" />
+            <Link href="/" className="flex items-center gap-3 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] font-brand">
+              <img src="/logo.png" alt="Akhila Sarees Logo" className="h-10 w-10 object-contain mix-blend-multiply dark:mix-blend-screen rounded-full" />
               AKHILA SAREES
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
