@@ -136,7 +136,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
                 onClick={() => setActiveImage(idx)}
                 className={`border-2 rounded-lg overflow-hidden h-24 min-w-[6rem] ${activeImage === idx ? 'border-[var(--color-primary)]' : 'border-transparent opacity-70 hover:opacity-100'}`}
               >
-                {product.isVideo && idx === 0 ? (
+                {(product.isVideos?.[idx] || (product.isVideo && idx === 0)) ? (
                   <video src={img} className="w-full h-full object-cover" muted playsInline />
                 ) : (
                   <img src={img} alt={`Thumbnail ${idx}`} className="w-full h-full object-cover" />
@@ -152,8 +152,8 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
               transition={{ duration: 0.3 }}
               className="w-full h-full"
             >
-              {product.isVideo && activeImage === 0 ? (
-                <video src={product.images[activeImage]} className="w-full h-full object-cover" autoPlay loop muted playsInline controls />
+              {(product.isVideos?.[activeImage] || (product.isVideo && activeImage === 0)) ? (
+                <video src={product.images[activeImage]} className="w-full h-full object-cover" autoPlay loop muted playsInline />
               ) : (
                 <img src={product.images[activeImage]} alt={product.name} className="w-full h-full object-cover" />
               )}

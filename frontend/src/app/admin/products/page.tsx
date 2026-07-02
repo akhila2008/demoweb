@@ -13,8 +13,8 @@ export default function AdminProductsPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
-  const [previewImageFiles, setPreviewImageFiles] = useState<File[]>([]);
-  const [previewIsVideo, setPreviewIsVideo] = useState(false);
+  const [previewImageFiles, setPreviewImageFiles] = useState<any[]>([]);
+  const [previewIsVideo, setPreviewIsVideo] = useState<boolean[]>([]);
 
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -66,7 +66,7 @@ export default function AdminProductsPage() {
       const updatedFiles = [...previewImageFiles, ...newFiles];
       setPreviewImageFiles(updatedFiles);
       setPreviewImages(updatedFiles.map(file => URL.createObjectURL(file)));
-      setPreviewIsVideo(updatedFiles[0].type.startsWith('video/'));
+      setPreviewIsVideo(updatedFiles.map(f => f.type.startsWith('video/')));
     }
   };
 
@@ -75,11 +75,7 @@ export default function AdminProductsPage() {
     const updatedImages = previewImages.filter((_, idx) => idx !== indexToRemove);
     setPreviewImageFiles(updatedFiles);
     setPreviewImages(updatedImages);
-    if (updatedFiles.length > 0) {
-      setPreviewIsVideo(updatedFiles[0].type.startsWith('video/'));
-    } else {
-      setPreviewIsVideo(false);
-    }
+    setPreviewIsVideo(updatedFiles.map(f => f.type.startsWith('video/')));
   };
 
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
@@ -104,7 +100,8 @@ export default function AdminProductsPage() {
             images: previewImages.length > 0 ? previewImages : (p.images || [p.image]),
             imageFile: previewImageFiles.length > 0 ? previewImageFiles[0] : p.imageFile,
             imageFiles: previewImageFiles.length > 0 ? previewImageFiles : p.imageFiles,
-            isVideo: previewImages.length > 0 ? previewIsVideo : p.isVideo
+            isVideo: previewIsVideo.length > 0 ? previewIsVideo[0] : p.isVideo,
+            isVideos: previewIsVideo.length > 0 ? previewIsVideo : (p.isVideos || [p.isVideo])
           };
         }
         return p;
@@ -124,7 +121,8 @@ export default function AdminProductsPage() {
         images: previewImages.length > 0 ? previewImages : [defaultImg],
         imageFile: previewImageFiles.length > 0 ? previewImageFiles[0] : null,
         imageFiles: previewImageFiles,
-        isVideo: previewIsVideo
+        isVideo: previewIsVideo.length > 0 ? previewIsVideo[0] : false,
+        isVideos: previewIsVideo
       };
       setProducts([...products, addedProduct]);
     }
@@ -134,7 +132,7 @@ export default function AdminProductsPage() {
     setNewProduct({ name: '', price: '', stock: '', category: 'Silk', groupId: '', colors: [] });
     setPreviewImages([]);
     setPreviewImageFiles([]);
-    setPreviewIsVideo(false);
+    setPreviewIsVideo([]);
   };
 
   const openEditModal = (product: any) => {
@@ -149,7 +147,7 @@ export default function AdminProductsPage() {
     });
     setPreviewImages(product.images || (product.image ? [product.image] : []));
     setPreviewImageFiles(product.imageFiles || (product.imageFile ? [product.imageFile] : []));
-    setPreviewIsVideo(product.isVideo || false);
+    setPreviewIsVideo(product.isVideos || (product.imageFile ? [product.isVideo] : []));
     setIsAddModalOpen(true);
   };
 
@@ -225,7 +223,7 @@ export default function AdminProductsPage() {
                   <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
                     <td className="p-4">
                       <Link href={`/product/${product.id}`} className="block w-12 h-16 rounded overflow-hidden bg-gray-100 hover:opacity-80 transition-opacity">
-                        {product.isVideo ? (
+                        {product.isVideos?.[0] || product.isVideo ? (
                           <video src={product.image} className="w-full h-full object-cover" autoPlay loop muted playsInline />
                         ) : (
                           <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
@@ -312,7 +310,7 @@ export default function AdminProductsPage() {
                         <div className="flex gap-2 overflow-x-auto pb-2 w-full">
                           {previewImages.map((img, idx) => (
                             <div key={idx} className="w-24 h-32 shrink-0 rounded overflow-hidden relative group">
-                              {previewIsVideo && idx === 0 ? (
+                              {previewIsVideo[idx] ? (
                                 <video src={img} className="w-full h-full object-cover" autoPlay loop muted playsInline />
                               ) : (
                                 <img src={img} alt={`Preview ${idx}`} className="w-full h-full object-cover" />
