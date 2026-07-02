@@ -1,15 +1,20 @@
 'use client';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import { loadProducts } from '@/lib/storage';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Filter, ChevronDown, SlidersHorizontal, Check } from 'lucide-react';
 import { AVAILABLE_COLORS } from '@/lib/colors';
 
-export default function ShopPage() {
+import { useSearchParams } from 'next/navigation';
+
+function ShopContent() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
   
+  const searchParams = useSearchParams();
+  const searchParam = searchParams.get('search')?.toLowerCase() || '';
+
   const [pendingFilters, setPendingFilters] = useState({ fabrics: [] as string[], price: '', colors: [] as string[], occasions: [] as string[] });
   const [activeFilters, setActiveFilters] = useState({ fabrics: [] as string[], price: '', colors: [] as string[], occasions: [] as string[] });
 
@@ -96,9 +101,17 @@ export default function ShopPage() {
         if (!hasMatchingOccasion) return false;
       }
 
+      // Search query filter
+      if (searchParam) {
+        const matchesName = p.name.toLowerCase().includes(searchParam);
+        const matchesCategory = p.category.toLowerCase().includes(searchParam);
+        const matchesColor = p.colors?.some((c: string) => c.toLowerCase().includes(searchParam));
+        if (!matchesName && !matchesCategory && !matchesColor) return false;
+      }
+
       return true;
     });
-  }, [products, activeFilters]);
+  }, [products, activeFilters, searchParam]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col md:flex-row gap-8">
@@ -320,5 +333,13 @@ export default function ShopPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<div className="max-w-7xl mx-auto px-4 py-24 text-center">Loading...</div>}>
+      <ShopContent />
+    </Suspense>
   );
 }
