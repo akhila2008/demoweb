@@ -1,17 +1,19 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { ShoppingCart, User, Menu, X, Search, Share2, ArrowRight } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, Search, Share2, ArrowRight, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
+import { useWishlist } from '@/context/WishlistContext';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { totalItems } = useCart();
+  const { wishlistItems } = useWishlist();
   const { user } = useAuth();
   const router = useRouter();
 
@@ -77,6 +79,14 @@ export default function Navbar() {
             <button onClick={handleShareSite} title="Share Website" className="text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
               <Share2 className="w-5 h-5" />
             </button>
+            <Link href="/wishlist" className="relative text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
+              <Heart className="w-5 h-5" />
+              {wishlistItems.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
+                  {wishlistItems.length}
+                </span>
+              )}
+            </Link>
             <Link href="/cart" className="relative text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
               <ShoppingCart className="w-5 h-5" />
               {totalItems > 0 && (
@@ -95,6 +105,14 @@ export default function Navbar() {
             <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
               <Search className="w-5 h-5" />
             </button>
+            <Link href="/wishlist" className="relative text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
+              <Heart className="w-5 h-5" />
+              {wishlistItems.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
+                  {wishlistItems.length}
+                </span>
+              )}
+            </Link>
             <Link href="/cart" className="relative text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
               <ShoppingCart className="w-5 h-5" />
               {totalItems > 0 && (

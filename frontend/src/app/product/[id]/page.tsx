@@ -6,6 +6,7 @@ import { ShoppingCart, Heart, Share2, Star, Truck, ShieldCheck, Check, ChevronLe
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
 import { AVAILABLE_COLORS } from '@/lib/colors';
 
 const MOCK_PRODUCT = {
@@ -33,6 +34,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const { items, addToCart } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const router = useRouter();
 
   const isAdded = product && items.some(item => item.productId === product.id);
@@ -286,8 +288,21 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
               )}
             </button>
             
-            <button className="h-12 w-12 flex items-center justify-center border border-gray-300 dark:border-gray-700 rounded-lg hover:border-[var(--color-indian-magenta)] hover:text-[var(--color-indian-magenta)] transition-colors shrink-0">
-              <Heart className="w-5 h-5" />
+            <button 
+              onClick={() => toggleWishlist({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                originalPrice: product.originalPrice,
+                image: product.images[0]
+              })}
+              className={`h-12 w-12 flex items-center justify-center border rounded-lg transition-colors shrink-0 ${
+                isInWishlist(product.id) 
+                  ? 'border-red-500 text-red-500 bg-red-50 dark:bg-red-900/20' 
+                  : 'border-gray-300 dark:border-gray-700 hover:border-red-500 hover:text-red-500'
+              }`}
+            >
+              <Heart className={`w-5 h-5 ${isInWishlist(product.id) ? 'fill-current' : ''}`} />
             </button>
           </div>
 

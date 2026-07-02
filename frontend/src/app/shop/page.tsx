@@ -3,8 +3,9 @@ import { useState, useEffect, useMemo, Suspense } from 'react';
 import { loadProducts } from '@/lib/storage';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Filter, ChevronDown, SlidersHorizontal, Check } from 'lucide-react';
+import { Filter, ChevronDown, SlidersHorizontal, Check, Heart } from 'lucide-react';
 import { AVAILABLE_COLORS } from '@/lib/colors';
+import { useWishlist } from '@/context/WishlistContext';
 
 import { useSearchParams } from 'next/navigation';
 
@@ -14,6 +15,7 @@ function ShopContent() {
   
   const searchParams = useSearchParams();
   const searchParam = searchParams.get('search')?.toLowerCase() || '';
+  const { isInWishlist, toggleWishlist } = useWishlist();
 
   const [pendingFilters, setPendingFilters] = useState({ fabrics: [] as string[], price: '', colors: [] as string[], occasions: [] as string[] });
   const [activeFilters, setActiveFilters] = useState({ fabrics: [] as string[], price: '', colors: [] as string[], occasions: [] as string[] });
@@ -293,6 +295,25 @@ function ShopContent() {
                     <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <button className="bg-white/90 dark:bg-black/90 text-gray-900 dark:text-white backdrop-blur-sm px-6 py-2 rounded-full font-medium shadow-lg hover:bg-[var(--color-primary)] hover:text-white transition-colors">
                         Quick View
+                      </button>
+                    </div>
+                    {/* Wishlist Button */}
+                    <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button 
+                         onClick={(e) => { 
+                           e.preventDefault(); 
+                           e.stopPropagation();
+                           toggleWishlist({
+                             id: product.id,
+                             name: product.name,
+                             price: product.price,
+                             originalPrice: product.originalPrice,
+                             image: product.image
+                           }); 
+                         }}
+                         className="p-2 bg-white/80 dark:bg-black/80 backdrop-blur-md rounded-full shadow-md hover:scale-110 transition-transform"
+                      >
+                        <Heart className={`w-5 h-5 ${isInWishlist(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-600 dark:text-gray-300 hover:text-red-500'}`} />
                       </button>
                     </div>
                   </div>
