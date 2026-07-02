@@ -27,11 +27,11 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-24 text-center min-h-[60vh] flex flex-col items-center justify-center">
-        <div className="w-24 h-24 bg-gray-900 rounded-full flex items-center justify-center mb-6">
-          <ShoppingBag className="w-12 h-12 text-gray-400" />
+        <div className="w-24 h-24 bg-gray-900 text-white rounded-full flex items-center justify-center mb-6">
+          <ShoppingBag className="w-12 h-12 text-gray-200" />
         </div>
         <h1 className="text-3xl font-bold text-white mb-4">Your cart is empty</h1>
-        <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">
+        <p className="text-gray-300 dark:text-gray-200 mb-8 max-w-md mx-auto">
           Looks like you haven't added anything to your cart yet. Discover our beautiful collection of premium sarees.
         </p>
         <Link 
@@ -51,7 +51,7 @@ export default function CartPage() {
       <div className="flex flex-col lg:flex-row gap-12">
         {/* Cart Items List */}
         <div className="w-full lg:w-2/3">
-          <div className="bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm overflow-hidden">
+          <div className="bg-gray-900 text-white rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm overflow-hidden">
             <ul className="divide-y divide-gray-200 dark:divide-gray-800">
               {items.map((item, index) => (
                 <motion.li 
@@ -61,7 +61,7 @@ export default function CartPage() {
                   key={item.id} 
                   className="p-6 flex flex-col sm:flex-row gap-6"
                 >
-                  <div className="w-24 h-32 shrink-0 bg-gray-900 rounded-md overflow-hidden relative">
+                  <div className="w-24 h-32 shrink-0 bg-gray-900 text-white rounded-md overflow-hidden relative">
                     <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                   </div>
                   
@@ -73,7 +73,7 @@ export default function CartPage() {
                             {item.name}
                           </Link>
                         </h3>
-                        <p className="text-sm text-gray-500 mt-1">Color: {item.color}</p>
+                        <p className="text-sm text-gray-300 mt-1">Color: {item.color}</p>
                       </div>
                       <p className="text-lg font-bold text-[var(--color-primary)]">
                         ₹{(item.price * item.quantity).toLocaleString('en-IN')}
@@ -116,16 +116,16 @@ export default function CartPage() {
             <h2 className="text-xl font-bold text-white mb-6">Order Summary</h2>
             
             <div className="space-y-4 text-sm mb-6">
-              <div className="flex justify-between text-gray-400">
+              <div className="flex justify-between text-gray-200">
                 <span>Subtotal ({totalItems} items)</span>
                 <span>₹{subtotal.toLocaleString('en-IN')}</span>
               </div>
-              <div className="flex justify-between text-gray-400">
+              <div className="flex justify-between text-gray-200">
                 <span>Shipping</span>
                 <span>{shipping === 0 ? <span className="text-green-600">Free</span> : `₹${shipping}`}</span>
               </div>
               {shipping > 0 && freeShippingThreshold > 0 && subtotal < freeShippingThreshold && (
-                <p className="text-xs text-gray-500 text-right mt-1">Add items worth ₹{(freeShippingThreshold - subtotal).toLocaleString('en-IN')} more for free shipping!</p>
+                <p className="text-xs text-gray-300 text-right mt-1">Add items worth ₹{(freeShippingThreshold - subtotal).toLocaleString('en-IN')} more for free shipping!</p>
               )}
             </div>
 
@@ -134,14 +134,14 @@ export default function CartPage() {
                 <span>Total</span>
                 <span className="text-[var(--color-primary)]">₹{total.toLocaleString('en-IN')}</span>
               </div>
-              <p className="text-xs text-gray-500 mt-1">Inclusive of all taxes</p>
+              <p className="text-xs text-gray-300 mt-1">Inclusive of all taxes</p>
             </div>
 
             <Link href="/checkout" className="w-full bg-[var(--color-primary)] hover:bg-[#600000] text-white py-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors shadow-lg">
               Proceed to Checkout <ArrowRight className="w-5 h-5" />
             </Link>
 
-            <div className="mt-6 flex items-center justify-center text-sm text-gray-500 gap-2">
+            <div className="mt-6 flex items-center justify-center text-sm text-gray-300 gap-2">
               <ShieldCheck className="w-5 h-5 text-green-600" />
               100% Secure Checkout
             </div>

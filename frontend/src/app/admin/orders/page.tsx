@@ -85,22 +85,22 @@ export default function AdminOrdersPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold text-white">Orders</h1>
-          <p className="text-gray-500">Manage and track customer orders.</p>
+          <p className="text-gray-300">Manage and track customer orders.</p>
         </div>
       </div>
 
-      <div className="bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm overflow-hidden">
+      <div className="bg-gray-900 text-white rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm overflow-hidden">
         
         {/* Toolbar */}
         <div className="p-4 border-b border-[var(--color-primary)] border-opacity-30 flex flex-col sm:flex-row gap-4 justify-between items-center bg-black">
           <div className="relative w-full sm:w-96">
-            <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-200" />
             <input 
               type="text" 
               placeholder="Search by Order ID or Customer Name..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-[var(--color-primary)] border-opacity-50 rounded-lg dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+              className="w-full pl-10 pr-4 py-2 border border-[var(--color-primary)] border-opacity-50 rounded-lg bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
             />
           </div>
         </div>
@@ -113,11 +113,11 @@ export default function AdminOrdersPage() {
         ) : filteredOrders.length === 0 ? (
           /* Empty State */
           <div className="p-16 flex flex-col items-center justify-center text-center">
-            <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
-              <ShoppingBag className="w-10 h-10 text-gray-400" />
+            <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mb-4">
+              <ShoppingBag className="w-10 h-10 text-gray-200" />
             </div>
             <h2 className="text-xl font-bold text-white mb-2">No orders found</h2>
-            <p className="text-gray-500 max-w-md">
+            <p className="text-gray-300 max-w-md">
               {searchTerm ? 'Try adjusting your search terms.' : 'When customers place orders on your store, they will appear here.'}
             </p>
           </div>
@@ -127,13 +127,13 @@ export default function AdminOrdersPage() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-black border-b border-[var(--color-primary)] border-opacity-30">
-                  <th className="p-4 font-semibold text-gray-400 text-sm">Order ID</th>
-                  <th className="p-4 font-semibold text-gray-400 text-sm">Date</th>
-                  <th className="p-4 font-semibold text-gray-400 text-sm">Customer</th>
-                  <th className="p-4 font-semibold text-gray-400 text-sm">Total</th>
-                  <th className="p-4 font-semibold text-gray-400 text-sm">Payment</th>
-                  <th className="p-4 font-semibold text-gray-400 text-sm">Status</th>
-                  <th className="p-4 font-semibold text-gray-400 text-sm text-right">Action</th>
+                  <th className="p-4 font-semibold text-gray-200 text-sm">Order ID</th>
+                  <th className="p-4 font-semibold text-gray-200 text-sm">Date</th>
+                  <th className="p-4 font-semibold text-gray-200 text-sm">Customer</th>
+                  <th className="p-4 font-semibold text-gray-200 text-sm">Total</th>
+                  <th className="p-4 font-semibold text-gray-200 text-sm">Payment</th>
+                  <th className="p-4 font-semibold text-gray-200 text-sm">Status</th>
+                  <th className="p-4 font-semibold text-gray-200 text-sm text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
@@ -145,21 +145,21 @@ export default function AdminOrdersPage() {
                   const totalStr = `₹${(d.grandTotal || 0).toLocaleString('en-IN')}`;
                   
                   return (
-                    <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors group">
+                    <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-900 text-white/50 transition-colors group">
                       <td className="p-4 font-medium text-white">{order.id}</td>
-                      <td className="p-4 text-sm text-gray-500">{dateStr}</td>
+                      <td className="p-4 text-sm text-gray-300">{dateStr}</td>
                       <td className="p-4">
                         <div className="font-medium text-white">{customerName || 'Unknown'}</div>
-                        <div className="text-xs text-gray-500">{d.customer?.email}</div>
+                        <div className="text-xs text-gray-300">{d.customer?.email}</div>
                       </td>
                       <td className="p-4 font-bold text-white">{totalStr}</td>
-                      <td className="p-4 text-sm text-gray-500">
+                      <td className="p-4 text-sm text-gray-300">
                         {d.paymentMethod === 'ONLINE' ? 'UPI / Online' : 'Cash on Delivery'}
                       </td>
                       <td className="p-4">{getStatusBadge(d.status)}</td>
                       <td className="p-4 text-right">
                         <select 
-                          className="text-sm border border-[var(--color-primary)] border-opacity-50 rounded-md p-1.5 dark:bg-gray-900 opacity-50 group-hover:opacity-100 focus:opacity-100 transition-opacity disabled:opacity-50 cursor-pointer hover:border-[var(--color-primary)]"
+                          className="text-sm border border-[var(--color-primary)] border-opacity-50 rounded-md p-1.5 bg-gray-900 text-white opacity-50 group-hover:opacity-100 focus:opacity-100 transition-opacity disabled:opacity-50 cursor-pointer hover:border-[var(--color-primary)]"
                           value={d.status}
                           onChange={(e) => updateOrderStatus(order.id, e.target.value)}
                           disabled={statusUpdating === order.id}

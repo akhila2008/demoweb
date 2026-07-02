@@ -11,7 +11,7 @@ export default function Footer() {
               <img src="/logo.png?v=4" alt="Akhila Sarees Logo" className="h-10 w-10 object-contain mix-blend-screen rounded-full" />
               AKHILA SAREES
             </Link>
-            <p className="text-gray-400 text-sm leading-relaxed mb-6">
+            <p className="text-gray-200 text-sm leading-relaxed mb-6">
               Embrace the elegance of traditional Indian heritage with our premium collection of handcrafted sarees. Perfect for every occasion.
             </p>
           </div>
@@ -19,7 +19,7 @@ export default function Footer() {
           {/* Quick Links */}
           <div>
             <h4 className="text-lg font-semibold text-white mb-4">Shop</h4>
-            <ul className="space-y-3 text-sm text-gray-400">
+            <ul className="space-y-3 text-sm text-gray-200">
               <li><Link href="/shop?category=new" className="hover:text-[var(--color-primary)] transition-colors">New Arrivals</Link></li>
               <li><Link href="/shop?category=bestsellers" className="hover:text-[var(--color-primary)] transition-colors">Best Sellers</Link></li>
               <li><Link href="/shop?category=wedding" className="hover:text-[var(--color-primary)] transition-colors">Wedding Collection</Link></li>
@@ -30,7 +30,7 @@ export default function Footer() {
           {/* Support */}
           <div>
             <h4 className="text-lg font-semibold text-white mb-4">Support</h4>
-            <ul className="space-y-3 text-sm text-gray-400">
+            <ul className="space-y-3 text-sm text-gray-200">
               <li><Link href="/contact" className="hover:text-[var(--color-primary)] transition-colors">Contact Us</Link></li>
               <li><Link href="/faq" className="hover:text-[var(--color-primary)] transition-colors">FAQs</Link></li>
               <li><Link href="/shipping" className="hover:text-[var(--color-primary)] transition-colors">Shipping & Returns</Link></li>
@@ -41,12 +41,12 @@ export default function Footer() {
           {/* Newsletter */}
           <div>
             <h4 className="text-lg font-semibold text-white mb-4">Newsletter</h4>
-            <p className="text-sm text-gray-400 mb-4">Subscribe to receive updates, access to exclusive deals, and more.</p>
+            <p className="text-sm text-gray-200 mb-4">Subscribe to receive updates, access to exclusive deals, and more.</p>
             <form className="flex flex-col sm:flex-row gap-2">
               <input 
                 type="email" 
                 placeholder="Enter your email" 
-                className="px-4 py-2 bg-white dark:bg-gray-900 border border-[var(--color-primary)] border-opacity-50 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] flex-grow text-sm"
+                className="px-4 py-2 bg-white bg-gray-900 text-white border border-[var(--color-primary)] border-opacity-50 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] flex-grow text-sm"
               />
               <button 
                 type="submit" 
@@ -59,10 +59,10 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-[var(--color-primary)] border-opacity-30 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-gray-500 dark:text-gray-500">
+          <p className="text-sm text-gray-300 text-gray-300">
             &copy; {new Date().getFullYear()} Akhila Sarees. All rights reserved.
           </p>
-          <div className="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-500 dark:text-gray-500">
+          <div className="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-300 text-gray-300">
             <Link href="/privacy" className="hover:text-[var(--color-primary)] transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-[var(--color-primary)] transition-colors">Terms of Service</Link>
           </div>

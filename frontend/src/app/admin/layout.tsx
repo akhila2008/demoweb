@@ -48,14 +48,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black p-4">
-        <div className="bg-gray-900 p-8 rounded-xl shadow-lg border border-[var(--color-primary)] border-opacity-30 w-full max-w-md">
+        <div className="bg-gray-900 text-white p-8 rounded-xl shadow-lg border border-[var(--color-primary)] border-opacity-30 w-full max-w-md">
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
               <Lock className="w-8 h-8 text-[var(--color-primary)]" />
             </div>
           </div>
           <h2 className="text-2xl font-bold text-center mb-2">Admin Access</h2>
-          <p className="text-center text-gray-500 mb-8">Please enter the master password to access the dashboard.</p>
+          <p className="text-center text-gray-300 mb-8">Please enter the master password to access the dashboard.</p>
           
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
@@ -64,7 +64,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter password..." 
-                className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
                 autoFocus
               />
             </div>
@@ -76,7 +76,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               Unlock Dashboard
             </button>
             <div className="text-center mt-4">
-              <Link href="/" className="text-sm text-gray-500 hover:text-[var(--color-primary)]">
+              <Link href="/" className="text-sm text-gray-300 hover:text-[var(--color-primary)]">
                 &larr; Return to main website
               </Link>
             </div>
@@ -89,10 +89,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-black">
       {/* Sidebar */}
-      <aside className="w-64 bg-gray-900 border-r border-[var(--color-primary)] border-opacity-30 flex flex-col hidden md:flex">
+      <aside className="w-64 bg-gray-900 text-white border-r border-[var(--color-primary)] border-opacity-30 flex flex-col hidden md:flex">
         <div className="p-6">
           <Link href="/" className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-indian-magenta)]">
-            AKHILA SAREES <span className="text-sm font-normal text-gray-500 block">Admin Panel</span>
+            AKHILA SAREES <span className="text-sm font-normal text-gray-300 block">Admin Panel</span>
           </Link>
         </div>
         
@@ -104,7 +104,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link 
                 key={item.name} 
                 href={item.href}
-                className={`flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-colors ${isActive ? 'bg-[var(--color-primary)] text-white shadow-md' : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 hover:text-gray-900 dark:hover:text-white'}`}
+                className={`flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-colors ${isActive ? 'bg-[var(--color-primary)] text-white shadow-md' : 'text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-900 hover:text-gray-900 dark:hover:text-white'}`}
               >
                 <Icon className="w-5 h-5 mr-3" />
                 {item.name}

@@ -123,7 +123,7 @@ function ShopContent() {
         <h1 className="text-2xl font-bold">All Sarees</h1>
         <button 
           onClick={() => setIsFilterOpen(!isFilterOpen)}
-          className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded-md"
+          className="flex items-center gap-2 bg-gray-800 px-4 py-2 rounded-md"
         >
           <SlidersHorizontal className="w-5 h-5" /> Filters
         </button>
@@ -131,7 +131,7 @@ function ShopContent() {
 
       {/* Sidebar Filters */}
       <aside className={`w-full md:w-1/4 ${isFilterOpen ? 'block' : 'hidden'} md:block`}>
-        <div className="sticky top-24 bg-gray-900 p-6 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm">
+        <div className="sticky top-24 bg-gray-900 text-white p-6 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm">
           <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
             <Filter className="w-5 h-5" /> Filters
           </h2>
@@ -154,7 +154,7 @@ function ShopContent() {
                       checked={pendingFilters.fabrics.includes(category)}
                       onChange={() => handleFabricToggle(category)} 
                     />
-                    <span className="text-gray-600 dark:text-gray-300">{category}</span>
+                    <span className="text-gray-600 text-gray-300">{category}</span>
                   </label>
                 ))}
               </div>
@@ -177,7 +177,7 @@ function ShopContent() {
                       checked={pendingFilters.occasions.includes(occasion)}
                       onChange={() => handleOccasionToggle(occasion)} 
                     />
-                    <span className="text-gray-600 dark:text-gray-300">{occasion}</span>
+                    <span className="text-gray-600 text-gray-300">{occasion}</span>
                   </label>
                 ))}
               </div>
@@ -191,15 +191,15 @@ function ShopContent() {
               <div className="space-y-2">
                 <label className="flex items-center space-x-2 cursor-pointer">
                   <input type="radio" name="price" checked={pendingFilters.price === 'under_5000'} onChange={() => setPendingFilters(prev => ({...prev, price: 'under_5000'}))} className="text-[var(--color-primary)] focus:ring-[var(--color-primary)]" />
-                  <span className="text-gray-600 dark:text-gray-300">Under ₹5,000</span>
+                  <span className="text-gray-600 text-gray-300">Under ₹5,000</span>
                 </label>
                 <label className="flex items-center space-x-2 cursor-pointer">
                   <input type="radio" name="price" checked={pendingFilters.price === '5000_15000'} onChange={() => setPendingFilters(prev => ({...prev, price: '5000_15000'}))} className="text-[var(--color-primary)] focus:ring-[var(--color-primary)]" />
-                  <span className="text-gray-600 dark:text-gray-300">₹5,000 - ₹15,000</span>
+                  <span className="text-gray-600 text-gray-300">₹5,000 - ₹15,000</span>
                 </label>
                 <label className="flex items-center space-x-2 cursor-pointer">
                   <input type="radio" name="price" checked={pendingFilters.price === 'over_15000'} onChange={() => setPendingFilters(prev => ({...prev, price: 'over_15000'}))} className="text-[var(--color-primary)] focus:ring-[var(--color-primary)]" />
-                  <span className="text-gray-600 dark:text-gray-300">Over ₹15,000</span>
+                  <span className="text-gray-600 text-gray-300">Over ₹15,000</span>
                 </label>
                 <button type="button" onClick={() => setPendingFilters(prev => ({...prev, price: ''}))} className="text-xs text-[var(--color-primary)] hover:underline mt-2 inline-block">Clear Price Selection</button>
               </div>
@@ -250,7 +250,7 @@ function ShopContent() {
         <div className="hidden md:flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">All Sarees</h1>
           <div className="flex items-center gap-2">
-            <span className="text-gray-500 text-sm">Sort by:</span>
+            <span className="text-gray-300 text-sm">Sort by:</span>
             <select className="bg-gray-900 border border-[var(--color-primary)] border-opacity-50 text-gray-300 text-sm rounded-md focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] p-2">
               <option>Recommended</option>
               <option>Price: Low to High</option>
@@ -263,7 +263,7 @@ function ShopContent() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProducts.length === 0 ? (
             <div className="col-span-full py-20 text-center">
-              <p className="text-xl text-gray-500 mb-4">No sarees match your selected filters.</p>
+              <p className="text-xl text-gray-300 mb-4">No sarees match your selected filters.</p>
               <button onClick={clearFilters} className="text-[var(--color-primary)] hover:underline font-medium">Clear Filters</button>
             </div>
           ) : (
@@ -271,10 +271,10 @@ function ShopContent() {
               <motion.div 
                 key={product.id}
                 whileHover={{ y: -5 }}
-                className="bg-gray-900 rounded-xl overflow-hidden border border-[var(--color-primary)] border-opacity-30 shadow-sm hover:shadow-md transition-all group"
+                className="bg-gray-900 text-white rounded-xl overflow-hidden border border-[var(--color-primary)] border-opacity-30 shadow-sm hover:shadow-md transition-all group"
               >
                 <Link href={`/product/${product.id}`}>
-                  <div className="relative aspect-[3/4] overflow-hidden bg-gray-900">
+                  <div className="relative aspect-[3/4] overflow-hidden bg-gray-900 text-white">
                     {product.isVideo ? (
                       <video 
                         src={product.image} 
@@ -313,13 +313,13 @@ function ShopContent() {
                          }}
                          className="p-2 bg-black/80 backdrop-blur-md rounded-full shadow-md hover:scale-110 transition-transform"
                       >
-                        <Heart className={`w-5 h-5 ${isInWishlist(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-600 dark:text-gray-300 hover:text-red-500'}`} />
+                        <Heart className={`w-5 h-5 ${isInWishlist(product.id) ? 'fill-red-500 text-red-500' : 'text-gray-600 text-gray-300 hover:text-red-500'}`} />
                       </button>
                     </div>
                   </div>
                   <div className="p-4 flex flex-col h-full justify-between">
                   <div>
-                    <div className="text-xs text-gray-500 mb-1">{product.category}</div>
+                    <div className="text-xs text-gray-300 mb-1">{product.category}</div>
                     <h3 className="font-semibold text-white truncate">{product.name}</h3>
                   </div>
                   <div className="mt-2 flex items-center justify-between">
@@ -339,7 +339,7 @@ function ShopContent() {
                           );
                         })}
                         {product.colors.length > 3 && (
-                          <div className="w-3.5 h-3.5 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-[8px] text-gray-500 border border-gray-200 dark:border-gray-700">
+                          <div className="w-3.5 h-3.5 rounded-full bg-gray-800 flex items-center justify-center text-[8px] text-gray-300 border border-gray-200 dark:border-gray-700">
                             +
                           </div>
                         )}

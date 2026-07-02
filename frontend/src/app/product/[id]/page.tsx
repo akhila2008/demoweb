@@ -109,7 +109,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
     return (
       <div className="max-w-7xl mx-auto px-4 py-24 text-center">
         <h1 className="text-2xl font-bold mb-4">Product Not Found</h1>
-        <p className="text-gray-500 mb-8">The saree you are looking for does not exist or has been removed.</p>
+        <p className="text-gray-300 mb-8">The saree you are looking for does not exist or has been removed.</p>
         <Link href="/shop" className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#600000]">Return to Shop</Link>
       </div>
     );
@@ -118,7 +118,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-500 mb-8">
+      <nav className="text-sm text-gray-300 mb-8">
         <ol className="list-none p-0 inline-flex">
           <li className="flex items-center">
             <Link href="/" className="hover:text-[var(--color-primary)]">Home</Link>
@@ -129,7 +129,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
             <span className="mx-2">/</span>
           </li>
           <li className="flex items-center">
-            <span className="text-gray-900 dark:text-gray-300">Silk Sarees</span>
+            <span className="text-gray-900 text-gray-300">Silk Sarees</span>
           </li>
         </ol>
       </nav>
@@ -152,7 +152,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
               </button>
             ))}
           </div>
-          <div className="flex-grow bg-gray-900 rounded-2xl overflow-hidden aspect-[3/4] relative group cursor-zoom-in">
+          <div className="flex-grow bg-gray-900 text-white rounded-2xl overflow-hidden aspect-[3/4] relative group cursor-zoom-in">
             <motion.div
               key={activeImage}
               initial={{ opacity: 0 }}
@@ -210,7 +210,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
               <Star className="w-5 h-5 fill-current" />
               <Star className="w-5 h-5 fill-current" />
               <Star className="w-5 h-5 fill-current text-gray-300" />
-              <span className="text-gray-400 text-sm ml-2">(42 Reviews)</span>
+              <span className="text-gray-200 text-sm ml-2">(42 Reviews)</span>
             </div>
             <span className="text-green-600 dark:text-green-400 text-sm font-medium">In Stock ({product.stock})</span>
           </div>
@@ -218,7 +218,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
           {/* Linked Color Variants */}
           {linkedVariants.length > 1 && (
             <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-900 dark:text-gray-300 mb-2">Available Colors</h3>
+              <h3 className="text-sm font-medium text-gray-900 text-gray-300 mb-2">Available Colors</h3>
               <div className="flex gap-3">
                 {linkedVariants.map((variant) => {
                   const isCurrent = variant.id === product.id;
@@ -242,10 +242,10 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
 
           <div className="text-3xl font-bold text-[var(--color-primary)] mb-6">
             ₹{product.price.toLocaleString('en-IN')}
-            <span className="text-sm text-gray-500 font-normal ml-2">incl. of all taxes</span>
+            <span className="text-sm text-gray-300 font-normal ml-2">incl. of all taxes</span>
           </div>
 
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-8">
+          <p className="text-gray-600 text-gray-300 leading-relaxed mb-8">
             {product.description}
           </p>
 
@@ -277,7 +277,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
                 isAdded 
                   ? 'bg-green-600 hover:bg-green-700 text-white' 
                   : product.stock === 0 
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    ? 'bg-gray-300 text-gray-300 cursor-not-allowed'
                     : 'bg-[var(--color-primary)] hover:bg-[#600000] text-white'
               }`}
             >
@@ -310,31 +310,31 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
           <div className="border-t border-[var(--color-primary)] border-opacity-30 pt-8 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div className="flex flex-col gap-1">
-                <span className="text-gray-500">Fabric</span>
+                <span className="text-gray-300">Fabric</span>
                 <span className="font-medium text-white">{product.fabric}</span>
               </div>
               <div className="flex flex-col gap-1">
-                <span className="text-gray-500">Color</span>
+                <span className="text-gray-300">Color</span>
                 <span className="font-medium text-white">{product.color}</span>
               </div>
               <div className="flex flex-col gap-1">
-                <span className="text-gray-500">Blouse Piece</span>
+                <span className="text-gray-300">Blouse Piece</span>
                 <span className="font-medium text-white">{product.blouse}</span>
               </div>
               <div className="flex flex-col gap-1">
-                <span className="text-gray-500">Wash Care</span>
+                <span className="text-gray-300">Wash Care</span>
                 <span className="font-medium text-white">{product.washCare}</span>
               </div>
             </div>
             
             <div className="flex flex-wrap gap-4 pt-4 border-t border-[var(--color-primary)] border-opacity-30">
-              <div className="flex items-center text-sm text-gray-400">
+              <div className="flex items-center text-sm text-gray-200">
                 <Truck className="w-4 h-4 mr-2 text-[var(--color-primary)]" /> Free Shipping
               </div>
-              <div className="flex items-center text-sm text-gray-400">
+              <div className="flex items-center text-sm text-gray-200">
                 <ShieldCheck className="w-4 h-4 mr-2 text-[var(--color-primary)]" /> Secure Checkout
               </div>
-              <div className="flex items-center text-sm text-gray-400 cursor-pointer hover:text-[var(--color-primary)]">
+              <div className="flex items-center text-sm text-gray-200 cursor-pointer hover:text-[var(--color-primary)]">
                 <Share2 className="w-4 h-4 mr-2" /> Share
               </div>
             </div>

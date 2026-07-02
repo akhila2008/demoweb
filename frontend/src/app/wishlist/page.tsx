@@ -32,7 +32,7 @@ export default function WishlistPage() {
       <div className="flex items-center gap-4 mb-8">
         <Heart className="w-8 h-8 text-red-500 fill-current" />
         <h1 className="text-3xl font-bold text-white">My Wishlist</h1>
-        <span className="text-gray-500 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full text-sm font-medium">
+        <span className="text-gray-300 bg-gray-800 px-3 py-1 rounded-full text-sm font-medium">
           {wishlistItems.length} {wishlistItems.length === 1 ? 'Item' : 'Items'}
         </span>
       </div>
@@ -41,7 +41,7 @@ export default function WishlistPage() {
         <div className="text-center py-24 bg-black rounded-2xl border border-[var(--color-primary)] border-opacity-30">
           <Heart className="w-16 h-16 mx-auto text-gray-300 dark:text-gray-700 mb-6" />
           <h2 className="text-2xl font-bold text-white mb-2">Your wishlist is empty</h2>
-          <p className="text-gray-500 mb-8 max-w-md mx-auto">
+          <p className="text-gray-300 mb-8 max-w-md mx-auto">
             Save your favorite sarees here to buy them later. Explore our collection and click the heart icon to add items.
           </p>
           <Link href="/shop" className="bg-[var(--color-primary)] text-white px-8 py-3 rounded-lg font-medium hover:bg-[#600000] transition-colors inline-block shadow-md">
@@ -58,9 +58,9 @@ export default function WishlistPage() {
                 key={item.id}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-gray-900 rounded-xl overflow-hidden border border-[var(--color-primary)] border-opacity-30 shadow-sm hover:shadow-md transition-all group flex flex-col"
+                className="bg-gray-900 text-white rounded-xl overflow-hidden border border-[var(--color-primary)] border-opacity-30 shadow-sm hover:shadow-md transition-all group flex flex-col"
               >
-                <Link href={`/product/${item.id}`} className="block relative aspect-[3/4] overflow-hidden bg-gray-900">
+                <Link href={`/product/${item.id}`} className="block relative aspect-[3/4] overflow-hidden bg-gray-900 text-white">
                   {item.image.endsWith('.mp4') ? (
                     <video src={item.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" autoPlay loop muted playsInline />
                   ) : (
@@ -75,7 +75,7 @@ export default function WishlistPage() {
                         e.stopPropagation();
                         removeFromWishlist(item.id);
                       }}
-                      className="p-2 bg-black/80 backdrop-blur-md rounded-full shadow-md text-gray-500 hover:text-red-500 transition-colors"
+                      className="p-2 bg-black/80 backdrop-blur-md rounded-full shadow-md text-gray-300 hover:text-red-500 transition-colors"
                       title="Remove from Wishlist"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -89,7 +89,7 @@ export default function WishlistPage() {
                     <div className="mt-2 flex items-center gap-2">
                       <div className="text-[var(--color-primary)] font-bold">₹{item.price.toLocaleString('en-IN')}</div>
                       {item.originalPrice && item.originalPrice > item.price && (
-                        <div className="text-gray-400 line-through text-xs">₹{item.originalPrice.toLocaleString('en-IN')}</div>
+                        <div className="text-gray-200 line-through text-xs">₹{item.originalPrice.toLocaleString('en-IN')}</div>
                       )}
                     </div>
                   </div>

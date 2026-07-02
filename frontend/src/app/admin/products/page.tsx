@@ -162,7 +162,7 @@ export default function AdminProductsPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
           <h1 className="text-3xl font-bold text-white">Products Management</h1>
-          <p className="text-gray-500">Manage your saree inventory and categories.</p>
+          <p className="text-gray-300">Manage your saree inventory and categories.</p>
         </div>
         <button 
           onClick={() => {
@@ -178,22 +178,22 @@ export default function AdminProductsPage() {
         </button>
       </div>
 
-      <div className="bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm overflow-hidden">
+      <div className="bg-gray-900 text-white rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm overflow-hidden">
         
         {/* Toolbar */}
         <div className="p-4 border-b border-[var(--color-primary)] border-opacity-30 flex flex-col sm:flex-row gap-4 justify-between items-center bg-black">
           <div className="relative w-full sm:w-96">
-            <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-200" />
             <input 
               type="text" 
               placeholder="Search products..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-[var(--color-primary)] border-opacity-50 rounded-lg dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+              className="w-full pl-10 pr-4 py-2 border border-[var(--color-primary)] border-opacity-50 rounded-lg bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
             />
           </div>
           <div className="flex gap-2 w-full sm:w-auto">
-            <select className="border border-[var(--color-primary)] border-opacity-50 rounded-lg py-2 px-4 dark:bg-gray-900 focus:ring-[var(--color-primary)] w-full sm:w-auto">
+            <select className="border border-[var(--color-primary)] border-opacity-50 rounded-lg py-2 px-4 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)] w-full sm:w-auto">
               <option>All Categories</option>
               <option>Silk</option>
               <option>Cotton</option>
@@ -207,7 +207,7 @@ export default function AdminProductsPage() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="text-left text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-[var(--color-primary)] border-opacity-30 bg-gray-900">
+              <tr className="text-left text-xs font-semibold text-gray-300 uppercase tracking-wider border-b border-[var(--color-primary)] border-opacity-30 bg-gray-900">
                 <th className="p-4 w-16">Image</th>
                 <th className="p-4">Product Name</th>
                 <th className="p-4">Category</th>
@@ -220,13 +220,13 @@ export default function AdminProductsPage() {
             <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
               {products.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-500">
+                  <td colSpan={6} className="p-8 text-center text-gray-300">
                     No sarees added yet. Click "Add New Saree" to get started.
                   </td>
                 </tr>
               ) : (
                 products.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase())).map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors">
+                  <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-900 text-white/50 transition-colors">
                     <td className="p-4">
                       <Link href={`/product/${product.id}`} className="block w-12 h-16 rounded overflow-hidden bg-gray-100 hover:opacity-80 transition-opacity">
                         {product.isVideos?.[0] || product.isVideo ? (
@@ -241,7 +241,7 @@ export default function AdminProductsPage() {
                         {product.name}
                       </Link>
                     </td>
-                    <td className="p-4 text-gray-500">{product.category}</td>
+                    <td className="p-4 text-gray-300">{product.category}</td>
                     <td className="p-4">
                       <div className="flex gap-1 flex-wrap w-24">
                         {product.colors && product.colors.map((colorName: string) => {
@@ -255,7 +255,7 @@ export default function AdminProductsPage() {
                             />
                           );
                         })}
-                        {(!product.colors || product.colors.length === 0) && <span className="text-xs text-gray-400">None</span>}
+                        {(!product.colors || product.colors.length === 0) && <span className="text-xs text-gray-200">None</span>}
                       </div>
                     </td>
                     <td className="p-4 text-white font-medium">₹{product.price.toLocaleString('en-IN')}</td>
@@ -298,11 +298,11 @@ export default function AdminProductsPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-gray-900 rounded-xl shadow-xl w-full max-w-md overflow-hidden"
+              className="bg-gray-900 text-white rounded-xl shadow-xl w-full max-w-md overflow-hidden"
             >
               <div className="p-6 border-b border-[var(--color-primary)] border-opacity-30 flex justify-between items-center">
                 <h2 className="text-xl font-bold">{editingProductId ? 'Edit Saree' : 'Add New Saree'}</h2>
-                <button onClick={() => { setIsAddModalOpen(false); setPreviewImages([]); setEditingProductId(null); }} className="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200">
+                <button onClick={() => { setIsAddModalOpen(false); setPreviewImages([]); setEditingProductId(null); }} className="text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">
                   <X className="w-6 h-6" />
                 </button>
               </div>
@@ -332,11 +332,11 @@ export default function AdminProductsPage() {
                           ))}
                         </div>
                       ) : (
-                        <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                        <svg className="mx-auto h-12 w-12 text-gray-200" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                           <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       )}
-                      <div className="flex text-sm text-gray-400 justify-center mt-2">
+                      <div className="flex text-sm text-gray-200 justify-center mt-2">
                         <span className="font-medium text-[var(--color-primary)] hover:text-[#600000]">Select multiple photos/videos</span>
                         <input type="file" multiple accept="image/*,video/*" className="sr-only" onChange={handleImageChange} />
                       </div>
@@ -351,7 +351,7 @@ export default function AdminProductsPage() {
                     type="text" 
                     value={newProduct.name}
                     onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
-                    className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
+                    className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]" 
                     placeholder="e.g. Red Banarasi Silk"
                   />
                 </div>
@@ -365,7 +365,7 @@ export default function AdminProductsPage() {
                       onWheel={(e) => (e.target as HTMLInputElement).blur()}
                       value={newProduct.price}
                       onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
-                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]" 
                       placeholder="9999"
                     />
                   </div>
@@ -377,7 +377,7 @@ export default function AdminProductsPage() {
                       onWheel={(e) => (e.target as HTMLInputElement).blur()}
                       value={newProduct.stock}
                       onChange={(e) => setNewProduct({...newProduct, stock: e.target.value})}
-                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]" 
                       placeholder="10"
                     />
                   </div>
@@ -389,7 +389,7 @@ export default function AdminProductsPage() {
                     <select 
                       value={newProduct.category}
                       onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
-                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
                     >
                       <option value="Silk">Silk</option>
                       <option value="Cotton">Cotton</option>
@@ -406,7 +406,7 @@ export default function AdminProductsPage() {
                       type="text" 
                       value={newProduct.groupId}
                       onChange={(e) => setNewProduct({...newProduct, groupId: e.target.value})}
-                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]" 
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]" 
                       placeholder="e.g. Saree-123"
                     />
                   </div>
@@ -432,7 +432,7 @@ export default function AdminProductsPage() {
                         />
                         <div className="flex flex-col items-center gap-1">
                           <div className="w-5 h-5 rounded-full border border-gray-300 shadow-sm" style={{ backgroundColor: color.hex }}></div>
-                          <span className="text-xs text-gray-400 font-medium">{color.name}</span>
+                          <span className="text-xs text-gray-200 font-medium">{color.name}</span>
                         </div>
                       </label>
                     ))}
@@ -448,7 +448,7 @@ export default function AdminProductsPage() {
                         className={`px-3 py-1.5 rounded-full border cursor-pointer text-sm font-medium transition-colors ${
                           newProduct.occasions.includes(occasion) 
                             ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-white' 
-                            : 'border-[var(--color-primary)] border-opacity-50 text-gray-400 hover:border-gray-400'
+                            : 'border-[var(--color-primary)] border-opacity-50 text-gray-200 hover:border-gray-400'
                         }`}
                       >
                         <input 
@@ -467,7 +467,7 @@ export default function AdminProductsPage() {
                   <button 
                     type="button" 
                     onClick={() => setIsAddModalOpen(false)}
-                    className="flex-1 bg-gray-100 dark:bg-gray-800 text-gray-300 px-4 py-3 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                    className="flex-1 bg-gray-800 text-gray-300 px-4 py-3 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                   >
                     Cancel
                   </button>

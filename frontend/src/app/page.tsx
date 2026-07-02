@@ -104,7 +104,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           <div>
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">Crafted with Passion & Tradition</h2>
-            <p className="text-gray-400 mb-8 leading-relaxed text-lg">
+            <p className="text-gray-200 mb-8 leading-relaxed text-lg">
               Every saree in our collection tells a story. Woven by master artisans across India, our pieces are more than just clothing—they are a celebration of centuries-old techniques passed down through generations.
             </p>
             <ul className="space-y-4 mb-8">

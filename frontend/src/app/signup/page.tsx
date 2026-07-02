@@ -46,10 +46,10 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center bg-gray-50 dark:bg-[#0a0a0a] px-4 py-12">
-      <div className="bg-gray-900 w-full max-w-md rounded-2xl shadow-xl border border-[var(--color-primary)] border-opacity-30 p-8">
+      <div className="bg-gray-900 text-white w-full max-w-md rounded-2xl shadow-xl border border-[var(--color-primary)] border-opacity-30 p-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Create Account</h1>
-          <p className="text-gray-500">Join us to shop for premium sarees</p>
+          <p className="text-gray-300">Join us to shop for premium sarees</p>
         </div>
 
         {error && (
@@ -70,13 +70,13 @@ export default function SignupPage() {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Full Name</label>
             <div className="relative">
-              <UserIcon className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <UserIcon className="w-5 h-5 text-gray-200 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-[var(--color-primary)] border-opacity-50 rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all outline-none"
+                className="w-full pl-10 pr-4 py-3 bg-gray-50 bg-gray-900 text-white text-white border border-[var(--color-primary)] border-opacity-50 rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all outline-none"
                 placeholder="Jane Doe"
               />
             </div>
@@ -85,13 +85,13 @@ export default function SignupPage() {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Email Address</label>
             <div className="relative">
-              <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Mail className="w-5 h-5 text-gray-200 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-[var(--color-primary)] border-opacity-50 rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all outline-none"
+                className="w-full pl-10 pr-4 py-3 bg-gray-50 bg-gray-900 text-white text-white border border-[var(--color-primary)] border-opacity-50 rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all outline-none"
                 placeholder="you@example.com"
               />
             </div>
@@ -100,18 +100,18 @@ export default function SignupPage() {
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">Password</label>
             <div className="relative">
-              <Lock className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Lock className="w-5 h-5 text-gray-200 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="password"
                 required
                 minLength={6}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-[var(--color-primary)] border-opacity-50 rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all outline-none"
+                className="w-full pl-10 pr-4 py-3 bg-gray-50 bg-gray-900 text-white text-white border border-[var(--color-primary)] border-opacity-50 rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all outline-none"
                 placeholder="••••••••"
               />
             </div>
-            <p className="text-xs text-gray-500 mt-2">Must be at least 6 characters long</p>
+            <p className="text-xs text-gray-300 mt-2">Must be at least 6 characters long</p>
           </div>
 
           <button
@@ -123,7 +123,7 @@ export default function SignupPage() {
           </button>
         </form>
 
-        <div className="mt-8 text-center text-sm text-gray-500">
+        <div className="mt-8 text-center text-sm text-gray-300">
           Already have an account?{' '}
           <Link href="/login" className="text-[var(--color-primary)] hover:underline font-medium">
             Log in

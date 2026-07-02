@@ -28,7 +28,7 @@ export default function ContactPage() {
       >
         <h1 className="text-4xl md:text-5xl font-brand font-bold mb-4 text-[var(--color-primary)] dark:text-[var(--color-accent)]">Help Center & Contact Us</h1>
         <div className="w-24 h-1 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] mx-auto rounded-full mb-6"></div>
-        <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+        <p className="text-gray-200 max-w-2xl mx-auto text-lg">
           Have a question about our collections or need help with an order? We are here to assist you.
         </p>
       </motion.div>
@@ -50,7 +50,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <h3 className="font-bold text-lg text-white">Phone Support</h3>
-                <p className="text-gray-400 mb-2">Mon-Fri from 9am to 6pm.</p>
+                <p className="text-gray-200 mb-2">Mon-Fri from 9am to 6pm.</p>
                 <a href={`tel:${phone}`} className="text-[var(--color-primary)] dark:text-[var(--color-accent)] font-medium hover:underline text-lg">
                   {phone}
                 </a>
@@ -63,7 +63,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <h3 className="font-bold text-lg text-white">Email Us</h3>
-                <p className="text-gray-400 mb-2">Our friendly team is here to help.</p>
+                <p className="text-gray-200 mb-2">Our friendly team is here to help.</p>
                 <a href={`mailto:${email}`} className="text-[var(--color-primary)] dark:text-[var(--color-accent)] font-medium hover:underline text-lg">
                   {email}
                 </a>
@@ -76,7 +76,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <h3 className="font-bold text-lg text-white">Office</h3>
-                <p className="text-gray-400">
+                <p className="text-gray-200">
                   {storeName} Headquarters<br/>
                   123 Heritage Lane, Silk District<br/>
                   Hyderabad, Telangana 500001
@@ -90,7 +90,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <h3 className="font-bold text-lg text-white">Business Hours</h3>
-                <p className="text-gray-400">
+                <p className="text-gray-200">
                   Monday - Saturday: 10:00 AM - 8:00 PM<br/>
                   Sunday: Closed
                 </p>

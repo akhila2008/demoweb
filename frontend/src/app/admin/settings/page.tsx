@@ -116,7 +116,7 @@ export default function AdminSettingsPage() {
       <div className="mb-8 flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-white">Settings</h1>
-          <p className="text-gray-500">Manage your store preferences and account settings.</p>
+          <p className="text-gray-300">Manage your store preferences and account settings.</p>
         </div>
         {showSuccess && (
           <div className="bg-green-100 text-green-800 px-4 py-2 rounded-lg text-sm font-medium animate-pulse">
@@ -134,7 +134,7 @@ export default function AdminSettingsPage() {
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-colors text-left ${
               activeTab === 'store' 
                 ? 'bg-[var(--color-primary)] text-white' 
-                : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
+                : 'text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-900'
             }`}
           >
             <Store className="w-4 h-4" /> Store Details
@@ -144,7 +144,7 @@ export default function AdminSettingsPage() {
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-colors text-left ${
               activeTab === 'payments' 
                 ? 'bg-[var(--color-primary)] text-white' 
-                : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
+                : 'text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-900'
             }`}
           >
             <CreditCard className="w-4 h-4" /> Payments
@@ -154,12 +154,12 @@ export default function AdminSettingsPage() {
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-sm transition-colors text-left ${
               activeTab === 'security' 
                 ? 'bg-[var(--color-primary)] text-white' 
-                : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900'
+                : 'text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-900'
             }`}
           >
             <Lock className="w-4 h-4" /> Security
           </button>
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg font-medium text-sm transition-colors text-left opacity-50 cursor-not-allowed">
+          <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg font-medium text-sm transition-colors text-left opacity-50 cursor-not-allowed">
             <Bell className="w-4 h-4" /> Notifications (Coming Soon)
           </button>
         </div>
@@ -168,7 +168,7 @@ export default function AdminSettingsPage() {
         <div className="md:col-span-3 space-y-6">
           {activeTab === 'store' && (
             <>
-              <div className="bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm p-6">
+              <div className="bg-gray-900 text-white rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm p-6">
             <h2 className="text-lg font-bold text-white mb-4 border-b border-[var(--color-primary)] border-opacity-30 pb-2">Store Profile</h2>
             
             <div className="space-y-4">
@@ -178,7 +178,7 @@ export default function AdminSettingsPage() {
                   type="text" 
                   value={storeName}
                   onChange={(e) => setStoreName(e.target.value)}
-                  className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                  className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
                 />
               </div>
               
@@ -188,7 +188,7 @@ export default function AdminSettingsPage() {
                   type="email" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                  className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
                 />
               </div>
 
@@ -199,7 +199,7 @@ export default function AdminSettingsPage() {
                   value={contactPhone}
                   onChange={(e) => setContactPhone(e.target.value)}
                   placeholder="e.g. +91 9876543210"
-                  className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                  className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
                 />
               </div>
 
@@ -208,7 +208,7 @@ export default function AdminSettingsPage() {
                 <select 
                   value={currency}
                   onChange={(e) => setCurrency(e.target.value)}
-                  className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                  className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
                 >
                   <option value="INR">Indian Rupee (₹)</option>
                   <option value="USD">US Dollar ($)</option>
@@ -218,7 +218,7 @@ export default function AdminSettingsPage() {
             </div>
           </div>
 
-          <div className="bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm p-6">
+          <div className="bg-gray-900 text-white rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm p-6">
             <h2 className="text-lg font-bold text-white mb-4 border-b border-[var(--color-primary)] border-opacity-30 pb-2">Shipping Configuration</h2>
             
             <div className="space-y-4">
@@ -229,7 +229,7 @@ export default function AdminSettingsPage() {
                   value={deliveryCharge}
                   onChange={(e) => setDeliveryCharge(Number(e.target.value))}
                   onWheel={(e) => (e.target as HTMLInputElement).blur()}
-                  className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                  className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
                 />
               </div>
               
@@ -240,7 +240,7 @@ export default function AdminSettingsPage() {
                   value={freeShippingThreshold}
                   onChange={(e) => setFreeShippingThreshold(Number(e.target.value))}
                   onWheel={(e) => (e.target as HTMLInputElement).blur()}
-                  className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                  className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
                 />
               </div>
             </div>
@@ -250,9 +250,9 @@ export default function AdminSettingsPage() {
 
           {activeTab === 'payments' && (
             <>
-              <div className="bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm p-6">
+              <div className="bg-gray-900 text-white rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm p-6">
                 <h2 className="text-lg font-bold text-white mb-4 border-b border-[var(--color-primary)] border-opacity-30 pb-2">UPI Settings</h2>
-                <p className="text-sm text-gray-500 mb-4">Enter your store's UPI ID. Customers choosing Pay Online will be asked to pay to this UPI ID.</p>
+                <p className="text-sm text-gray-300 mb-4">Enter your store's UPI ID. Customers choosing Pay Online will be asked to pay to this UPI ID.</p>
                 
                 <div className="space-y-4">
                   <div>
@@ -262,15 +262,15 @@ export default function AdminSettingsPage() {
                       value={upiId}
                       onChange={(e) => setUpiId(e.target.value)}
                       placeholder="Enter UPI ID"
-                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm p-6">
+              <div className="bg-gray-900 text-white rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm p-6">
                 <h2 className="text-lg font-bold text-white mb-4 border-b border-[var(--color-primary)] border-opacity-30 pb-2">Bank Details (Optional)</h2>
-                <p className="text-sm text-gray-500 mb-4">Enter your bank details for direct transfers. Leave blank if you only want to accept UPI.</p>
+                <p className="text-sm text-gray-300 mb-4">Enter your bank details for direct transfers. Leave blank if you only want to accept UPI.</p>
                 
                 <div className="space-y-4">
                   <div>
@@ -278,7 +278,7 @@ export default function AdminSettingsPage() {
                     <select 
                       value={bankName}
                       onChange={(e) => setBankName(e.target.value)}
-                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
                     >
                       <option value="">Select a Bank...</option>
                       <option value="State Bank of India (SBI)">State Bank of India (SBI)</option>
@@ -307,7 +307,7 @@ export default function AdminSettingsPage() {
                       value={accountNumber}
                       onChange={(e) => setAccountNumber(e.target.value)}
                       placeholder="Enter Account Number"
-                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
                     />
                   </div>
                   <div>
@@ -317,7 +317,7 @@ export default function AdminSettingsPage() {
                       value={ifscCode}
                       onChange={(e) => setIfscCode(e.target.value)}
                       placeholder="Enter IFSC Code"
-                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
                     />
                   </div>
                 </div>
@@ -326,7 +326,7 @@ export default function AdminSettingsPage() {
           )}
 
           {activeTab === 'security' && (
-            <div className="bg-gray-900 rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm p-6">
+            <div className="bg-gray-900 text-white rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm p-6">
               <h2 className="text-lg font-bold text-white mb-4 border-b border-[var(--color-primary)] border-opacity-30 pb-2">Change Password</h2>
               
               <form onSubmit={handleUpdatePassword} className="space-y-4 max-w-md">
@@ -349,12 +349,12 @@ export default function AdminSettingsPage() {
                       value={oldPassword}
                       onChange={(e) => setOldPassword(e.target.value)}
                       required
-                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 pr-10 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 pr-10 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-700 dark:text-gray-200 dark:hover:text-gray-200"
                     >
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
@@ -369,12 +369,12 @@ export default function AdminSettingsPage() {
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       required
-                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 pr-10 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 pr-10 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-700 dark:text-gray-200 dark:hover:text-gray-200"
                     >
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
@@ -389,12 +389,12 @@ export default function AdminSettingsPage() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
-                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 pr-10 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 pr-10 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-700 dark:text-gray-200 dark:hover:text-gray-200"
                     >
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
@@ -417,7 +417,7 @@ export default function AdminSettingsPage() {
 
           {activeTab !== 'security' && (
             <div className="flex justify-end gap-3">
-              <button className="px-6 py-2 bg-gray-100 dark:bg-gray-800 text-gray-300 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+              <button className="px-6 py-2 bg-gray-800 text-gray-300 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
                 Cancel
               </button>
               <button 

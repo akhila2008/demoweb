@@ -73,13 +73,13 @@ export default function Navbar() {
 
           {/* Desktop Icons */}
           <div className="hidden md:flex items-center space-x-6">
-            <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="text-gray-400 hover:text-[var(--color-primary)] transition-colors">
+            <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="text-gray-200 hover:text-[var(--color-primary)] transition-colors">
               <Search className="w-5 h-5" />
             </button>
-            <button onClick={handleShareSite} title="Share Website" className="text-gray-400 hover:text-[var(--color-primary)] transition-colors">
+            <button onClick={handleShareSite} title="Share Website" className="text-gray-200 hover:text-[var(--color-primary)] transition-colors">
               <Share2 className="w-5 h-5" />
             </button>
-            <Link href="/cart" className="relative text-gray-400 hover:text-[var(--color-primary)] transition-colors">
+            <Link href="/cart" className="relative text-gray-200 hover:text-[var(--color-primary)] transition-colors">
               <ShoppingCart className="w-5 h-5" />
               {totalItems > 0 && (
                 <span className="absolute -top-2 -right-2 bg-[var(--color-primary)] text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
@@ -87,17 +87,17 @@ export default function Navbar() {
                 </span>
               )}
             </Link>
-            <button onClick={() => setIsOpen(!isOpen)} className="text-gray-400 hover:text-[var(--color-primary)] focus:outline-none ml-2">
+            <button onClick={() => setIsOpen(!isOpen)} className="text-gray-200 hover:text-[var(--color-primary)] focus:outline-none ml-2">
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
 
           {/* Mobile menu and icons */}
           <div className="md:hidden flex items-center space-x-4">
-            <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="text-gray-400 hover:text-[var(--color-primary)] transition-colors">
+            <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="text-gray-200 hover:text-[var(--color-primary)] transition-colors">
               <Search className="w-5 h-5" />
             </button>
-            <Link href="/cart" className="relative text-gray-400 hover:text-[var(--color-primary)] transition-colors">
+            <Link href="/cart" className="relative text-gray-200 hover:text-[var(--color-primary)] transition-colors">
               <ShoppingCart className="w-5 h-5" />
               {totalItems > 0 && (
                 <span className="absolute -top-2 -right-2 bg-[var(--color-primary)] text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
@@ -105,7 +105,7 @@ export default function Navbar() {
                 </span>
               )}
             </Link>
-            <button onClick={() => setIsOpen(!isOpen)} className="text-gray-400 hover:text-[var(--color-primary)] focus:outline-none">
+            <button onClick={() => setIsOpen(!isOpen)} className="text-gray-200 hover:text-[var(--color-primary)] focus:outline-none">
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
@@ -122,13 +122,13 @@ export default function Navbar() {
             >
               <form onSubmit={handleSearchSubmit} className="py-4 border-t border-[var(--color-primary)] border-opacity-30 flex items-center gap-4">
                 <div className="relative flex-grow">
-                  <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-200" />
                   <input 
                     type="text" 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search for sarees, colors, or fabrics..." 
-                    className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-transparent focus:border-gray-300 dark:focus:border-gray-700 rounded-full outline-none transition-colors"
+                    className="w-full pl-12 pr-4 py-3 bg-gray-50 bg-gray-900 text-white text-white border border-transparent focus:border-gray-300 dark:focus:border-gray-700 rounded-full outline-none transition-colors"
                     autoFocus
                   />
                 </div>
@@ -146,7 +146,7 @@ export default function Navbar() {
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="absolute right-0 w-full md:w-64 bg-gray-900 border-b md:border md:border-t-0 border-[var(--color-primary)] md:rounded-bl-xl shadow-2xl shadow-[var(--color-primary)]/20"
+          className="absolute right-0 w-full md:w-64 bg-gray-900 text-white border-b md:border md:border-t-0 border-[var(--color-primary)] md:rounded-bl-xl shadow-2xl shadow-[var(--color-primary)]/20"
         >
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link href="/" onClick={() => setIsOpen(false)} className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-[var(--color-primary)] hover:bg-gray-800 rounded-md transition-colors">

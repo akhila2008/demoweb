@@ -101,7 +101,7 @@ export default function CheckoutPage() {
         <h1 className="text-3xl font-bold text-white mb-4">
           {isOnline ? 'Order Pending Verification' : 'Order Confirmed!'}
         </h1>
-        <p className="text-gray-400 mb-8 max-w-lg">
+        <p className="text-gray-200 mb-8 max-w-lg">
           {isOnline 
             ? `We have received your order details. Our team will manually verify your UPI payment and send you a confirmation message once verified. Order ID: #${orderId}`
             : `Thank you for your purchase. Your elegant sarees will reach you soon. Order ID: #${orderId}`
@@ -132,25 +132,25 @@ export default function CheckoutPage() {
             {step === 1 && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <input name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900" />
-                  <input name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900" />
+                  <input name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white" />
+                  <input name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <input name="email" type="email" placeholder="Email" value={formData.email} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900" />
-                  <input name="phone" placeholder="Phone Number" value={formData.phone} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900" />
+                  <input name="email" type="email" placeholder="Email" value={formData.email} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white" />
+                  <input name="phone" placeholder="Phone Number" value={formData.phone} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white" />
                 </div>
-                <input name="address" placeholder="Complete Address" value={formData.address} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900" />
+                <input name="address" placeholder="Complete Address" value={formData.address} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white" />
                 <div className="grid grid-cols-3 gap-4">
-                  <input name="city" placeholder="City" value={formData.city} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900" />
-                  <input name="state" placeholder="State" value={formData.state} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900" />
-                  <input name="pincode" placeholder="PIN Code" value={formData.pincode} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 dark:bg-gray-900" />
+                  <input name="city" placeholder="City" value={formData.city} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white" />
+                  <input name="state" placeholder="State" value={formData.state} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white" />
+                  <input name="pincode" placeholder="PIN Code" value={formData.pincode} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white" />
                 </div>
                 <button 
                   onClick={() => setStep(2)} 
                   disabled={!isAddressValid}
                   className={`px-6 py-3 rounded-md font-medium mt-4 transition-colors ${
                     !isAddressValid 
-                      ? 'bg-gray-300 dark:bg-gray-800 text-gray-500 cursor-not-allowed' 
+                      ? 'bg-gray-300 dark:bg-gray-800 text-gray-300 cursor-not-allowed' 
                       : 'bg-[var(--color-primary)] text-white hover:bg-[#600000]'
                   }`}
                 >
@@ -169,23 +169,23 @@ export default function CheckoutPage() {
             
             {step === 2 && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
-                <label className="flex items-center p-4 border border-[var(--color-primary)] border-opacity-30 rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900">
+                <label className="flex items-center p-4 border border-[var(--color-primary)] border-opacity-30 rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 text-white">
                   <input type="radio" name="paymentMethod" value="ONLINE" checked={formData.paymentMethod === 'ONLINE'} onChange={handleInputChange} className="text-[var(--color-primary)]" />
                   <CreditCard className="w-6 h-6 ml-4 mr-4 text-[var(--color-primary)]" />
                   <div>
                     <div className="font-medium text-white">Pay Online (UPI / Bank Transfer)</div>
-                    <div className="text-sm text-gray-500">Google Pay, PhonePe, Paytm, Navi</div>
+                    <div className="text-sm text-gray-300">Google Pay, PhonePe, Paytm, Navi</div>
                   </div>
                 </label>
                 
                 {formData.paymentMethod === 'ONLINE' && (
-                  <div className="ml-8 p-4 bg-gray-50 dark:bg-gray-900 rounded-md border border-[var(--color-primary)] border-opacity-30 space-y-4">
-                    <p className="text-sm text-gray-400">
+                  <div className="ml-8 p-4 bg-gray-50 bg-gray-900 text-white text-white rounded-md border border-[var(--color-primary)] border-opacity-30 space-y-4">
+                    <p className="text-sm text-gray-200">
                       Select your preferred UPI app below to make a secure payment of <strong>₹{grandTotal.toLocaleString('en-IN')}</strong>, then click Place Order.
                     </p>
                     
-                    <div className="bg-gray-900 p-4 rounded border border-gray-200 dark:border-gray-700">
-                      <div className="text-xs text-gray-500 mb-1">Pay via UPI</div>
+                    <div className="bg-gray-900 text-white p-4 rounded border border-gray-200 dark:border-gray-700">
+                      <div className="text-xs text-gray-300 mb-1">Pay via UPI</div>
                       <div className="font-bold text-lg select-all">{storeSettings?.upiId || '8143227553@ybl'}</div>
                       <div className="flex flex-wrap gap-2 mt-3">
                         <button onClick={() => { window.location.href = `upi://pay?pa=${storeSettings?.upiId || '8143227553@ybl'}&pn=AkhilaSarees&tr=ORD${Math.floor(Math.random() * 1000000)}&am=${grandTotal}&cu=INR`; handlePayment(); }} className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded text-xs font-medium transition-colors">Google Pay</button>
@@ -197,23 +197,23 @@ export default function CheckoutPage() {
 
                     {storeSettings?.accountNumber && (
                       <div className="bg-gray-900 p-4 rounded border border-gray-200 dark:border-gray-700 text-sm">
-                        <div className="text-xs text-gray-500 mb-2">Direct Bank Transfer</div>
+                        <div className="text-xs text-gray-300 mb-2">Direct Bank Transfer</div>
                         <div className="grid grid-cols-2 gap-2">
-                          <div className="text-gray-500">Bank Name:</div><div className="font-medium">{storeSettings.bankName}</div>
-                          <div className="text-gray-500">Account No:</div><div className="font-medium select-all">{storeSettings.accountNumber}</div>
-                          <div className="text-gray-500">IFSC Code:</div><div className="font-medium select-all">{storeSettings.ifscCode}</div>
+                          <div className="text-gray-300">Bank Name:</div><div className="font-medium">{storeSettings.bankName}</div>
+                          <div className="text-gray-300">Account No:</div><div className="font-medium select-all">{storeSettings.accountNumber}</div>
+                          <div className="text-gray-300">IFSC Code:</div><div className="font-medium select-all">{storeSettings.ifscCode}</div>
                         </div>
                       </div>
                     )}
                   </div>
                 )}
                 
-                <label className="flex items-center p-4 border border-[var(--color-primary)] border-opacity-30 rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900">
+                <label className="flex items-center p-4 border border-[var(--color-primary)] border-opacity-30 rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900 text-white">
                   <input type="radio" name="paymentMethod" value="COD" checked={formData.paymentMethod === 'COD'} onChange={handleInputChange} className="text-[var(--color-primary)]" />
-                  <Wallet className="w-6 h-6 ml-4 mr-4 text-gray-500" />
+                  <Wallet className="w-6 h-6 ml-4 mr-4 text-gray-300" />
                   <div>
                     <div className="font-medium text-white">Cash on Delivery</div>
-                    <div className="text-sm text-gray-500">Pay when you receive the order</div>
+                    <div className="text-sm text-gray-300">Pay when you receive the order</div>
                   </div>
                 </label>
                 
@@ -258,7 +258,7 @@ export default function CheckoutPage() {
                   </div>
                   <div>
                     <div className="font-medium text-sm text-white line-clamp-2">{item.name}</div>
-                    <div className="text-xs text-gray-500">Qty: {item.quantity}</div>
+                    <div className="text-xs text-gray-300">Qty: {item.quantity}</div>
                     <div className="font-medium text-[var(--color-primary)]">₹{(item.price * item.quantity).toLocaleString('en-IN')}</div>
                   </div>
                 </div>
@@ -267,11 +267,11 @@ export default function CheckoutPage() {
 
             <div className="border-t border-[var(--color-primary)] border-opacity-30 pt-4 space-y-2 text-sm mb-4">
               <div className="flex justify-between">
-                <span className="text-gray-400">Subtotal</span>
+                <span className="text-gray-200">Subtotal</span>
                 <span>₹{total.toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400">Shipping</span>
+                <span className="text-gray-200">Shipping</span>
                 <span>{shipping === 0 ? <span className="text-green-600">Free</span> : `₹${shipping}`}</span>
               </div>
             </div>
