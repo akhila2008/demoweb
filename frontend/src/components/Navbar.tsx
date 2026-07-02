@@ -3,9 +3,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ShoppingCart, User, Menu, X, Search, Share2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useCart } from '@/context/CartContext';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { totalItems } = useCart();
 
   const handleShareSite = async () => {
     const shareData = {
@@ -62,9 +64,11 @@ export default function Navbar() {
             </button>
             <Link href="/cart" className="relative text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
               <ShoppingCart className="w-5 h-5" />
-              <span className="absolute -top-2 -right-2 bg-[var(--color-primary)] text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
-                0
-              </span>
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-[var(--color-primary)] text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
             </Link>
             <Link href="/login" className="text-gray-600 dark:text-gray-400 hover:text-[var(--color-primary)] transition-colors">
               <User className="w-5 h-5" />

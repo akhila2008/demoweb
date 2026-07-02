@@ -2,8 +2,9 @@
 import { useState, use, useEffect } from 'react';
 import { loadProducts } from '@/lib/storage';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Heart, Share2, Star, Truck, ShieldCheck, Ruler } from 'lucide-react';
+import { ShoppingCart, Heart, Share2, Star, Truck, ShieldCheck, Check } from 'lucide-react';
 import Link from 'next/link';
+import { useCart } from '@/context/CartContext';
 
 const MOCK_PRODUCT = {
   id: '1',
@@ -29,6 +30,24 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
   const [activeImage, setActiveImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const { addToCart } = useCart();
+  const [added, setAdded] = useState(false);
+
+  const handleAddToCart = () => {
+    if (product) {
+      addToCart({
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.images[0],
+        color: product.color,
+        quantity: quantity,
+        maxStock: product.stock
+      });
+      setAdded(true);
+      setTimeout(() => setAdded(false), 2000);
+    }
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -216,8 +235,22 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
               >+</button>
             </div>
             
-            <button className="flex-grow bg-[var(--color-primary)] hover:bg-[#600000] text-white h-12 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors shadow-md">
-              <ShoppingCart className="w-5 h-5" /> Add to Cart
+            <button 
+              onClick={handleAddToCart}
+              disabled={product.stock === 0}
+              className={`flex-grow h-12 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors shadow-md ${
+                added 
+                  ? 'bg-green-600 hover:bg-green-700 text-white' 
+                  : product.stock === 0 
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-[var(--color-primary)] hover:bg-[#600000] text-white'
+              }`}
+            >
+              {added ? (
+                <><Check className="w-5 h-5" /> Added to Cart</>
+              ) : (
+                <><ShoppingCart className="w-5 h-5" /> {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</>
+              )}
             </button>
             
             <button className="h-12 w-12 flex items-center justify-center border border-gray-300 dark:border-gray-700 rounded-lg hover:border-[var(--color-indian-magenta)] hover:text-[var(--color-indian-magenta)] transition-colors shrink-0">
