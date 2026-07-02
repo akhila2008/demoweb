@@ -32,13 +32,22 @@ export default function AdminCustomersPage() {
 
         {/* Empty State */}
         <div className="p-16 flex flex-col items-center justify-center text-center">
-          <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
-            <Users className="w-10 h-10 text-gray-400" />
+          <div className="w-20 h-20 bg-[var(--color-primary)]/10 dark:bg-[var(--color-primary)]/20 rounded-full flex items-center justify-center mb-6 border-4 border-white dark:border-[#121212] shadow-sm">
+            <Users className="w-10 h-10 text-[var(--color-primary)]" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No customers yet</h2>
-          <p className="text-gray-500 max-w-md">
-            When users sign up for an account on your website to make a purchase, their profiles and contact information will appear here.
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">Customer Database Secured</h2>
+          <p className="text-gray-600 dark:text-gray-400 max-w-md mb-8 leading-relaxed">
+            For maximum security and privacy, your customer profiles, passwords, and sensitive information are securely managed directly inside your Supabase Vault.
           </p>
+          <a 
+            href="https://supabase.com/dashboard/project/_/auth/users" 
+            target="_blank" 
+            rel="noreferrer"
+            className="bg-gray-900 dark:bg-white text-white dark:text-black px-8 py-3.5 rounded-lg font-semibold hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors shadow-md flex items-center gap-2"
+          >
+            <Users className="w-5 h-5" />
+            View Customers in Supabase
+          </a>
         </div>
         
       </div>
