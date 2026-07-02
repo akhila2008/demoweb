@@ -275,13 +275,30 @@ export default function AdminSettingsPage() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bank Name</label>
-                    <input 
-                      type="text" 
+                    <select 
                       value={bankName}
                       onChange={(e) => setBankName(e.target.value)}
-                      placeholder="e.g. State Bank of India"
                       className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-3 dark:bg-gray-900 focus:ring-[var(--color-primary)]"
-                    />
+                    >
+                      <option value="">Select a Bank...</option>
+                      <option value="State Bank of India (SBI)">State Bank of India (SBI)</option>
+                      <option value="HDFC Bank">HDFC Bank</option>
+                      <option value="ICICI Bank">ICICI Bank</option>
+                      <option value="Axis Bank">Axis Bank</option>
+                      <option value="Punjab National Bank (PNB)">Punjab National Bank (PNB)</option>
+                      <option value="Bank of Baroda">Bank of Baroda</option>
+                      <option value="Kotak Mahindra Bank">Kotak Mahindra Bank</option>
+                      <option value="Canara Bank">Canara Bank</option>
+                      <option value="Union Bank of India">Union Bank of India</option>
+                      <option value="Bank of India">Bank of India</option>
+                      <option value="IndusInd Bank">IndusInd Bank</option>
+                      <option value="Yes Bank">Yes Bank</option>
+                      <option value="IDFC First Bank">IDFC First Bank</option>
+                      <option value="Federal Bank">Federal Bank</option>
+                      <option value="Indian Bank">Indian Bank</option>
+                      <option value="Central Bank of India">Central Bank of India</option>
+                      <option value="Other">Other...</option>
+                    </select>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Account Number</label>
