@@ -373,17 +373,6 @@ export default function CheckoutPage() {
                         </div>
                       </div>
                     </div>
-
-                    {storeSettings?.accountNumber && (
-                      <div className="bg-gray-900 p-4 rounded border border-gray-200 dark:border-gray-700 text-sm">
-                        <div className="text-xs text-gray-300 mb-2">Direct Bank Transfer</div>
-                        <div className="grid grid-cols-2 gap-2">
-                          <div className="text-gray-300">Bank Name:</div><div className="font-medium">{storeSettings.bankName}</div>
-                          <div className="text-gray-300">Account No:</div><div className="font-medium select-all">{storeSettings.accountNumber}</div>
-                          <div className="text-gray-300">IFSC Code:</div><div className="font-medium select-all">{storeSettings.ifscCode}</div>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 )}
                 
