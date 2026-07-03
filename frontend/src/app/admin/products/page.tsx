@@ -135,7 +135,9 @@ export default function AdminProductsPage() {
         price: Number(newProduct.price),
         stock: Number(newProduct.stock),
         category_id: newProduct.category_id,
-        description: newProduct.description
+        description: newProduct.description,
+        colors: newProduct.colors,
+        occasions: newProduct.occasions
       };
 
       if (editingProductId) {
