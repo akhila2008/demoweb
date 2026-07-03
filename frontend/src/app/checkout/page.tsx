@@ -91,15 +91,16 @@ export default function CheckoutPage() {
       const { data, error } = await supabase
         .from('offers')
         .select('*')
-        .ilike('code', couponCode.trim())
-        .eq('status', 'Active')
+        .ilike('data->>code', couponCode.trim())
+        .eq('data->>status', 'Active')
         .single();
         
       if (error || !data) {
         setCouponError('Invalid or expired coupon code');
         setAppliedCoupon(null);
       } else {
-        setAppliedCoupon(data);
+        // Extract the nested 'data' object which contains the coupon details
+        setAppliedCoupon(data.data);
       }
     } catch (err) {
       setCouponError('Failed to verify coupon');

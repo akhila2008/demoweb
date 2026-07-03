@@ -32,7 +32,8 @@ export default function AdminOffersPage() {
         .order('created_at', { ascending: false });
         
       if (!error && data) {
-        setOffers(data);
+        // Extract the nested 'data' object for state
+        setOffers(data.map(d => ({ ...d.data, db_id: d.id })));
       }
     } catch (e) {
       console.error('Failed to load offers from database', e);
@@ -65,7 +66,8 @@ export default function AdminOffersPage() {
     }
     
     if (editingOfferId) {
-      const updateData = {
+      const updatedOfferData = {
+        id: editingOfferId,
         title: newOffer.title,
         code: newOffer.code ? newOffer.code.trim().toUpperCase() : '',
         discount: newOffer.discount,
@@ -73,13 +75,14 @@ export default function AdminOffersPage() {
         image: imageUrl || null
       };
 
-      const { error } = await supabase.from('offers').update(updateData).eq('id', editingOfferId);
+      const { error } = await supabase.from('offers').update({ data: updatedOfferData }).eq('id', editingOfferId);
       if (!error) {
-        setOffers(offers.map(o => o.id === editingOfferId ? { ...o, ...updateData } : o));
+        setOffers(offers.map(o => o.id === editingOfferId ? { ...o, ...updatedOfferData } : o));
       }
     } else {
-      const addedOffer = {
-        id: Math.random().toString(36).substr(2, 9),
+      const newId = Math.random().toString(36).substr(2, 9);
+      const addedOfferData = {
+        id: newId,
         title: newOffer.title,
         code: newOffer.code ? newOffer.code.trim().toUpperCase() : '',
         discount: newOffer.discount,
@@ -87,9 +90,9 @@ export default function AdminOffersPage() {
         image: imageUrl || null
       };
       
-      const { error } = await supabase.from('offers').insert([addedOffer]);
+      const { error } = await supabase.from('offers').insert([{ id: newId, data: addedOfferData }]);
       if (!error) {
-        setOffers([...offers, addedOffer]);
+        setOffers([...offers, addedOfferData]);
       }
     }
 
