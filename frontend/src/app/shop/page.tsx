@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useMemo, Suspense } from 'react';
-import { loadProducts } from '@/lib/storage';
+import { supabase } from '@/lib/supabaseClient';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Filter, ChevronDown, SlidersHorizontal, Check, Heart } from 'lucide-react';
@@ -21,12 +21,34 @@ function ShopContent() {
   const [activeFilters, setActiveFilters] = useState({ fabrics: [] as string[], price: '', colors: [] as string[], occasions: [] as string[] });
 
   useEffect(() => {
-    // Sync with products added in the admin panel via IndexedDB
     const fetchInitialData = async () => {
       try {
-        const savedProducts = await loadProducts();
-        if (savedProducts && savedProducts.length > 0) {
-          setProducts(savedProducts);
+        const { data: prods, error } = await supabase
+          .from('products')
+          .select(`
+            id, name, price, stock, description, is_active,
+            categories ( name ),
+            product_images ( id, url, sort_order ),
+            colors, occasions
+          `)
+          .eq('is_active', true)
+          .order('created_at', { ascending: false });
+          
+        if (error) throw error;
+        
+        if (prods) {
+          const mapped = prods.map(p => {
+            const sortedImages = (p.product_images || []).sort((a: any, b: any) => a.sort_order - b.sort_order);
+            return {
+              ...p,
+              category: (p.categories as any)?.name || 'Uncategorized',
+              images: sortedImages,
+              image: sortedImages.length > 0 ? sortedImages[0].url : '',
+              colors: p.colors || [],
+              occasions: p.occasions || []
+            };
+          });
+          setProducts(mapped);
         }
       } catch (e) {
         console.error('Failed to load products in shop', e);
@@ -34,11 +56,6 @@ function ShopContent() {
     };
     
     fetchInitialData();
-    
-    // Listen for cross-component updates
-    const handleUpdate = () => fetchInitialData();
-    window.addEventListener('akhila_products_updated', handleUpdate);
-    return () => window.removeEventListener('akhila_products_updated', handleUpdate);
   }, []);
 
   const handleFabricToggle = (fabric: string) => {

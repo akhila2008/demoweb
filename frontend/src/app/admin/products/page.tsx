@@ -67,6 +67,8 @@ export default function AdminProductsPage() {
           category: (p.categories as any)?.name,
           images: sortedImages,
           image: sortedImages.length > 0 ? sortedImages[0].url : '',
+          colors: p.colors || [],
+          occasions: p.occasions || []
         };
       });
       setProducts(mapped);
@@ -174,8 +176,8 @@ export default function AdminProductsPage() {
       category_id: product.category_id || (categories.length > 0 ? categories[0].id : ''),
       description: product.description || '',
       groupId: '',
-      colors: [],
-      occasions: []
+      colors: product.colors || [],
+      occasions: product.occasions || []
     });
     setExistingImages(product.images || []);
     setPreviewImages([]);
@@ -441,6 +443,47 @@ export default function AdminProductsPage() {
                     className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white focus:ring-[var(--color-primary)] min-h-[80px]" 
                     placeholder="Brief description..."
                   />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Available Colors</label>
+                  <div className="flex flex-wrap gap-2 max-h-[150px] overflow-y-auto p-2 border border-gray-700 rounded-lg">
+                    {AVAILABLE_COLORS.map(c => (
+                      <label key={c.name} className="flex items-center space-x-2 bg-black px-3 py-1.5 rounded-full border border-gray-800 cursor-pointer hover:border-gray-600 transition-colors">
+                        <input 
+                          type="checkbox" 
+                          checked={newProduct.colors.includes(c.name)}
+                          onChange={(e) => {
+                            if (e.target.checked) setNewProduct({...newProduct, colors: [...newProduct.colors, c.name]});
+                            else setNewProduct({...newProduct, colors: newProduct.colors.filter(col => col !== c.name)});
+                          }}
+                          className="rounded bg-gray-900 border-gray-700 text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+                        />
+                        <span className="w-4 h-4 rounded-full border border-gray-700" style={{ backgroundColor: c.hex }}></span>
+                        <span className="text-sm text-gray-300">{c.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Occasions</label>
+                  <div className="flex flex-wrap gap-2 p-2 border border-gray-700 rounded-lg">
+                    {['Wedding', 'Party', 'Casual', 'Festival', 'Office', 'Bridal'].map(occ => (
+                      <label key={occ} className="flex items-center space-x-2 bg-black px-3 py-1.5 rounded-full border border-gray-800 cursor-pointer hover:border-gray-600 transition-colors">
+                        <input 
+                          type="checkbox" 
+                          checked={newProduct.occasions.includes(occ)}
+                          onChange={(e) => {
+                            if (e.target.checked) setNewProduct({...newProduct, occasions: [...newProduct.occasions, occ]});
+                            else setNewProduct({...newProduct, occasions: newProduct.occasions.filter(o => o !== occ)});
+                          }}
+                          className="rounded bg-gray-900 border-gray-700 text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+                        />
+                        <span className="text-sm text-gray-300">{occ}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="pt-4 flex gap-3 shrink-0">

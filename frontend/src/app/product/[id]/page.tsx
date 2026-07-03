@@ -1,6 +1,6 @@
 'use client';
 import { useState, use, useEffect } from 'react';
-import { loadProducts } from '@/lib/storage';
+import { supabase } from '@/lib/supabaseClient';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Heart, Share2, Star, Truck, ShieldCheck, Check, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
@@ -60,37 +60,31 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const savedProducts = await loadProducts();
-        const foundProduct = savedProducts.find((p: any) => p.id === unwrappedParams.id);
-        
-        if (foundProduct) {
-          // Find linked products for color swatches
-          let variants: any[] = [];
-          if (foundProduct.groupId) {
-            variants = savedProducts.filter((p: any) => p.groupId === foundProduct.groupId);
-          } else {
-            variants = [foundProduct]; // just itself
-          }
-          setLinkedVariants(variants);
-
-          // Adapt the product structure
-          setProduct({
-            id: foundProduct.id,
-            name: foundProduct.name,
-            price: foundProduct.price,
-            description: `Experience the epitome of elegance with this authentic ${foundProduct.category} saree. Perfect for any occasion with a stunning design.`,
-            fabric: foundProduct.category,
-            color: foundProduct.colors && foundProduct.colors.length > 0 ? foundProduct.colors.join(', ') : 'As shown',
+        const { data: p, error } = await supabase
+          .from('products')
+          .select(`
+            id, name, price, stock, description, is_active,
+            categories ( name ),
+            product_images ( id, url, sort_order ),
+            colors, occasions
+          `)
+          .eq('id', unwrappedParams.id)
+          .single();
+          
+        if (p) {
+          const sortedImages = (p.product_images || []).sort((a: any, b: any) => a.sort_order - b.sort_order);
+          const mappedProduct = {
+            ...p,
+            category: (p.categories as any)?.name || 'Uncategorized',
+            images: sortedImages.map((img: any) => img.url),
+            color: (p.colors && p.colors.length > 0) ? p.colors.join(', ') : 'Not Specified',
+            fabric: (p.categories as any)?.name || 'Premium Saree',
             blouse: 'Includes 0.8m unstitched matching blouse piece',
             washCare: 'Dry Clean Only. Keep away from direct sunlight.',
-            stock: foundProduct.stock,
-            isVideo: foundProduct.isVideo,
-            isVideos: foundProduct.isVideos,
-            // Use dynamic images array if available, otherwise mock it
-            images: foundProduct.images && foundProduct.images.length > 0 
-              ? foundProduct.images 
-              : [foundProduct.image]
-          });
+            images: sortedImages.map((img: any) => img.url)
+          };
+          setProduct(mappedProduct);
+          setLinkedVariants([]);
         }
       } catch (e) {
         console.error(e);

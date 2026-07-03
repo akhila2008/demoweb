@@ -38,7 +38,9 @@ export async function addProduct(productData: any, imageUrls: string[]) {
     description: productData.description || '',
     price: productData.price,
     stock: productData.stock,
-    is_active: true
+    is_active: true,
+    colors: productData.colors || [],
+    occasions: productData.occasions || []
   }).select().single();
 
   if (error) throw error;
@@ -67,7 +69,9 @@ export async function updateProduct(productId: string, productData: any, imageUr
     description: productData.description || '',
     price: productData.price,
     stock: productData.stock,
-    is_active: productData.is_active !== undefined ? productData.is_active : true
+    is_active: productData.is_active !== undefined ? productData.is_active : true,
+    colors: productData.colors || [],
+    occasions: productData.occasions || []
   }).eq('id', productId);
 
   if (error) throw error;
