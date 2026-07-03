@@ -414,6 +414,51 @@ export default function CheckoutPage() {
             )}
           </div>
 
+          {/* Coupon Code Block */}
+          <div className={`bg-gray-900 p-6 rounded-xl border ${step === 2 ? 'border-[var(--color-primary)] shadow-md mb-6' : 'border-[var(--color-primary)] border-opacity-30 opacity-60 mb-6'}`}>
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <span className="bg-[var(--color-primary)] text-white w-6 h-6 rounded-full flex items-center justify-center text-sm">%</span> 
+              Apply Coupon
+            </h2>
+            
+            {step === 2 ? (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
+                <div className="flex gap-2">
+                  <input 
+                    type="text" 
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                    placeholder="Enter code" 
+                    disabled={!!appliedCoupon}
+                    className="flex-1 bg-black border border-[var(--color-primary)] border-opacity-50 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[var(--color-primary)] disabled:opacity-50"
+                  />
+                  {appliedCoupon ? (
+                    <button 
+                      onClick={() => { setAppliedCoupon(null); setCouponCode(''); }}
+                      className="bg-red-900/30 text-red-500 border border-red-900/50 hover:bg-red-900/50 px-4 py-2 rounded-lg font-medium transition-colors"
+                    >
+                      Remove
+                    </button>
+                  ) : (
+                    <button 
+                      onClick={handleApplyCoupon}
+                      disabled={!couponCode.trim() || isApplyingCoupon}
+                      className="bg-[var(--color-primary)] hover:bg-[#600000] text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
+                    >
+                      {isApplyingCoupon ? '...' : 'Apply'}
+                    </button>
+                  )}
+                </div>
+                {couponError && <p className="text-red-500 text-xs mt-2">{couponError}</p>}
+                {appliedCoupon && <p className="text-green-500 text-xs mt-2">Coupon '{appliedCoupon.code}' applied! (₹{discountAmount} off)</p>}
+              </motion.div>
+            ) : (
+              <div className="text-gray-400 text-sm">
+                Complete address step first
+              </div>
+            )}
+          </div>
+
           {/* Payment Step */}
           <div className={`bg-gray-900 p-6 rounded-xl border ${step === 2 ? 'border-[var(--color-primary)] shadow-md' : 'border-[var(--color-primary)] border-opacity-30 opacity-60'}`}>
             <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
@@ -495,38 +540,6 @@ export default function CheckoutPage() {
                   </div>
                 </div>
               ))}
-            </div>
-
-            <div className="mb-6 border-b border-[var(--color-primary)] border-opacity-30 pb-6">
-              <label className="block text-sm font-medium text-gray-300 mb-2">Have a coupon code?</label>
-              <div className="flex gap-2">
-                <input 
-                  type="text" 
-                  value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                  placeholder="Enter code" 
-                  disabled={!!appliedCoupon}
-                  className="flex-1 bg-gray-900 border border-[var(--color-primary)] border-opacity-50 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[var(--color-primary)] disabled:opacity-50"
-                />
-                {appliedCoupon ? (
-                  <button 
-                    onClick={() => { setAppliedCoupon(null); setCouponCode(''); }}
-                    className="bg-red-900/30 text-red-500 border border-red-900/50 hover:bg-red-900/50 px-4 py-2 rounded-lg font-medium transition-colors"
-                  >
-                    Remove
-                  </button>
-                ) : (
-                  <button 
-                    onClick={handleApplyCoupon}
-                    disabled={!couponCode.trim() || isApplyingCoupon}
-                    className="bg-[var(--color-primary)] hover:bg-[#600000] text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
-                  >
-                    {isApplyingCoupon ? '...' : 'Apply'}
-                  </button>
-                )}
-              </div>
-              {couponError && <p className="text-red-500 text-xs mt-2">{couponError}</p>}
-              {appliedCoupon && <p className="text-green-500 text-xs mt-2">Coupon '{appliedCoupon.code}' applied!</p>}
             </div>
 
             <div className="border-t border-[var(--color-primary)] border-opacity-30 pt-4 space-y-2 text-sm mb-4">
