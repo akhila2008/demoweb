@@ -170,16 +170,39 @@ export default function CheckoutPage() {
   };
 
   const handleApplyCoupon = async () => {
-    // Basic implementation
     if (!couponCode) return;
     setIsApplyingCoupon(true);
     setCouponError('');
-    // Mock check
-    if (couponCode === 'WELCOME10') {
-      setAppliedCoupon({ code: 'WELCOME10', discount: '10%' });
-    } else {
-      setCouponError('Invalid coupon code');
+    
+    try {
+      // First try to fetch from the database
+      const { data, error } = await supabase.from('offers').select('*');
+      
+      let foundCoupon = false;
+      if (!error && data) {
+        const offerData = data.find(o => o.data?.code === couponCode.trim().toUpperCase() && o.data?.status === 'Active');
+        if (offerData) {
+          setAppliedCoupon({ code: offerData.data.code, discount: offerData.data.discount });
+          foundCoupon = true;
+        }
+      }
+      
+      if (!foundCoupon) {
+        // Fallback or hardcoded checks
+        if (couponCode.toUpperCase() === 'WELCOME10') {
+          setAppliedCoupon({ code: 'WELCOME10', discount: '10%' });
+        } else if (couponCode.toUpperCase() === 'SAVE20') {
+          setAppliedCoupon({ code: 'SAVE20', discount: '20%' });
+        } else if (couponCode.toUpperCase() === 'FLAT500') {
+          setAppliedCoupon({ code: 'FLAT500', discount: '500' });
+        } else {
+          setCouponError('Invalid coupon code');
+        }
+      }
+    } catch (e) {
+      setCouponError('Error applying coupon. Please try again.');
     }
+    
     setIsApplyingCoupon(false);
   };
 
@@ -554,6 +577,29 @@ export default function CheckoutPage() {
             </button>
             <p className="text-xs text-gray-400 text-center mb-6">Choose a shipping address and payment method to calculate shipping, handling, and tax.</p>
             
+            {/* Coupon Code section (Moved above Order Summary) */}
+            <div className="mb-8 border-b border-gray-800 pb-6">
+              <h4 className="text-sm font-bold text-white mb-2">Gift Cards & Promotional Codes</h4>
+              <div className="flex gap-2">
+                <input 
+                  type="text" 
+                  placeholder="Enter Code"
+                  value={couponCode}
+                  onChange={e => setCouponCode(e.target.value)}
+                  className="w-full bg-[#222] border border-gray-700 rounded p-2 text-white text-sm focus:ring-[var(--color-primary)]" 
+                />
+                <button 
+                  onClick={handleApplyCoupon}
+                  disabled={isApplyingCoupon || !couponCode}
+                  className="bg-gray-800 hover:bg-gray-700 disabled:opacity-50 text-white px-4 py-2 rounded text-sm transition-colors border border-gray-600 font-medium"
+                >
+                  Apply
+                </button>
+              </div>
+              {couponError && <p className="text-red-500 text-xs mt-1">{couponError}</p>}
+              {appliedCoupon && <p className="text-green-500 text-xs mt-1">Coupon '{appliedCoupon.code}' applied!</p>}
+            </div>
+            
             <h3 className="font-bold text-lg text-white mb-4">Order Summary</h3>
             
             <div className="space-y-2 text-sm text-gray-300">
@@ -582,28 +628,6 @@ export default function CheckoutPage() {
                 <span className="font-bold text-[#B12704] text-xl">Order Total:</span>
                 <span className="font-bold text-[#B12704] text-xl">₹{grandTotal.toLocaleString('en-IN')}</span>
               </div>
-            </div>
-
-            {/* Coupon Code section */}
-            <div className="mt-8 border-t border-gray-800 pt-6">
-              <h4 className="text-sm font-bold text-white mb-2">Gift Cards & Promotional Codes</h4>
-              <div className="flex gap-2">
-                <input 
-                  type="text" 
-                  placeholder="Enter Code"
-                  value={couponCode}
-                  onChange={e => setCouponCode(e.target.value)}
-                  className="w-full bg-[#222] border border-gray-700 rounded p-2 text-white text-sm" 
-                />
-                <button 
-                  onClick={handleApplyCoupon}
-                  disabled={isApplyingCoupon || !couponCode}
-                  className="bg-gray-800 hover:bg-gray-700 disabled:opacity-50 text-white px-4 py-2 rounded text-sm transition-colors border border-gray-600"
-                >
-                  Apply
-                </button>
-              </div>
-              {couponError && <p className="text-red-500 text-xs mt-1">{couponError}</p>}
             </div>
 
           </div>
