@@ -189,11 +189,12 @@ export default function CheckoutPage() {
       
       if (!foundCoupon) {
         // Fallback or hardcoded checks
-        if (couponCode.toUpperCase() === 'WELCOME10') {
+        const cleanCode = couponCode.trim().toUpperCase();
+        if (cleanCode === 'WELCOME10') {
           setAppliedCoupon({ code: 'WELCOME10', discount: '10%' });
-        } else if (couponCode.toUpperCase() === 'SAVE20') {
+        } else if (cleanCode === 'SAVE20') {
           setAppliedCoupon({ code: 'SAVE20', discount: '20%' });
-        } else if (couponCode.toUpperCase() === 'FLAT500') {
+        } else if (cleanCode === 'FLAT500') {
           setAppliedCoupon({ code: 'FLAT500', discount: '500' });
         } else {
           setCouponError('Invalid coupon code');
