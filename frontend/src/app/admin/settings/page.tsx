@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Settings, Save, Lock, Store, Bell, CreditCard, Eye, EyeOff } from 'lucide-react';
+import { supabase } from '@/lib/supabaseClient';
 
 export default function AdminSettingsPage() {
   const [storeName, setStoreName] = useState('Akhila Sarees');
@@ -29,62 +30,105 @@ export default function AdminSettingsPage() {
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
-    const saved = localStorage.getItem('akhila_store_settings');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed.storeName) setStoreName(parsed.storeName);
-        if (parsed.email) setEmail(parsed.email);
-        if (parsed.contactPhone) setContactPhone(parsed.contactPhone);
-        if (parsed.currency) setCurrency(parsed.currency);
-        if (parsed.deliveryCharge !== undefined) setDeliveryCharge(parsed.deliveryCharge);
-        if (parsed.freeShippingThreshold !== undefined) setFreeShippingThreshold(parsed.freeShippingThreshold);
-        if (parsed.freeShippingThreshold !== undefined) setFreeShippingThreshold(parsed.freeShippingThreshold);
-        if (parsed.upiId) setUpiId(parsed.upiId);
-        if (parsed.bankName) setBankName(parsed.bankName);
-        if (parsed.accountNumber) setAccountNumber(parsed.accountNumber);
-        if (parsed.ifscCode) setIfscCode(parsed.ifscCode);
-      } catch (e) {}
-    }
+    fetchSettings();
   }, []);
 
-  const handleSave = () => {
+  const fetchSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('store_settings')
+        .select('*')
+        .eq('id', 'default')
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        if (data.store_name) setStoreName(data.store_name);
+        if (data.email) setEmail(data.email);
+        if (data.contact_phone) setContactPhone(data.contact_phone);
+        if (data.currency) setCurrency(data.currency);
+        if (data.delivery_charge !== undefined) setDeliveryCharge(data.delivery_charge);
+        if (data.free_shipping_threshold !== undefined) setFreeShippingThreshold(data.free_shipping_threshold);
+        if (data.upi_id) setUpiId(data.upi_id);
+        if (data.bank_name) setBankName(data.bank_name);
+        if (data.account_number) setAccountNumber(data.account_number);
+        if (data.ifsc_code) setIfscCode(data.ifsc_code);
+      }
+    } catch (err) {
+      console.error('Error fetching settings:', err);
+      // Fallback to localStorage if db isn't setup
+      const saved = localStorage.getItem('akhila_store_settings');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed.storeName) setStoreName(parsed.storeName);
+          if (parsed.email) setEmail(parsed.email);
+          if (parsed.contactPhone) setContactPhone(parsed.contactPhone);
+          if (parsed.currency) setCurrency(parsed.currency);
+          if (parsed.deliveryCharge !== undefined) setDeliveryCharge(parsed.deliveryCharge);
+          if (parsed.freeShippingThreshold !== undefined) setFreeShippingThreshold(parsed.freeShippingThreshold);
+          if (parsed.upiId) setUpiId(parsed.upiId);
+          if (parsed.bankName) setBankName(parsed.bankName);
+          if (parsed.accountNumber) setAccountNumber(parsed.accountNumber);
+          if (parsed.ifscCode) setIfscCode(parsed.ifscCode);
+        } catch (e) {}
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSave = async () => {
     setIsSaving(true);
     
-    // Save to localStorage
-    const settings = {
-      storeName,
+    const dbSettings = {
+      store_name: storeName,
       email,
-      contactPhone,
+      contact_phone: contactPhone,
       currency,
-      deliveryCharge: Number(deliveryCharge),
-      freeShippingThreshold: Number(freeShippingThreshold),
-      upiId,
-      bankName,
-      accountNumber,
-      ifscCode
+      delivery_charge: Number(deliveryCharge),
+      free_shipping_threshold: Number(freeShippingThreshold),
+      upi_id: upiId,
+      bank_name: bankName,
+      account_number: accountNumber,
+      ifsc_code: ifscCode,
+      updated_at: new Date().toISOString()
     };
-    localStorage.setItem('akhila_store_settings', JSON.stringify(settings));
-
-    setTimeout(() => {
-      setIsSaving(false);
+    
+    try {
+      const { error } = await supabase
+        .from('store_settings')
+        .update(dbSettings)
+        .eq('id', 'default');
+        
+      if (error) throw error;
+      
+      // Also update localStorage as a fallback
+      localStorage.setItem('akhila_store_settings', JSON.stringify({
+        storeName, email, contactPhone, currency, 
+        deliveryCharge: Number(deliveryCharge), 
+        freeShippingThreshold: Number(freeShippingThreshold),
+        upiId, bankName, accountNumber, ifscCode
+      }));
+      
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
-    }, 800);
+    } catch (err) {
+      console.error('Failed to save settings:', err);
+      alert('Failed to save settings to database.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setPasswordError('');
     setPasswordSuccess(false);
-
-    const currentPassword = localStorage.getItem('admin_password') || 'admin123';
-
-    if (oldPassword !== currentPassword) {
-      setPasswordError('Old password is incorrect.');
-      return;
-    }
 
     if (newPassword.length < 6) {
       setPasswordError('Password must be at least 6 characters long.');
@@ -98,17 +142,52 @@ export default function AdminSettingsPage() {
 
     setIsUpdatingPassword(true);
     
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    localStorage.setItem('admin_password', newPassword);
-    
-    setPasswordSuccess(true);
-    setOldPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
-    setIsUpdatingPassword(false);
-    setTimeout(() => setPasswordSuccess(false), 3000);
+    try {
+      // First verify old password
+      const { data, error: verifyError } = await supabase
+        .from('store_settings')
+        .select('admin_password')
+        .eq('id', 'default')
+        .single();
+        
+      if (verifyError) throw verifyError;
+      
+      // Allow fallback if no password exists in DB yet, or if it matches
+      const currentDbPassword = data?.admin_password;
+      const currentLocalPassword = localStorage.getItem('admin_password') || 'admin123';
+      
+      if (currentDbPassword && oldPassword !== currentDbPassword) {
+        // Also check if they might be using local password if db just got setup
+        if (oldPassword !== currentLocalPassword) {
+          setPasswordError('Old password is incorrect.');
+          setIsUpdatingPassword(false);
+          return;
+        }
+      }
+
+      // Update password
+      const { error: updateError } = await supabase
+        .from('store_settings')
+        .update({ admin_password: newPassword, updated_at: new Date().toISOString() })
+        .eq('id', 'default');
+        
+      if (updateError) throw updateError;
+      
+      // Update local storage as well for fallback
+      localStorage.setItem('admin_password', newPassword);
+
+      setPasswordSuccess(true);
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      
+      setTimeout(() => setPasswordSuccess(false), 3000);
+    } catch (err) {
+      console.error('Failed to update password:', err);
+      setPasswordError('Failed to save to database. Check connection.');
+    } finally {
+      setIsUpdatingPassword(false);
+    }
   };
 
   return (

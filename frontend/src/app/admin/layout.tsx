@@ -3,12 +3,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, ShoppingBag, Users, Settings, Package, LogOut, Lock, Tag } from 'lucide-react';
+import { supabase } from '@/lib/supabaseClient';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
 
   // Check if already authenticated in this session
   useEffect(() => {
@@ -18,16 +20,38 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const storedPassword = localStorage.getItem('admin_password') || 'admin123';
+    setIsVerifying(true);
+    setError('');
     
-    if (password === storedPassword) {
-      setIsAuthenticated(true);
-      sessionStorage.setItem('admin_auth', 'true');
-      setError('');
-    } else {
-      setError('Incorrect password');
+    try {
+      const { data, error: dbError } = await supabase
+        .from('store_settings')
+        .select('admin_password')
+        .eq('id', 'default')
+        .single();
+        
+      if (dbError) throw dbError;
+      
+      if (data && password === data.admin_password) {
+        setIsAuthenticated(true);
+        sessionStorage.setItem('admin_auth', 'true');
+        setError('');
+      } else {
+        setError('Incorrect password');
+      }
+    } catch (err) {
+      console.error('Error verifying password:', err);
+      // Fallback in case table doesn't exist yet
+      if (password === 'admin123') {
+        setIsAuthenticated(true);
+        sessionStorage.setItem('admin_auth', 'true');
+      } else {
+        setError('Incorrect password or database not connected.');
+      }
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -71,9 +95,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {error && <p className="text-red-500 text-sm text-center">{error}</p>}
             <button 
               type="submit" 
-              className="w-full bg-[var(--color-primary)] hover:bg-[#600000] text-white py-3 rounded-lg font-medium transition-colors"
+              disabled={isVerifying}
+              className="w-full bg-[var(--color-primary)] hover:bg-[#600000] text-white py-3 rounded-lg font-medium transition-colors disabled:opacity-70 flex justify-center items-center"
             >
-              Unlock Dashboard
+              {isVerifying ? (
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+              ) : (
+                'Unlock Dashboard'
+              )}
             </button>
             <div className="text-center mt-4">
               <Link href="/" className="text-sm text-gray-300 hover:text-[var(--color-primary)]">

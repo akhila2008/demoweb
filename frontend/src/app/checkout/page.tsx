@@ -23,13 +23,40 @@ export default function CheckoutPage() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
+    fetchStoreSettings();
+  }, []);
+
+  const fetchStoreSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('store_settings')
+        .select('*')
+        .eq('id', 'default')
+        .single();
+        
+      if (!error && data) {
+        setStoreSettings({
+          deliveryCharge: data.delivery_charge,
+          freeShippingThreshold: data.free_shipping_threshold,
+          upiId: data.upi_id,
+          accountNumber: data.account_number,
+          ifscCode: data.ifsc_code,
+          bankName: data.bank_name
+        });
+        return;
+      }
+    } catch (err) {
+      console.error('Error fetching store settings:', err);
+    }
+    
+    // Fallback to localStorage if db isn't setup
     const saved = localStorage.getItem('akhila_store_settings');
     if (saved) {
       try {
         setStoreSettings(JSON.parse(saved));
       } catch (e) {}
     }
-  }, []);
+  };
 
   const deliveryCharge = storeSettings?.deliveryCharge !== undefined ? storeSettings.deliveryCharge : 150;
   const freeShippingThreshold = storeSettings?.freeShippingThreshold !== undefined ? storeSettings.freeShippingThreshold : 5000;
