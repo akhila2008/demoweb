@@ -1,11 +1,6 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 export async function POST(req: Request) {
   try {
@@ -13,43 +8,46 @@ export async function POST(req: Request) {
       razorpay_order_id, 
       razorpay_payment_id, 
       razorpay_signature,
-      supabase_order_id 
+      orderId 
     } = await req.json();
 
     const sign = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSign = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET || '')
       .update(sign.toString())
       .digest("hex");
 
     if (razorpay_signature === expectedSign) {
-      // Payment is legitimate! Update Supabase order status.
+      // Payment is legitimate! Update Supabase order status in V2 Schema.
       
-      // We must fetch the order, update the status, and save.
-      const { data: orderData, error: fetchError } = await supabase
+      // 1. Update Order Status
+      const { error: updateOrderError } = await supabaseAdmin
         .from('orders')
-        .select('data')
-        .eq('id', supabase_order_id)
-        .single();
+        .update({ status: 'CONFIRMED' })
+        .eq('id', orderId);
         
-      if (fetchError || !orderData) {
-        return NextResponse.json({ error: 'Order not found in database' }, { status: 404 });
-      }
-      
-      const updatedData = {
-        ...orderData.data,
-        status: 'CONFIRMED',
-        paymentId: razorpay_payment_id
-      };
-      
-      const { error: updateError } = await supabase
-        .from('orders')
-        .update({ data: updatedData })
-        .eq('id', supabase_order_id);
-        
-      if (updateError) {
+      if (updateOrderError) {
+        console.error("Order Update Error:", updateOrderError);
         return NextResponse.json({ error: 'Failed to update order status' }, { status: 500 });
       }
+
+      // 2. Update Payment Status
+      const { error: updatePaymentError } = await supabaseAdmin
+        .from('payments')
+        .update({ 
+          razorpay_payment_id, 
+          razorpay_signature, 
+          status: 'CAPTURED' 
+        })
+        .eq('razorpay_order_id', razorpay_order_id);
+        
+      if (updatePaymentError) {
+        console.error("Payment Update Error:", updatePaymentError);
+        return NextResponse.json({ error: 'Failed to update payment status' }, { status: 500 });
+      }
+
+      // Note: At this point, inventory was already deducted by `checkout_order` SQL function.
+      // If the payment had failed, a webhook or chron job would revert the inventory and cancel the order.
 
       return NextResponse.json({ success: true, message: "Payment verified successfully" }, { status: 200 });
     } else {
