@@ -11,14 +11,18 @@ export default function CartPage() {
   const [freeShippingThreshold, setFreeShippingThreshold] = useState(5000);
 
   useEffect(() => {
-    const saved = localStorage.getItem('akhila_store_settings');
-    if (saved) {
+    // Fetch from Supabase for real-time accuracy across all devices
+    const fetchSettings = async () => {
       try {
-        const parsed = JSON.parse(saved);
-        if (parsed.deliveryCharge !== undefined) setDeliveryCharge(Number(parsed.deliveryCharge));
-        if (parsed.freeShippingThreshold !== undefined) setFreeShippingThreshold(Number(parsed.freeShippingThreshold));
+        const { supabase } = await import('@/lib/supabaseClient');
+        const { data, error } = await supabase.from('store_settings').select('*').eq('id', 'default').single();
+        if (!error && data) {
+          if (data.delivery_charge !== undefined) setDeliveryCharge(Number(data.delivery_charge));
+          if (data.free_shipping_threshold !== undefined) setFreeShippingThreshold(Number(data.free_shipping_threshold));
+        }
       } catch (e) {}
-    }
+    };
+    fetchSettings();
   }, []);
   
   const shipping = (freeShippingThreshold > 0 && subtotal >= freeShippingThreshold) ? 0 : Number(deliveryCharge);
