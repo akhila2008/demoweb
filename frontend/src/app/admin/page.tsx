@@ -33,11 +33,11 @@ export default function AdminDashboardPage() {
         const uniqueCustomers = new Set();
 
         orders.forEach(order => {
-          if (order.data.status !== 'CANCELLED') {
-            revenue += order.data.grandTotal || 0;
+          if (order.status !== 'CANCELLED') {
+            revenue += order.grand_total || 0;
           }
-          if (order.data.customer?.email) {
-            uniqueCustomers.add(order.data.customer.email);
+          if (order.shipping_address?.email) {
+            uniqueCustomers.add(order.shipping_address.email);
           }
         });
 
@@ -54,15 +54,12 @@ export default function AdminDashboardPage() {
       // Fetch Products for Low Stock
       const { data: products } = await supabase
         .from('products')
-        .select('data')
-        .not('data', 'is', null);
+        .select('id, name, stock')
+        .order('stock', { ascending: true })
+        .limit(5);
 
       if (products) {
-        const low = products
-          .map(p => p.data)
-          .filter(p => p && p.stock !== undefined && p.stock <= 5)
-          .slice(0, 5);
-        setLowStock(low);
+        setLowStock(products.filter(p => p.stock !== null && p.stock <= 5));
       }
     } catch (err) {
       console.error('Error fetching dashboard data:', err);

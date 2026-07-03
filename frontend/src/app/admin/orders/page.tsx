@@ -19,11 +19,37 @@ export default function AdminOrdersPage() {
     try {
       const { data, error } = await supabase
         .from('orders')
-        .select('*')
+        .select(`
+          *,
+          order_items (*),
+          payments (*)
+        `)
         .order('created_at', { ascending: false });
         
       if (error) throw error;
-      setOrders(data || []);
+      
+      const formattedOrders = (data || []).map(row => ({
+        id: row.id,
+        order_number: row.order_number,
+        created_at: row.created_at,
+        data: {
+           status: row.status,
+           customer: row.shipping_address,
+           items: row.order_items.map((item: any) => ({
+             name: item.product_name,
+             price: item.price,
+             quantity: item.quantity
+           })),
+           subtotal: row.subtotal,
+           shipping: row.shipping_fee,
+           discount: row.discount,
+           total: row.grand_total,
+           paymentMethod: row.payments?.[0]?.payment_method || 'ONLINE',
+           paymentId: row.payments?.[0]?.razorpay_payment_id || null
+        }
+      }));
+      
+      setOrders(formattedOrders);
     } catch (err) {
       console.error('Error fetching orders:', err);
     } finally {
@@ -34,21 +60,18 @@ export default function AdminOrdersPage() {
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
     setStatusUpdating(orderId);
     try {
-      // Get the existing order data
       const order = orders.find(o => o.id === orderId);
       if (!order) return;
       
-      const updatedData = { ...order.data, status: newStatus };
-      
       const { error } = await supabase
         .from('orders')
-        .update({ data: updatedData })
+        .update({ status: newStatus })
         .eq('id', orderId);
         
       if (error) throw error;
       
       // Update local state
-      setOrders(orders.map(o => o.id === orderId ? { ...o, data: updatedData } : o));
+      setOrders(orders.map(o => o.id === orderId ? { ...o, data: { ...o.data, status: newStatus } } : o));
     } catch (err) {
       console.error('Error updating order status:', err);
       alert('Failed to update order status');
@@ -76,7 +99,7 @@ export default function AdminOrdersPage() {
 
   const filteredOrders = orders.filter(order => {
     const searchStr = searchTerm.toLowerCase();
-    const idMatch = order.id.toLowerCase().includes(searchStr);
+    const idMatch = (order.order_number || order.id).toLowerCase().includes(searchStr);
     const nameMatch = `${order.data.customer?.firstName} ${order.data.customer?.lastName}`.toLowerCase().includes(searchStr);
     return idMatch || nameMatch;
   });
