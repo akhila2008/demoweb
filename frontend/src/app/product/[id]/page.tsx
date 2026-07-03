@@ -131,19 +131,22 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
         {/* Image Gallery */}
         <div className="w-full lg:w-1/2 flex flex-col-reverse md:flex-row gap-4">
           <div className="flex md:flex-col gap-4 overflow-x-auto md:overflow-visible md:w-24 shrink-0">
-            {product.images.map((img: string, idx: number) => (
-              <button 
-                key={idx}
-                onClick={() => setActiveImage(idx)}
-                className={`border-2 rounded-lg overflow-hidden h-24 min-w-[6rem] ${activeImage === idx ? 'border-[var(--color-primary)]' : 'border-transparent opacity-70 hover:opacity-100'}`}
-              >
-                {(product.isVideos?.[idx] || (product.isVideo && idx === 0)) ? (
-                  <video src={img} className="w-full h-full object-cover" muted playsInline />
-                ) : (
-                  <img src={img} alt={`Thumbnail ${idx}`} className="w-full h-full object-cover" />
-                )}
-              </button>
-            ))}
+            {product.images?.length > 0 && product.images.map((img: string, idx: number) => {
+              const isVid = img.toLowerCase().endsWith('.mp4') || img.toLowerCase().endsWith('.webm');
+              return (
+                <button 
+                  key={idx}
+                  onClick={() => setActiveImage(idx)}
+                  className={`border-2 rounded-lg overflow-hidden h-24 min-w-[6rem] ${activeImage === idx ? 'border-[var(--color-primary)]' : 'border-transparent opacity-70 hover:opacity-100'}`}
+                >
+                  {isVid ? (
+                    <video src={img} className="w-full h-full object-cover" muted playsInline />
+                  ) : (
+                    <img src={img} alt={`Thumbnail ${idx}`} className="w-full h-full object-cover" />
+                  )}
+                </button>
+              );
+            })}
           </div>
           <div className="flex-grow bg-gray-900 text-white rounded-2xl overflow-hidden aspect-[3/4] relative group cursor-zoom-in">
             <motion.div
@@ -151,12 +154,20 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3 }}
-              className="w-full h-full"
+              className="w-full h-full bg-gray-800 flex items-center justify-center"
             >
-              {(product.isVideos?.[activeImage] || (product.isVideo && activeImage === 0)) ? (
-                <video src={product.images[activeImage]} className="w-full h-full object-cover" autoPlay loop muted playsInline />
+              {product.images?.length > 0 ? (
+                (() => {
+                  const activeImgUrl = product.images[activeImage];
+                  const isVid = activeImgUrl.toLowerCase().endsWith('.mp4') || activeImgUrl.toLowerCase().endsWith('.webm');
+                  return isVid ? (
+                    <video src={activeImgUrl} className="w-full h-full object-cover" autoPlay loop muted playsInline />
+                  ) : (
+                    <img src={activeImgUrl} alt={product.name} className="w-full h-full object-cover" />
+                  );
+                })()
               ) : (
-                <img src={product.images[activeImage]} alt={product.name} className="w-full h-full object-cover" />
+                <div className="text-gray-500">No Image Available</div>
               )}
             </motion.div>
             

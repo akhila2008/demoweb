@@ -44,6 +44,7 @@ function ShopContent() {
               category: (p.categories as any)?.name || 'Uncategorized',
               images: sortedImages,
               image: sortedImages.length > 0 ? sortedImages[0].url : '',
+              isVideo: sortedImages.length > 0 && (sortedImages[0].url.toLowerCase().endsWith('.mp4') || sortedImages[0].url.toLowerCase().endsWith('.webm')),
               colors: p.colors || [],
               occasions: p.occasions || []
             };
@@ -301,12 +302,10 @@ function ShopContent() {
                         muted 
                         playsInline 
                       />
+                    ) : product.image ? (
+                      <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     ) : (
-                      <img 
-                        src={product.image} 
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
+                      <div className="w-full h-full flex items-center justify-center bg-gray-800 text-gray-500">No Image</div>
                     )}
                     {/* Quick Add Button */}
                     <div className="absolute bottom-4 left-0 right-0 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">

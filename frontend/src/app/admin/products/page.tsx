@@ -267,7 +267,7 @@ export default function AdminProductsPage() {
                     <td className="p-4">
                       <Link href={`/product/${product.id}`} className="block w-12 h-16 rounded overflow-hidden bg-gray-100 hover:opacity-80 transition-opacity">
                         {product.image ? (
-                           product.image.endsWith('.mp4') ? (
+                           product.image.toLowerCase().endsWith('.mp4') || product.image.toLowerCase().endsWith('.webm') ? (
                             <video src={product.image} className="w-full h-full object-cover" autoPlay loop muted playsInline />
                            ) : (
                             <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
@@ -341,7 +341,7 @@ export default function AdminProductsPage() {
                     <div className="flex gap-2 overflow-x-auto pb-2 mb-2 w-full">
                       {existingImages.map((img) => (
                         <div key={img.id} className="w-24 h-32 shrink-0 rounded overflow-hidden relative group border border-gray-700">
-                          {img.url.endsWith('.mp4') ? (
+                          {img.url.toLowerCase().endsWith('.mp4') || img.url.toLowerCase().endsWith('.webm') ? (
                             <video src={img.url} className="w-full h-full object-cover" autoPlay loop muted playsInline />
                           ) : (
                             <img src={img.url} className="w-full h-full object-cover" />
