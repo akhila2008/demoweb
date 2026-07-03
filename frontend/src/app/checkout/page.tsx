@@ -284,14 +284,27 @@ export default function CheckoutPage() {
                       Select your preferred UPI app below to make a secure payment of <strong>₹{grandTotal.toLocaleString('en-IN')}</strong>, then click Place Order.
                     </p>
                     
-                    <div className="bg-gray-900 text-white p-4 rounded border border-gray-200 dark:border-gray-700">
-                      <div className="text-xs text-gray-300 mb-1">Pay via UPI</div>
-                      <div className="font-bold text-lg select-all">{storeSettings?.upiId || '8143227553@ybl'}</div>
-                      <div className="flex flex-wrap gap-2 mt-3">
-                        <button onClick={() => { window.location.href = `upi://pay?pa=${storeSettings?.upiId || '8143227553@ybl'}&pn=AkhilaSarees&tr=ORD${Math.floor(Math.random() * 1000000)}&am=${grandTotal}&cu=INR`; handlePayment(); }} className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded text-xs font-medium transition-colors">Google Pay</button>
-                        <button onClick={() => { window.location.href = `upi://pay?pa=${storeSettings?.upiId || '8143227553@ybl'}&pn=AkhilaSarees&tr=ORD${Math.floor(Math.random() * 1000000)}&am=${grandTotal}&cu=INR`; handlePayment(); }} className="px-3 py-1.5 bg-purple-100 text-purple-800 hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-300 rounded text-xs font-medium transition-colors">PhonePe</button>
-                        <button onClick={() => { window.location.href = `upi://pay?pa=${storeSettings?.upiId || '8143227553@ybl'}&pn=AkhilaSarees&tr=ORD${Math.floor(Math.random() * 1000000)}&am=${grandTotal}&cu=INR`; handlePayment(); }} className="px-3 py-1.5 bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-300 rounded text-xs font-medium transition-colors">Paytm</button>
-                        <button onClick={() => { window.location.href = `upi://pay?pa=${storeSettings?.upiId || '8143227553@ybl'}&pn=AkhilaSarees&tr=ORD${Math.floor(Math.random() * 1000000)}&am=${grandTotal}&cu=INR`; handlePayment(); }} className="px-3 py-1.5 bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300 rounded text-xs font-medium transition-colors">Navi</button>
+                    <div className="bg-gray-900 text-white p-4 rounded border border-gray-200 dark:border-gray-700 flex flex-col md:flex-row gap-6">
+                      <div className="flex-1">
+                        <div className="text-xs text-gray-300 mb-1">Pay via UPI App</div>
+                        <div className="font-bold text-lg select-all">{storeSettings?.upiId || '8143227553@ybl'}</div>
+                        <div className="flex flex-wrap gap-2 mt-4">
+                          <button onClick={() => { window.location.href = `upi://pay?pa=${storeSettings?.upiId || '8143227553@ybl'}&pn=AkhilaSarees&am=${grandTotal}&cu=INR`; handlePayment(); }} className="px-3 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded text-sm font-medium transition-colors border border-[var(--color-primary)] border-opacity-30">Google Pay</button>
+                          <button onClick={() => { window.location.href = `upi://pay?pa=${storeSettings?.upiId || '8143227553@ybl'}&pn=AkhilaSarees&am=${grandTotal}&cu=INR`; handlePayment(); }} className="px-3 py-2 bg-purple-100 text-purple-800 hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-300 rounded text-sm font-medium transition-colors border border-[var(--color-primary)] border-opacity-30">PhonePe</button>
+                          <button onClick={() => { window.location.href = `upi://pay?pa=${storeSettings?.upiId || '8143227553@ybl'}&pn=AkhilaSarees&am=${grandTotal}&cu=INR`; handlePayment(); }} className="px-3 py-2 bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-300 rounded text-sm font-medium transition-colors border border-[var(--color-primary)] border-opacity-30">Paytm</button>
+                        </div>
+                        <p className="text-xs text-gray-400 mt-4 italic">* If your app says "UPI not verified", simply click Continue. This is a standard security warning for direct transfers.</p>
+                      </div>
+                      
+                      <div className="flex-shrink-0 flex flex-col items-center justify-center border-l border-[var(--color-primary)] border-opacity-30 pl-0 md:pl-6 pt-4 md:pt-0 mt-4 md:mt-0">
+                        <div className="text-xs text-gray-300 mb-2">Or Scan QR Code</div>
+                        <div className="bg-white p-2 rounded-lg">
+                          <img 
+                            src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`upi://pay?pa=${storeSettings?.upiId || '8143227553@ybl'}&pn=AkhilaSarees&am=${grandTotal}&cu=INR`)}`}
+                            alt="UPI QR Code" 
+                            className="w-32 h-32"
+                          />
+                        </div>
                       </div>
                     </div>
 
