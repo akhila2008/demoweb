@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import Razorpay from 'razorpay';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
+export const dynamic = 'force-dynamic';
+
+
 export async function POST(req: Request) {
   try {
     const payload = await req.json();
@@ -89,8 +92,8 @@ export async function POST(req: Request) {
 
     // 6. Generate Razorpay Order
     const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID || '',
-      key_secret: process.env.RAZORPAY_KEY_SECRET || '',
+      key_id: process.env.RAZORPAY_KEY_ID || 'dummy_key_id',
+      key_secret: process.env.RAZORPAY_KEY_SECRET || 'dummy_key_secret',
     });
 
     const options = {

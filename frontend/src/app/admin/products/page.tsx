@@ -1,66 +1,94 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { loadProducts, saveProducts } from '@/lib/storage';
-import { Plus, Search, Edit, Trash2, X } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, X, Image as ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AVAILABLE_COLORS } from '@/lib/colors';
 import Link from 'next/link';
-
-const INITIAL_PRODUCTS: any[] = [];
+import { supabase } from '@/lib/supabaseClient';
+import { addProduct, updateProduct, deleteProduct, deleteProductImage } from '@/app/actions/admin';
 
 export default function AdminProductsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [products, setProducts] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Form State
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
+  const [newProduct, setNewProduct] = useState({ 
+    name: '', 
+    price: '', 
+    stock: '', 
+    category_id: '',
+    description: '',
+    groupId: '', 
+    colors: [] as string[], 
+    occasions: [] as string[] 
+  });
+
+  // Image State
   const [previewImages, setPreviewImages] = useState<string[]>([]);
-  const [previewImageFiles, setPreviewImageFiles] = useState<any[]>([]);
-  const [previewIsVideo, setPreviewIsVideo] = useState<boolean[]>([]);
+  const [previewImageFiles, setPreviewImageFiles] = useState<File[]>([]);
+  const [existingImages, setExistingImages] = useState<{id: string, url: string}[]>([]);
 
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  // Load products from IndexedDB on mount
   useEffect(() => {
-    const fetchInitialData = async () => {
-      try {
-        const savedProducts = await loadProducts();
-        if (savedProducts && savedProducts.length > 0) {
-          setProducts(savedProducts);
-        }
-      } catch (e) {
-        console.error('Failed to load products from IndexedDB', e);
-      }
-      setIsInitialized(true);
-    };
-    fetchInitialData();
+    fetchData();
   }, []);
 
-  // Save products to IndexedDB whenever they change
-  useEffect(() => {
-    if (isInitialized) {
-      saveProducts(products).catch(e => console.error('Failed to save to IndexedDB', e));
-    }
-  }, [products, isInitialized]);
-  
-  const [newProduct, setNewProduct] = useState({ name: '', price: '', stock: '', category: 'Silk', groupId: '', colors: [] as string[], occasions: [] as string[] });
+  const fetchData = async () => {
+    try {
+      // Fetch Categories
+      const { data: cats, error: catError } = await supabase.from('categories').select('*').order('name');
+      if (catError) throw catError;
+      setCategories(cats || []);
 
-  const handleColorToggle = (colorName: string) => {
-    setNewProduct(prev => {
-      if (prev.colors.includes(colorName)) {
-        return { ...prev, colors: prev.colors.filter(c => c !== colorName) };
-      } else {
-        return { ...prev, colors: [...prev.colors, colorName] };
+      if (cats && cats.length > 0 && !newProduct.category_id) {
+        setNewProduct(prev => ({ ...prev, category_id: cats[0].id }));
       }
-    });
+
+      // Fetch Products
+      const { data: prods, error: prodError } = await supabase
+        .from('products')
+        .select(`
+          id, name, price, stock, description, is_active, category_id,
+          categories ( name ),
+          product_images ( id, url, sort_order )
+        `)
+        .order('created_at', { ascending: false });
+      
+      if (prodError) throw prodError;
+      
+      // Map to frontend expected shape
+      const mapped = (prods || []).map(p => {
+        const sortedImages = (p.product_images || []).sort((a: any, b: any) => a.sort_order - b.sort_order);
+        return {
+          ...p,
+          category: (p.categories as any)?.name,
+          images: sortedImages,
+          image: sortedImages.length > 0 ? sortedImages[0].url : '',
+        };
+      });
+      setProducts(mapped);
+    } catch (error) {
+      console.error('Error fetching admin products data:', error);
+    }
   };
 
-  const handleOccasionToggle = (occasion: string) => {
-    setNewProduct(prev => {
-      if (prev.occasions.includes(occasion)) {
-        return { ...prev, occasions: prev.occasions.filter(o => o !== occasion) };
-      } else {
-        return { ...prev, occasions: [...prev.occasions, occasion] };
+  const uploadImages = async (files: File[]) => {
+    const urls: string[] = [];
+    for (const file of files) {
+      const ext = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${ext}`;
+      const { data, error } = await supabase.storage.from('product-media').upload(fileName, file);
+      if (error) {
+        console.error('Upload error:', error);
+        continue;
       }
-    });
+      const { data: { publicUrl } } = supabase.storage.from('product-media').getPublicUrl(fileName);
+      urls.push(publicUrl);
+    }
+    return urls;
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,7 +97,6 @@ export default function AdminProductsPage() {
       const updatedFiles = [...previewImageFiles, ...newFiles];
       setPreviewImageFiles(updatedFiles);
       setPreviewImages(updatedFiles.map(file => URL.createObjectURL(file)));
-      setPreviewIsVideo(updatedFiles.map(f => f.type.startsWith('video/')));
     }
   };
 
@@ -78,66 +105,64 @@ export default function AdminProductsPage() {
     const updatedImages = previewImages.filter((_, idx) => idx !== indexToRemove);
     setPreviewImageFiles(updatedFiles);
     setPreviewImages(updatedImages);
-    setPreviewIsVideo(updatedFiles.map(f => f.type.startsWith('video/')));
   };
 
-  const [editingProductId, setEditingProductId] = useState<string | null>(null);
+  const handleRemoveExistingImage = async (imageId: string) => {
+    try {
+      await deleteProductImage(imageId);
+      setExistingImages(existingImages.filter(img => img.id !== imageId));
+      fetchData(); // Refresh UI
+    } catch (err) {
+      console.error('Failed to delete image:', err);
+      alert('Failed to delete image');
+    }
+  };
 
-  const handleAddProduct = (e: React.FormEvent) => {
+  const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newProduct.name || !newProduct.price || !newProduct.stock || !newProduct.groupId) return;
+    if (!newProduct.name || !newProduct.price || !newProduct.stock || !newProduct.category_id) return;
     
-    if (editingProductId) {
-      // Update existing product
-      setProducts(products.map(p => {
-        if (p.id === editingProductId) {
-          return {
-            ...p,
-            name: newProduct.name,
-            price: Number(newProduct.price),
-            stock: Number(newProduct.stock),
-            category: newProduct.category,
-            groupId: newProduct.groupId,
-            colors: newProduct.colors,
-            occasions: newProduct.occasions,
-            image: previewImages.length > 0 ? previewImages[0] : p.image,
-            images: previewImages.length > 0 ? previewImages : (p.images || [p.image]),
-            imageFile: previewImageFiles.length > 0 ? previewImageFiles[0] : p.imageFile,
-            imageFiles: previewImageFiles.length > 0 ? previewImageFiles : p.imageFiles,
-            isVideo: previewIsVideo.length > 0 ? previewIsVideo[0] : p.isVideo,
-            isVideos: previewIsVideo.length > 0 ? previewIsVideo : (p.isVideos || [p.isVideo])
-          };
-        }
-        return p;
-      }));
-    } else {
-      // Add new product
-      const defaultImg = 'https://images.unsplash.com/photo-1583391733958-d150dcddf723?q=80&w=200&auto=format&fit=crop';
-      const addedProduct = {
-        id: Math.random().toString(36).substr(2, 9),
+    setIsSubmitting(true);
+    try {
+      // 1. Upload new images if any
+      const newUrls = await uploadImages(previewImageFiles);
+      
+      const payload = {
         name: newProduct.name,
         price: Number(newProduct.price),
         stock: Number(newProduct.stock),
-        category: newProduct.category,
-        groupId: newProduct.groupId,
-        colors: newProduct.colors,
-        occasions: newProduct.occasions,
-        image: previewImages.length > 0 ? previewImages[0] : defaultImg,
-        images: previewImages.length > 0 ? previewImages : [defaultImg],
-        imageFile: previewImageFiles.length > 0 ? previewImageFiles[0] : null,
-        imageFiles: previewImageFiles,
-        isVideo: previewIsVideo.length > 0 ? previewIsVideo[0] : false,
-        isVideos: previewIsVideo
+        category_id: newProduct.category_id,
+        description: newProduct.description
       };
-      setProducts([...products, addedProduct]);
-    }
 
-    setIsAddModalOpen(false);
-    setEditingProductId(null);
-    setNewProduct({ name: '', price: '', stock: '', category: 'Silk', groupId: '', colors: [], occasions: [] });
-    setPreviewImages([]);
-    setPreviewImageFiles([]);
-    setPreviewIsVideo([]);
+      if (editingProductId) {
+        await updateProduct(editingProductId, payload, newUrls);
+      } else {
+        await addProduct(payload, newUrls);
+      }
+
+      // Refresh list
+      await fetchData();
+
+      setIsAddModalOpen(false);
+      resetForm();
+    } catch (err) {
+      console.error('Failed to save product:', err);
+      alert('Error saving product. See console for details.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDeleteProduct = async (productId: string) => {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+    try {
+      await deleteProduct(productId);
+      await fetchData();
+    } catch (err) {
+      console.error('Failed to delete product:', err);
+      alert('Failed to delete product');
+    }
   };
 
   const openEditModal = (product: any) => {
@@ -146,15 +171,33 @@ export default function AdminProductsPage() {
       name: product.name,
       price: product.price.toString(),
       stock: product.stock.toString(),
-      category: product.category,
-      groupId: product.groupId || '',
-      colors: product.colors || [],
-      occasions: product.occasions || []
+      category_id: product.category_id || (categories.length > 0 ? categories[0].id : ''),
+      description: product.description || '',
+      groupId: '',
+      colors: [],
+      occasions: []
     });
-    setPreviewImages(product.images || (product.image ? [product.image] : []));
-    setPreviewImageFiles(product.imageFiles || (product.imageFile ? [product.imageFile] : []));
-    setPreviewIsVideo(product.isVideos || (product.imageFile ? [product.isVideo] : []));
+    setExistingImages(product.images || []);
+    setPreviewImages([]);
+    setPreviewImageFiles([]);
     setIsAddModalOpen(true);
+  };
+
+  const resetForm = () => {
+    setEditingProductId(null);
+    setNewProduct({ 
+      name: '', 
+      price: '', 
+      stock: '', 
+      category_id: categories.length > 0 ? categories[0].id : '',
+      description: '',
+      groupId: '', 
+      colors: [], 
+      occasions: [] 
+    });
+    setExistingImages([]);
+    setPreviewImages([]);
+    setPreviewImageFiles([]);
   };
 
   return (
@@ -166,10 +209,7 @@ export default function AdminProductsPage() {
         </div>
         <button 
           onClick={() => {
-            setEditingProductId(null);
-            setNewProduct({ name: '', price: '', stock: '', category: 'Silk', groupId: '', colors: [], occasions: [] });
-            setPreviewImages([]);
-            setPreviewImageFiles([]);
+            resetForm();
             setIsAddModalOpen(true);
           }}
           className="bg-[var(--color-primary)] hover:bg-[#600000] text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors"
@@ -189,17 +229,8 @@ export default function AdminProductsPage() {
               placeholder="Search products..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-[var(--color-primary)] border-opacity-50 rounded-lg bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
+              className="w-full pl-10 pr-4 py-2 border border-[var(--color-primary)] border-opacity-50 rounded-lg bg-gray-900 text-white focus:ring-[var(--color-primary)]"
             />
-          </div>
-          <div className="flex gap-2 w-full sm:w-auto">
-            <select className="border border-[var(--color-primary)] border-opacity-50 rounded-lg py-2 px-4 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)] w-full sm:w-auto">
-              <option>All Categories</option>
-              <option>Silk</option>
-              <option>Cotton</option>
-              <option>Banarasi</option>
-              <option>Georgette</option>
-            </select>
           </div>
         </div>
 
@@ -211,7 +242,6 @@ export default function AdminProductsPage() {
                 <th className="p-4 w-16">Image</th>
                 <th className="p-4">Product Name</th>
                 <th className="p-4">Category</th>
-                <th className="p-4">Colors</th>
                 <th className="p-4">Price</th>
                 <th className="p-4">Stock</th>
                 <th className="p-4 text-right">Actions</th>
@@ -221,7 +251,7 @@ export default function AdminProductsPage() {
               {products.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="p-8 text-center text-gray-300">
-                    No sarees added yet. Click "Add New Saree" to get started.
+                    No sarees found in database.
                   </td>
                 </tr>
               ) : (
@@ -229,10 +259,14 @@ export default function AdminProductsPage() {
                   <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-gray-900 text-white/50 transition-colors">
                     <td className="p-4">
                       <Link href={`/product/${product.id}`} className="block w-12 h-16 rounded overflow-hidden bg-gray-100 hover:opacity-80 transition-opacity">
-                        {product.isVideos?.[0] || product.isVideo ? (
-                          <video src={product.image} className="w-full h-full object-cover" autoPlay loop muted playsInline />
+                        {product.image ? (
+                           product.image.endsWith('.mp4') ? (
+                            <video src={product.image} className="w-full h-full object-cover" autoPlay loop muted playsInline />
+                           ) : (
+                            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                           )
                         ) : (
-                          <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                          <div className="w-full h-full flex items-center justify-center bg-gray-800"><ImageIcon className="w-4 h-4 text-gray-500" /></div>
                         )}
                       </Link>
                     </td>
@@ -241,23 +275,7 @@ export default function AdminProductsPage() {
                         {product.name}
                       </Link>
                     </td>
-                    <td className="p-4 text-gray-300">{product.category}</td>
-                    <td className="p-4">
-                      <div className="flex gap-1 flex-wrap w-24">
-                        {product.colors && product.colors.map((colorName: string) => {
-                          const hex = AVAILABLE_COLORS.find(c => c.name === colorName)?.hex || '#ccc';
-                          return (
-                            <div 
-                              key={colorName} 
-                              className="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600 shadow-sm" 
-                              style={{ backgroundColor: hex }}
-                              title={colorName}
-                            />
-                          );
-                        })}
-                        {(!product.colors || product.colors.length === 0) && <span className="text-xs text-gray-200">None</span>}
-                      </div>
-                    </td>
+                    <td className="p-4 text-gray-300">{product.category || 'Uncategorized'}</td>
                     <td className="p-4 text-white font-medium">₹{product.price.toLocaleString('en-IN')}</td>
                     <td className="p-4">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -276,7 +294,7 @@ export default function AdminProductsPage() {
                         <Edit className="w-4 h-4" />
                       </button>
                       <button 
-                        onClick={() => setProducts(products.filter(p => p.id !== product.id))}
+                        onClick={() => handleDeleteProduct(product.id)}
                         className="text-red-600 hover:text-red-800 bg-red-50 p-2 rounded-md transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -298,29 +316,48 @@ export default function AdminProductsPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-gray-900 text-white rounded-xl shadow-xl w-full max-w-md overflow-hidden"
+              className="bg-gray-900 text-white rounded-xl shadow-xl w-full max-w-md overflow-hidden flex flex-col max-h-[90vh]"
             >
-              <div className="p-6 border-b border-[var(--color-primary)] border-opacity-30 flex justify-between items-center">
+              <div className="p-6 border-b border-[var(--color-primary)] border-opacity-30 flex justify-between items-center shrink-0">
                 <h2 className="text-xl font-bold">{editingProductId ? 'Edit Saree' : 'Add New Saree'}</h2>
-                <button onClick={() => { setIsAddModalOpen(false); setPreviewImages([]); setEditingProductId(null); }} className="text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">
+                <button onClick={() => setIsAddModalOpen(false)} className="text-gray-300 hover:text-gray-800 dark:hover:text-gray-200">
                   <X className="w-6 h-6" />
                 </button>
               </div>
               
-              <form onSubmit={handleAddProduct} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+              <form onSubmit={handleAddProduct} className="p-6 space-y-4 overflow-y-auto grow">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">Product Media (Carousel)</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Product Media</label>
+                  
+                  {/* Existing Images */}
+                  {existingImages.length > 0 && (
+                    <div className="flex gap-2 overflow-x-auto pb-2 mb-2 w-full">
+                      {existingImages.map((img) => (
+                        <div key={img.id} className="w-24 h-32 shrink-0 rounded overflow-hidden relative group border border-gray-700">
+                          {img.url.endsWith('.mp4') ? (
+                            <video src={img.url} className="w-full h-full object-cover" autoPlay loop muted playsInline />
+                          ) : (
+                            <img src={img.url} className="w-full h-full object-cover" />
+                          )}
+                          <button 
+                            type="button"
+                            onClick={(e) => { e.preventDefault(); handleRemoveExistingImage(img.id); }}
+                            className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
                   <label className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-[var(--color-primary)] border-opacity-50 border-dashed rounded-md hover:border-[var(--color-primary)] transition-colors cursor-pointer relative w-full">
                     <div className="space-y-1 text-center w-full">
                       {previewImages.length > 0 ? (
                         <div className="flex gap-2 overflow-x-auto pb-2 w-full">
                           {previewImages.map((img, idx) => (
-                            <div key={idx} className="w-24 h-32 shrink-0 rounded overflow-hidden relative group">
-                              {previewIsVideo[idx] ? (
-                                <video src={img} className="w-full h-full object-cover" autoPlay loop muted playsInline />
-                              ) : (
-                                <img src={img} alt={`Preview ${idx}`} className="w-full h-full object-cover" />
-                              )}
+                            <div key={idx} className="w-24 h-32 shrink-0 rounded overflow-hidden relative group border border-gray-700">
+                              <img src={img} className="w-full h-full object-cover" />
                               <button 
                                 type="button"
                                 onClick={(e) => { e.preventDefault(); removePreviewImage(idx); }}
@@ -332,12 +369,10 @@ export default function AdminProductsPage() {
                           ))}
                         </div>
                       ) : (
-                        <svg className="mx-auto h-12 w-12 text-gray-200" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                          <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
+                        <ImageIcon className="mx-auto h-12 w-12 text-gray-500" />
                       )}
                       <div className="flex text-sm text-gray-200 justify-center mt-2">
-                        <span className="font-medium text-[var(--color-primary)] hover:text-[#600000]">Select multiple photos/videos</span>
+                        <span className="font-medium text-[var(--color-primary)] hover:text-[#600000]">Select photos to upload</span>
                         <input type="file" multiple accept="image/*,video/*" className="sr-only" onChange={handleImageChange} />
                       </div>
                     </div>
@@ -351,7 +386,7 @@ export default function AdminProductsPage() {
                     type="text" 
                     value={newProduct.name}
                     onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
-                    className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]" 
+                    className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white focus:ring-[var(--color-primary)]" 
                     placeholder="e.g. Red Banarasi Silk"
                   />
                 </div>
@@ -365,7 +400,7 @@ export default function AdminProductsPage() {
                       onWheel={(e) => (e.target as HTMLInputElement).blur()}
                       value={newProduct.price}
                       onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
-                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]" 
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white focus:ring-[var(--color-primary)]" 
                       placeholder="9999"
                     />
                   </div>
@@ -377,105 +412,52 @@ export default function AdminProductsPage() {
                       onWheel={(e) => (e.target as HTMLInputElement).blur()}
                       value={newProduct.stock}
                       onChange={(e) => setNewProduct({...newProduct, stock: e.target.value})}
-                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]" 
+                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white focus:ring-[var(--color-primary)]" 
                       placeholder="10"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Category</label>
-                    <select 
-                      value={newProduct.category}
-                      onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
-                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]"
-                    >
-                      <option value="Silk">Silk</option>
-                      <option value="Cotton">Cotton</option>
-                      <option value="Banarasi">Banarasi</option>
-                      <option value="Kanjivaram">Kanjivaram</option>
-                      <option value="Linen">Linen</option>
-                      <option value="Georgette">Georgette</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1" title="Give identical Model Numbers to group variants together.">Model Number</label>
-                    <input 
-                      required
-                      type="text" 
-                      value={newProduct.groupId}
-                      onChange={(e) => setNewProduct({...newProduct, groupId: e.target.value})}
-                      className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white focus:ring-[var(--color-primary)]" 
-                      placeholder="e.g. Saree-123"
-                    />
-                  </div>
-                </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Available Colors</label>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-                    {AVAILABLE_COLORS.map(color => (
-                      <label 
-                        key={color.name} 
-                        className={`flex items-center justify-center p-2 rounded-md border cursor-pointer transition-colors ${
-                          newProduct.colors.includes(color.name) 
-                            ? 'border-[var(--color-primary)] bg-[var(--color-primary)]/10 ring-1 ring-[var(--color-primary)]' 
-                            : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
-                        }`}
-                      >
-                        <input 
-                          type="checkbox" 
-                          className="sr-only" 
-                          checked={newProduct.colors.includes(color.name)}
-                          onChange={() => handleColorToggle(color.name)}
-                        />
-                        <div className="flex flex-col items-center gap-1">
-                          <div className="w-5 h-5 rounded-full border border-gray-300 shadow-sm" style={{ backgroundColor: color.hex }}></div>
-                          <span className="text-xs text-gray-200 font-medium">{color.name}</span>
-                        </div>
-                      </label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Category</label>
+                  <select 
+                    required
+                    value={newProduct.category_id}
+                    onChange={(e) => setNewProduct({...newProduct, category_id: e.target.value})}
+                    className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white focus:ring-[var(--color-primary)]"
+                  >
+                    <option value="" disabled>Select a category</option>
+                    {categories.map(cat => (
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
                     ))}
-                  </div>
+                  </select>
                 </div>
-
+                
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Occasions</label>
-                  <div className="flex flex-wrap gap-2">
-                    {['Party', 'Daily Wear', 'Wedding', 'Haldi', 'Festive', 'Casual'].map(occasion => (
-                      <label 
-                        key={occasion} 
-                        className={`px-3 py-1.5 rounded-full border cursor-pointer text-sm font-medium transition-colors ${
-                          newProduct.occasions.includes(occasion) 
-                            ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-white' 
-                            : 'border-[var(--color-primary)] border-opacity-50 text-gray-200 hover:border-gray-400'
-                        }`}
-                      >
-                        <input 
-                          type="checkbox" 
-                          className="sr-only" 
-                          checked={newProduct.occasions.includes(occasion)}
-                          onChange={() => handleOccasionToggle(occasion)}
-                        />
-                        {occasion}
-                      </label>
-                    ))}
-                  </div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
+                  <textarea 
+                    value={newProduct.description}
+                    onChange={(e) => setNewProduct({...newProduct, description: e.target.value})}
+                    className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white focus:ring-[var(--color-primary)] min-h-[80px]" 
+                    placeholder="Brief description..."
+                  />
                 </div>
 
-                <div className="pt-4 flex gap-3">
+                <div className="pt-4 flex gap-3 shrink-0">
                   <button 
                     type="button" 
                     onClick={() => setIsAddModalOpen(false)}
+                    disabled={isSubmitting}
                     className="flex-1 bg-gray-800 text-gray-300 px-4 py-3 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                   >
                     Cancel
                   </button>
                   <button 
                     type="submit" 
-                    className="flex-1 bg-[var(--color-primary)] hover:bg-[#600000] text-white px-4 py-3 rounded-lg font-medium transition-colors"
+                    disabled={isSubmitting}
+                    className="flex-1 bg-[var(--color-primary)] hover:bg-[#600000] text-white px-4 py-3 rounded-lg font-medium transition-colors disabled:opacity-50"
                   >
-                    {editingProductId ? 'Update Saree' : 'Save Saree'}
+                    {isSubmitting ? 'Saving...' : (editingProductId ? 'Update Saree' : 'Save Saree')}
                   </button>
                 </div>
               </form>

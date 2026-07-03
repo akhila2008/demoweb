@@ -4,8 +4,8 @@ import { createClient } from '@supabase/supabase-js';
 // ONLY USE THIS ON THE SERVER (API Routes, Server Actions).
 // NEVER expose the service role key to the client.
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://dummy.supabase.co';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || 'dummy_key';
 
 if (!supabaseUrl || !supabaseServiceKey) {
   console.error("Missing Supabase URL or Service Role Key");

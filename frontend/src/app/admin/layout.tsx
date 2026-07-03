@@ -37,6 +37,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       if (data && password === data.admin_password) {
         setIsAuthenticated(true);
         sessionStorage.setItem('admin_auth', 'true');
+        document.cookie = "admin_auth=true; path=/; max-age=86400; SameSite=Strict";
         setError('');
       } else {
         setError('Incorrect password');
@@ -47,6 +48,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       if (password === 'admin123') {
         setIsAuthenticated(true);
         sessionStorage.setItem('admin_auth', 'true');
+        document.cookie = "admin_auth=true; path=/; max-age=86400; SameSite=Strict";
       } else {
         setError('Incorrect password or database not connected.');
       }
@@ -58,6 +60,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const handleLogout = () => {
     setIsAuthenticated(false);
     sessionStorage.removeItem('admin_auth');
+    document.cookie = "admin_auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
   };
 
   const navItems = [
