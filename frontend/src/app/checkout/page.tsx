@@ -7,6 +7,17 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from '@/context/AuthContext';
 
+const INDIAN_STATES = [
+  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", 
+  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", 
+  "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", 
+  "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", 
+  "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", 
+  "Uttar Pradesh", "Uttarakhand", "West Bengal",
+  "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu", 
+  "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
+];
+
 export default function CheckoutPage() {
   const { items, subtotal: total, clearCart } = useCart();
   const { user } = useAuth();
@@ -29,7 +40,57 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     fetchStoreSettings();
+    
+    // Load from localStorage if present
+    const savedForm = localStorage.getItem('akhila_checkout_form');
+    if (savedForm) {
+      try {
+        const parsed = JSON.parse(savedForm);
+        setFormData(prev => ({ ...prev, ...parsed }));
+      } catch (e) {}
+    }
   }, []);
+
+  // Autofill from database for logged in users
+  useEffect(() => {
+    if (user) {
+      const fetchLastOrder = async () => {
+        const { data, error } = await supabase
+          .from('orders')
+          .select('data')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+          
+        if (!error && data?.data?.customer) {
+          const c = data.data.customer;
+          setFormData(prev => {
+            // Only autofill if local form address is mostly empty
+            if (!prev.address && !prev.phone) {
+              return {
+                ...prev,
+                firstName: c.firstName || '',
+                lastName: c.lastName || '',
+                phone: c.phone || '',
+                address: c.address || '',
+                city: c.city || '',
+                state: c.state || '',
+                pincode: c.pincode || ''
+              };
+            }
+            return prev;
+          });
+        }
+      };
+      fetchLastOrder();
+    }
+  }, [user]);
+
+  // Save to localStorage on change
+  useEffect(() => {
+    localStorage.setItem('akhila_checkout_form', JSON.stringify(formData));
+  }, [formData]);
 
   const fetchStoreSettings = async () => {
     try {
@@ -241,9 +302,14 @@ export default function CheckoutPage() {
                 </div>
                 <input name="address" placeholder="Complete Address" value={formData.address} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white" />
                 <div className="grid grid-cols-3 gap-4">
-                  <input name="city" placeholder="City" value={formData.city} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white" />
-                  <input name="state" placeholder="State" value={formData.state} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white" />
-                  <input name="pincode" placeholder="PIN Code" value={formData.pincode} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white text-white" />
+                  <input name="city" placeholder="City" value={formData.city} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white" />
+                  <select name="state" value={formData.state} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white cursor-pointer appearance-none">
+                    <option value="" disabled>Select State</option>
+                    {INDIAN_STATES.map(state => (
+                      <option key={state} value={state}>{state}</option>
+                    ))}
+                  </select>
+                  <input name="pincode" placeholder="PIN Code" value={formData.pincode} onChange={handleInputChange} className="w-full border border-[var(--color-primary)] border-opacity-50 rounded-md p-3 bg-gray-900 text-white" />
                 </div>
                 <button 
                   onClick={() => setStep(2)} 
