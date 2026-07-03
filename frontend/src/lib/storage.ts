@@ -79,41 +79,44 @@ export async function saveProducts(products: any[]): Promise<boolean> {
 export async function loadProducts(): Promise<any[]> {
   if (typeof window === 'undefined') return [];
   try {
-    const { data, error } = await supabase.from('products').select('data');
+    const { data, error } = await supabase
+      .from('products')
+      .select(`
+        id,
+        name,
+        description,
+        price,
+        stock,
+        is_active,
+        categories ( name ),
+        product_images ( url, sort_order )
+      `);
+      
     if (error) throw error;
     
-    let products = data.map(row => row.data);
+    // Map to the expected frontend shape
+    const products = data.map((row: any) => {
+      // Sort images by sort_order
+      const images = (row.product_images || [])
+        .sort((a: any, b: any) => a.sort_order - b.sort_order)
+        .map((img: any) => img.url);
 
-    // Auto-migration from IndexedDB
-    if (products.length === 0) {
-      try {
-        const oldProducts = await new Promise<any[]>((resolve) => {
-          const req = indexedDB.open('AkhilaSareesDB', 2);
-          req.onsuccess = (e: any) => {
-            const db = e.target.result;
-            if (db.objectStoreNames.contains('products')) {
-              const tx = db.transaction('products', 'readonly');
-              const getReq = tx.objectStore('products').get('all_products');
-              getReq.onsuccess = () => resolve(getReq.result || []);
-              getReq.onerror = () => resolve([]);
-            } else {
-              resolve([]);
-            }
-          };
-          req.onerror = () => resolve([]);
-        });
+      return {
+        id: row.id,
+        name: row.name,
+        description: row.description || '',
+        price: row.price,
+        stock: row.stock,
+        category: row.categories ? row.categories.name : 'Uncategorized',
+        image: images.length > 0 ? images[0] : '',
+        images: images,
+        // Legacy fields not fully migrated yet
+        colors: [],
+        occasions: [],
+        is_active: row.is_active
+      };
+    });
 
-        if (oldProducts && oldProducts.length > 0) {
-          console.log('Migrating local products to Supabase...');
-          await saveProducts(oldProducts);
-          const { data: newData } = await supabase.from('products').select('data');
-          if (newData) products = newData.map(row => row.data);
-        }
-      } catch (err) {
-        console.error('Migration failed:', err);
-      }
-    }
-    
     return products;
   } catch (e) {
     console.error('Error loading products from Supabase', e);
