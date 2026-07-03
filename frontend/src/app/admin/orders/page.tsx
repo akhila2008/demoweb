@@ -157,7 +157,12 @@ export default function AdminOrdersPage() {
                       </td>
                       <td className="p-4 font-bold text-white">{totalStr}</td>
                       <td className="p-4 text-sm text-gray-300">
-                        {d.paymentMethod === 'ONLINE' ? 'UPI / Online' : 'Cash on Delivery'}
+                        <div>{d.paymentMethod === 'ONLINE' ? 'Razorpay Online' : 'Cash on Delivery'}</div>
+                        {d.paymentId && (
+                          <div className="text-[10px] text-gray-400 mt-1 uppercase font-mono">
+                            ID: {d.paymentId}
+                          </div>
+                        )}
                       </td>
                       <td className="p-4">{getStatusBadge(d.status)}</td>
                       <td className="p-4 text-right" onClick={(e) => e.stopPropagation()}>
