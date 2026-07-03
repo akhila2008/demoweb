@@ -365,13 +365,14 @@ export default function CheckoutPage() {
                       
                       <div className="flex-shrink-0 flex flex-col items-center justify-center border-l border-[var(--color-primary)] border-opacity-30 pl-0 md:pl-6 pt-4 md:pt-0 mt-4 md:mt-0">
                         <div className="text-xs text-gray-300 mb-2">Or Scan QR Code</div>
-                        <div className="bg-white p-2 rounded-lg">
+                        <div className="bg-white p-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity" onClick={() => { window.location.href = `upi://pay?pa=${storeSettings?.upiId || '8143227553@ybl'}&pn=AkhilaSarees&am=${grandTotal}&cu=INR`; handlePayment(); }}>
                           <img 
                             src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`upi://pay?pa=${storeSettings?.upiId || '8143227553@ybl'}&pn=AkhilaSarees&am=${grandTotal}&cu=INR`)}`}
-                            alt="UPI QR Code" 
+                            alt="Tap or Scan UPI QR Code" 
                             className="w-32 h-32"
                           />
                         </div>
+                        <p className="text-[10px] text-gray-400 mt-2 text-center">Scan from another device<br/>or tap to open UPI</p>
                       </div>
                     </div>
                   </div>
