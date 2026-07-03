@@ -80,8 +80,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
             color: (p.colors && p.colors.length > 0) ? p.colors.join(', ') : 'Not Specified',
             fabric: (p.categories as any)?.name || 'Premium Saree',
             blouse: 'Includes 0.8m unstitched matching blouse piece',
-            washCare: 'Dry Clean Only. Keep away from direct sunlight.',
-            images: sortedImages.map((img: any) => img.url)
+            washCare: 'Dry Clean Only. Keep away from direct sunlight.'
           };
           setProduct(mappedProduct);
           setLinkedVariants([]);

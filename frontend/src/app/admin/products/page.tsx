@@ -53,7 +53,8 @@ export default function AdminProductsPage() {
         .select(`
           id, name, price, stock, description, is_active, category_id,
           categories ( name ),
-          product_images ( id, url, sort_order )
+          product_images ( id, url, sort_order ),
+          colors, occasions
         `)
         .order('created_at', { ascending: false });
       
