@@ -67,7 +67,7 @@ export default function AdminOffersPage() {
     if (editingOfferId) {
       const updateData = {
         title: newOffer.title,
-        code: newOffer.code,
+        code: newOffer.code ? newOffer.code.trim().toUpperCase() : '',
         discount: newOffer.discount,
         status: newOffer.status,
         image: imageUrl || null
@@ -81,7 +81,7 @@ export default function AdminOffersPage() {
       const addedOffer = {
         id: Math.random().toString(36).substr(2, 9),
         title: newOffer.title,
-        code: newOffer.code,
+        code: newOffer.code ? newOffer.code.trim().toUpperCase() : '',
         discount: newOffer.discount,
         status: newOffer.status,
         image: imageUrl || null

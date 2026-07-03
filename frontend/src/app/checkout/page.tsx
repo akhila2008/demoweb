@@ -91,7 +91,7 @@ export default function CheckoutPage() {
       const { data, error } = await supabase
         .from('offers')
         .select('*')
-        .eq('code', couponCode.trim().toUpperCase())
+        .ilike('code', couponCode.trim())
         .eq('status', 'Active')
         .single();
         
