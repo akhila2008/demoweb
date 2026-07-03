@@ -40,7 +40,7 @@ export async function POST(req: Request) {
     }
 
     // 2. We trust the calculated subtotal. (In a real app, also verify shipping rules and coupons server-side)
-    const finalGrandTotal = calculatedSubtotal + Number(shipping) - Number(discount);
+    const finalGrandTotal = calculatedSubtotal + Number(shipping || 0) - Number(discount || 0);
 
     // 3. Upsert the Cart and Cart Items so our Postgres Function can process them
     // (This bridges the gap between our local CartContext and the required SQL function)
