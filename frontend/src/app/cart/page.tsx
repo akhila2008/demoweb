@@ -15,14 +15,14 @@ export default function CartPage() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (parsed.deliveryCharge !== undefined) setDeliveryCharge(parsed.deliveryCharge);
-        if (parsed.freeShippingThreshold !== undefined) setFreeShippingThreshold(parsed.freeShippingThreshold);
+        if (parsed.deliveryCharge !== undefined) setDeliveryCharge(Number(parsed.deliveryCharge));
+        if (parsed.freeShippingThreshold !== undefined) setFreeShippingThreshold(Number(parsed.freeShippingThreshold));
       } catch (e) {}
     }
   }, []);
   
-  const shipping = (freeShippingThreshold > 0 && subtotal >= freeShippingThreshold) ? 0 : deliveryCharge;
-  const total = subtotal + shipping;
+  const shipping = (freeShippingThreshold > 0 && subtotal >= freeShippingThreshold) ? 0 : Number(deliveryCharge);
+  const total = Number(subtotal) + Number(shipping);
 
   if (items.length === 0) {
     return (

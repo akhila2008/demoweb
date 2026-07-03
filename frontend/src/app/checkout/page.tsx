@@ -124,8 +124,8 @@ export default function CheckoutPage() {
     }
   };
 
-  const deliveryCharge = storeSettings?.deliveryCharge !== undefined ? storeSettings.deliveryCharge : 150;
-  const freeShippingThreshold = storeSettings?.freeShippingThreshold !== undefined ? storeSettings.freeShippingThreshold : 5000;
+  const deliveryCharge = storeSettings?.deliveryCharge !== undefined ? Number(storeSettings.deliveryCharge) : 150;
+  const freeShippingThreshold = storeSettings?.freeShippingThreshold !== undefined ? Number(storeSettings.freeShippingThreshold) : 5000;
   
   const shipping = (freeShippingThreshold > 0 && total >= freeShippingThreshold) ? 0 : deliveryCharge;
 
@@ -141,7 +141,7 @@ export default function CheckoutPage() {
     if (discountAmount > total) discountAmount = total;
   }
 
-  const grandTotal = total - discountAmount + shipping;
+  const grandTotal = Number(total) - Number(discountAmount) + Number(shipping);
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
