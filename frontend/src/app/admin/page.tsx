@@ -129,21 +129,21 @@ export default function AdminDashboardPage() {
                   </tr>
                 ) : recentOrders.length > 0 ? (
                   recentOrders.map((order) => {
-                    const d = order.data;
-                    const customerName = `${d.customer?.firstName || ''} ${d.customer?.lastName || ''}`.trim();
+                    const addr = order.shipping_address || {};
+                    const customerName = `${addr.firstName || ''} ${addr.lastName || ''}`.trim() || 'Guest';
                     return (
                       <tr key={order.id} className="text-sm border-b border-[var(--color-primary)] border-opacity-10 hover:bg-gray-800/50">
                         <td className="py-3 font-medium text-[var(--color-primary)]">{order.id}</td>
                         <td className="py-3 text-white">{customerName}</td>
-                        <td className="py-3 text-gray-300">{new Date(d.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })}</td>
-                        <td className="py-3 font-bold text-white">₹{d.grandTotal?.toLocaleString('en-IN')}</td>
+                        <td className="py-3 text-gray-300">{new Date(order.created_at).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })}</td>
+                        <td className="py-3 font-bold text-white">₹{order.grand_total?.toLocaleString('en-IN')}</td>
                         <td className="py-3">
                           <span className={`inline-block px-2 py-1 rounded text-[10px] font-bold ${
-                            d.status === 'CONFIRMED' ? 'bg-green-900 text-green-200' :
-                            d.status === 'CANCELLED' ? 'bg-red-900 text-red-200' :
+                            order.status === 'CONFIRMED' ? 'bg-green-900 text-green-200' :
+                            order.status === 'CANCELLED' ? 'bg-red-900 text-red-200' :
                             'bg-yellow-900 text-yellow-200'
                           }`}>
-                            {d.status}
+                            {order.status}
                           </span>
                         </td>
                       </tr>
