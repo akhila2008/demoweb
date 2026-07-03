@@ -25,6 +25,9 @@ async function migrateProducts() {
     console.log("No legacy products found to migrate.");
     return;
   }
+
+  // Clear existing products to avoid duplicates
+  await supabase.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000');
   
   // 2. Insert Category if not exists
   let categoryId;
@@ -78,13 +81,20 @@ async function migrateProducts() {
       imageUrls = [data.image];
     }
 
+    console.log(`Found ${imageUrls.length} images for ${data.name}`);
+
     if (imageUrls.length > 0) {
       const imagesToInsert = imageUrls.map((url, idx) => ({
         product_id: newProduct.id,
         url: url,
         sort_order: idx
       }));
-      await supabase.from('product_images').insert(imagesToInsert);
+      const { error: imgErr } = await supabase.from('product_images').insert(imagesToInsert);
+      if (imgErr) {
+        console.error(`Failed to insert images for ${data.name}:`, imgErr);
+      } else {
+        console.log(`Inserted images for ${data.name}`);
+      }
     }
   }
 

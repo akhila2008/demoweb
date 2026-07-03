@@ -51,6 +51,8 @@ export async function saveProducts(products: any[]): Promise<boolean> {
     const currentIds = processedProducts.map(p => p.id);
     
     // Delete removed products
+    // DISABLED: The V2 schema no longer uses this sync method. Admin page must be refactored.
+    /*
     const { data: existing } = await supabase.from('products').select('id');
     const existingIds = existing?.map(r => r.id) || [];
     const idsToDelete = existingIds.filter(id => !currentIds.includes(id));
@@ -66,6 +68,7 @@ export async function saveProducts(products: any[]): Promise<boolean> {
       );
       if (error) throw error;
     }
+    */
 
     window.dispatchEvent(new Event('akhila_products_updated'));
     return true;
