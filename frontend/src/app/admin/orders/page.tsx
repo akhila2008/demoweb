@@ -217,9 +217,21 @@ export default function AdminOrdersPage() {
                                   </div>
                                 ))}
                               </div>
-                              <div className="mt-4 pt-3 border-t border-[var(--color-primary)] border-opacity-30 flex justify-between font-bold text-white">
-                                <span>Total Paid</span>
-                                <span>{totalStr}</span>
+                              <div className="mt-4 pt-3 border-t border-[var(--color-primary)] border-opacity-30 space-y-1">
+                                {d.discount > 0 && (
+                                  <div className="flex justify-between text-green-500 font-medium">
+                                    <span>Discount {d.couponCode ? `(${d.couponCode})` : ''}</span>
+                                    <span>-₹{d.discount.toLocaleString('en-IN')}</span>
+                                  </div>
+                                )}
+                                <div className="flex justify-between text-gray-300">
+                                  <span>Shipping</span>
+                                  <span>{d.shipping === 0 ? 'Free' : `₹${d.shipping}`}</span>
+                                </div>
+                                <div className="flex justify-between font-bold text-white pt-2">
+                                  <span>Total Paid</span>
+                                  <span>{totalStr}</span>
+                                </div>
                               </div>
                             </div>
                           </div>

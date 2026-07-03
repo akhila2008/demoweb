@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { loadOffers, saveOffers } from '@/lib/storage';
 import { Plus, Edit, Trash2, X, Tag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { supabase } from '@/lib/supabaseClient';
 
 export default function AdminOffersPage() {
   const [offers, setOffers] = useState<any[]>([]);
@@ -21,25 +21,23 @@ export default function AdminOffersPage() {
   });
 
   useEffect(() => {
-    const fetchInitialData = async () => {
-      try {
-        const savedOffers = await loadOffers();
-        if (savedOffers && savedOffers.length > 0) {
-          setOffers(savedOffers);
-        }
-      } catch (e) {
-        console.error('Failed to load offers from IndexedDB', e);
-      }
-      setIsInitialized(true);
-    };
     fetchInitialData();
   }, []);
 
-  useEffect(() => {
-    if (isInitialized) {
-      saveOffers(offers).catch(e => console.error('Failed to save to IndexedDB', e));
+  const fetchInitialData = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('offers')
+        .select('*')
+        .order('created_at', { ascending: false });
+        
+      if (!error && data) {
+        setOffers(data);
+      }
+    } catch (e) {
+      console.error('Failed to load offers from database', e);
     }
-  }, [offers, isInitialized]);
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -49,25 +47,36 @@ export default function AdminOffersPage() {
     }
   };
 
-  const handleAddOffer = (e: React.FormEvent) => {
+  const handleAddOffer = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newOffer.title || !newOffer.discount) return;
     
+    let imageUrl = previewImage;
+
+    // Optional: Upload image if a new file is selected
+    if (previewImageFile) {
+      const fileExt = previewImageFile.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+      const { data, error } = await supabase.storage.from('product-media').upload(fileName, previewImageFile);
+      if (!error) {
+        const { data: urlData } = supabase.storage.from('product-media').getPublicUrl(fileName);
+        imageUrl = urlData.publicUrl;
+      }
+    }
+    
     if (editingOfferId) {
-      setOffers(offers.map(o => {
-        if (o.id === editingOfferId) {
-          return {
-            ...o,
-            title: newOffer.title,
-            code: newOffer.code,
-            discount: newOffer.discount,
-            status: newOffer.status,
-            image: previewImage || o.image,
-            imageFile: previewImageFile || o.imageFile,
-          };
-        }
-        return o;
-      }));
+      const updateData = {
+        title: newOffer.title,
+        code: newOffer.code,
+        discount: newOffer.discount,
+        status: newOffer.status,
+        image: imageUrl || null
+      };
+
+      const { error } = await supabase.from('offers').update(updateData).eq('id', editingOfferId);
+      if (!error) {
+        setOffers(offers.map(o => o.id === editingOfferId ? { ...o, ...updateData } : o));
+      }
     } else {
       const addedOffer = {
         id: Math.random().toString(36).substr(2, 9),
@@ -75,13 +84,28 @@ export default function AdminOffersPage() {
         code: newOffer.code,
         discount: newOffer.discount,
         status: newOffer.status,
-        image: previewImage || null,
-        imageFile: previewImageFile
+        image: imageUrl || null
       };
-      setOffers([...offers, addedOffer]);
+      
+      const { error } = await supabase.from('offers').insert([addedOffer]);
+      if (!error) {
+        setOffers([...offers, addedOffer]);
+      }
     }
 
     resetForm();
+  };
+
+  const handleDeleteOffer = async (offerId: string) => {
+    if (!confirm('Are you sure you want to delete this offer?')) return;
+    
+    const { error } = await supabase.from('offers').delete().eq('id', offerId);
+    if (!error) {
+      setOffers(offers.filter(o => o.id !== offerId));
+    } else {
+      console.error('Failed to delete offer:', error);
+      alert('Failed to delete offer from database.');
+    }
   };
 
   const resetForm = () => {
@@ -173,7 +197,7 @@ export default function AdminOffersPage() {
                     <Edit className="w-4 h-4" />
                   </button>
                   <button 
-                    onClick={() => setOffers(offers.filter(o => o.id !== offer.id))}
+                    onClick={() => handleDeleteOffer(offer.id)}
                     className="text-red-600 hover:text-red-800 bg-red-50 dark:bg-red-900/20 p-2 rounded-md transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />

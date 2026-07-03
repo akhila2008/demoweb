@@ -21,6 +21,11 @@ export default function CheckoutPage() {
   const [storeSettings, setStoreSettings] = useState<any>(null);
   const [orderId, setOrderId] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [couponError, setCouponError] = useState('');
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
 
   useEffect(() => {
     fetchStoreSettings();
@@ -62,7 +67,46 @@ export default function CheckoutPage() {
   const freeShippingThreshold = storeSettings?.freeShippingThreshold !== undefined ? storeSettings.freeShippingThreshold : 5000;
   
   const shipping = (freeShippingThreshold > 0 && total >= freeShippingThreshold) ? 0 : deliveryCharge;
-  const grandTotal = total + shipping;
+
+  let discountAmount = 0;
+  if (appliedCoupon) {
+    if (appliedCoupon.discount.includes('%')) {
+      const percentage = parseInt(appliedCoupon.discount.replace(/[^0-9]/g, ''));
+      if (!isNaN(percentage)) discountAmount = Math.floor(total * (percentage / 100));
+    } else {
+      const amount = parseInt(appliedCoupon.discount.replace(/[^0-9]/g, ''));
+      if (!isNaN(amount)) discountAmount = amount;
+    }
+    if (discountAmount > total) discountAmount = total;
+  }
+
+  const grandTotal = total - discountAmount + shipping;
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setIsApplyingCoupon(true);
+    setCouponError('');
+    
+    try {
+      const { data, error } = await supabase
+        .from('offers')
+        .select('*')
+        .eq('code', couponCode.trim().toUpperCase())
+        .eq('status', 'Active')
+        .single();
+        
+      if (error || !data) {
+        setCouponError('Invalid or expired coupon code');
+        setAppliedCoupon(null);
+      } else {
+        setAppliedCoupon(data);
+      }
+    } catch (err) {
+      setCouponError('Failed to verify coupon');
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     if (e.target.name === 'paymentMethod') {
@@ -85,6 +129,8 @@ export default function CheckoutPage() {
       items: items,
       subtotal: total,
       shipping: shipping,
+      discount: discountAmount,
+      couponCode: appliedCoupon?.code || null,
       grandTotal: grandTotal,
       status: formData.paymentMethod === 'ONLINE' ? 'PENDING_VERIFICATION' : 'CONFIRMED',
       paymentMethod: formData.paymentMethod,
@@ -318,11 +364,49 @@ export default function CheckoutPage() {
               ))}
             </div>
 
+            <div className="mb-6 border-b border-[var(--color-primary)] border-opacity-30 pb-6">
+              <label className="block text-sm font-medium text-gray-300 mb-2">Have a coupon code?</label>
+              <div className="flex gap-2">
+                <input 
+                  type="text" 
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                  placeholder="Enter code" 
+                  disabled={!!appliedCoupon}
+                  className="flex-1 bg-gray-900 border border-[var(--color-primary)] border-opacity-50 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[var(--color-primary)] disabled:opacity-50"
+                />
+                {appliedCoupon ? (
+                  <button 
+                    onClick={() => { setAppliedCoupon(null); setCouponCode(''); }}
+                    className="bg-red-900/30 text-red-500 border border-red-900/50 hover:bg-red-900/50 px-4 py-2 rounded-lg font-medium transition-colors"
+                  >
+                    Remove
+                  </button>
+                ) : (
+                  <button 
+                    onClick={handleApplyCoupon}
+                    disabled={!couponCode.trim() || isApplyingCoupon}
+                    className="bg-[var(--color-primary)] hover:bg-[#600000] text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50"
+                  >
+                    {isApplyingCoupon ? '...' : 'Apply'}
+                  </button>
+                )}
+              </div>
+              {couponError && <p className="text-red-500 text-xs mt-2">{couponError}</p>}
+              {appliedCoupon && <p className="text-green-500 text-xs mt-2">Coupon '{appliedCoupon.code}' applied!</p>}
+            </div>
+
             <div className="border-t border-[var(--color-primary)] border-opacity-30 pt-4 space-y-2 text-sm mb-4">
               <div className="flex justify-between">
                 <span className="text-gray-200">Subtotal</span>
                 <span>₹{total.toLocaleString('en-IN')}</span>
               </div>
+              {appliedCoupon && (
+                <div className="flex justify-between text-green-500 font-medium">
+                  <span>Discount ({appliedCoupon.code})</span>
+                  <span>-₹{discountAmount.toLocaleString('en-IN')}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-gray-200">Shipping</span>
                 <span>{shipping === 0 ? <span className="text-green-600">Free</span> : `₹${shipping}`}</span>
