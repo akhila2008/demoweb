@@ -43,7 +43,7 @@ export async function addProduct(productData: any, imageUrls: string[]) {
     occasions: productData.occasions || []
   }).select().single();
 
-  if (error) throw error;
+  if (error) return { success: false, error: 'Database Insert Error: ' + error.message };
 
   if (imageUrls.length > 0) {
     const imagesToInsert = imageUrls.map((url, idx) => ({
@@ -52,12 +52,12 @@ export async function addProduct(productData: any, imageUrls: string[]) {
       sort_order: idx
     }));
     const { error: imgError } = await supabaseAdmin.from('product_images').insert(imagesToInsert);
-    if (imgError) throw imgError;
+    if (imgError) return { success: false, error: 'Image Insert Error: ' + imgError.message };
   }
   
   revalidatePath('/admin/products');
   revalidatePath('/shop');
-  return product;
+  return { success: true, product };
 }
 
 export async function updateProduct(productId: string, productData: any, imageUrls: string[]) {
@@ -74,27 +74,32 @@ export async function updateProduct(productId: string, productData: any, imageUr
     occasions: productData.occasions || []
   }).eq('id', productId);
 
-  if (error) throw error;
+  if (error) return { success: false, error: 'Database Update Error: ' + error.message };
 
   // For images, we simply append new ones. Deleting is handled separately.
   if (imageUrls.length > 0) {
-    // Get max sort_order
-    const { data: existingImgs } = await supabaseAdmin.from('product_images').select('sort_order').eq('product_id', productId).order('sort_order', { ascending: false }).limit(1);
-    let startIdx = existingImgs && existingImgs.length > 0 ? existingImgs[0].sort_order + 1 : 0;
+    const { data: existingImages, error: fetchErr } = await supabaseAdmin
+      .from('product_images')
+      .select('sort_order')
+      .eq('product_id', productId)
+      .order('sort_order', { ascending: false })
+      .limit(1);
+      
+    const maxSort = (existingImages && existingImages.length > 0) ? existingImages[0].sort_order : -1;
     
     const imagesToInsert = imageUrls.map((url, idx) => ({
       product_id: productId,
       url,
-      sort_order: startIdx + idx
+      sort_order: maxSort + 1 + idx
     }));
     const { error: imgError } = await supabaseAdmin.from('product_images').insert(imagesToInsert);
-    if (imgError) throw imgError;
+    if (imgError) return { success: false, error: 'Image Update Error: ' + imgError.message };
   }
   
   revalidatePath('/admin/products');
   revalidatePath('/shop');
   revalidatePath(`/product/${productId}`);
-  return true;
+  return { success: true };
 }
 
 export async function deleteProduct(productId: string) {

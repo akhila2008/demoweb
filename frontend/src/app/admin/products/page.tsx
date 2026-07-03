@@ -141,9 +141,11 @@ export default function AdminProductsPage() {
       };
 
       if (editingProductId) {
-        await updateProduct(editingProductId, payload, newUrls);
+        const res = await updateProduct(editingProductId, payload, newUrls);
+        if (!res.success) throw new Error(res.error);
       } else {
-        await addProduct(payload, newUrls);
+        const res = await addProduct(payload, newUrls);
+        if (!res.success) throw new Error(res.error);
       }
 
       // Refresh list
@@ -151,9 +153,9 @@ export default function AdminProductsPage() {
 
       setIsAddModalOpen(false);
       resetForm();
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to save product:', err);
-      alert('Error saving product. See console for details.');
+      alert('Error saving product: ' + (err.message || 'Unknown error'));
     } finally {
       setIsSubmitting(false);
     }
