@@ -166,7 +166,7 @@ export default function AdminOrdersPage() {
                   const customerName = `${d.customer?.firstName || ''} ${d.customer?.lastName || ''}`.trim();
                   const dateObj = new Date(d.date || order.created_at);
                   const dateStr = dateObj.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-                  const totalStr = `₹${(d.grandTotal || 0).toLocaleString('en-IN')}`;
+                  const totalStr = `₹${(d.total || 0).toLocaleString('en-IN')}`;
                   const isExpanded = expandedOrderId === order.id;
                   
                   return (
