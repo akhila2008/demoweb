@@ -6,6 +6,7 @@ import { WishlistProvider } from "@/context/WishlistContext";
 import { AuthProvider } from "@/context/AuthContext";
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SplashScreen from '@/components/SplashScreen';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,6 +43,7 @@ export default function RootLayout({
           <WishlistProvider>
             <CartProvider>
               <Navbar />
+              <SplashScreen />
               <main className="flex-grow pt-16">
                 {children}
               </main>
