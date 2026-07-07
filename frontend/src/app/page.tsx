@@ -1,8 +1,24 @@
 'use client';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
+  const [isFirstVisit, setIsFirstVisit] = useState(false);
+
+  useEffect(() => {
+    if (!sessionStorage.getItem('home_animated')) {
+      setIsFirstVisit(true);
+      sessionStorage.setItem('home_animated', 'true');
+    }
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  const baseDelay = isFirstVisit ? 4.2 : 0; // Wait for splash screen to finish if it's the first visit
+
   return (
     <div className="flex flex-col min-h-screen">
       
@@ -16,33 +32,33 @@ export default function Home() {
         
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto glass-panel p-12 rounded-3xl border border-white/20 shadow-2xl">
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
+            transition={{ duration: 1, delay: baseDelay }}
           >
             <span className="text-[var(--color-indian-gold)] uppercase tracking-[0.3em] text-sm font-bold mb-4 block">Namaste & Welcome To</span>
           </motion.div>
           <motion.h1 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.2 }}
+            initial={{ opacity: 0, scale: 0.8, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 1.2, delay: baseDelay + 0.3, type: "spring", stiffness: 100 }}
             className="text-6xl md:text-8xl font-brand font-bold text-white mb-6 leading-tight drop-shadow-2xl"
           >
             Akhila Sarees
           </motion.h1>
           <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.5 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: baseDelay + 0.6 }}
             className="text-lg md:text-2xl text-gray-100 mb-10 max-w-2xl mx-auto font-light tracking-wide"
           >
             Step into a world of royal elegance. Discover hand-woven masterpieces tailored for your most precious moments.
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: baseDelay + 1.0 }}
           >
             <Link href="/shop" className="inline-block bg-[var(--color-indian-gold)] text-gray-900 font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl hover:bg-[#E6C200] transition-all transform hover:-translate-y-1">
               Explore Collections
