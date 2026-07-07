@@ -285,11 +285,14 @@ function ShopContent() {
               <button onClick={clearFilters} className="text-[var(--color-primary)] hover:underline font-medium">Clear Filters</button>
             </div>
           ) : (
-            filteredProducts.map((product) => (
+            filteredProducts.map((product, index) => (
               <motion.div 
                 key={product.id}
-                whileHover={{ y: -5 }}
-                className="bg-gray-900 text-white rounded-xl overflow-hidden border border-[var(--color-primary)] border-opacity-30 shadow-sm hover:shadow-md transition-all group"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
+                whileHover={{ y: -8, scale: 1.02 }}
+                className="bg-gray-900 text-white rounded-xl overflow-hidden border border-[var(--color-primary)] border-opacity-30 shadow-sm hover:shadow-[0_10px_30px_rgba(212,175,55,0.15)] transition-all group"
               >
                 <Link href={`/product/${product.id}`}>
                   <div className="relative aspect-[3/4] overflow-hidden bg-gray-900 text-white">

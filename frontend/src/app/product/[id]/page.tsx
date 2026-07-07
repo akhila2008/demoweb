@@ -129,7 +129,12 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
 
       <div className="flex flex-col lg:flex-row gap-12">
         {/* Image Gallery */}
-        <div className="w-full lg:w-1/2 flex flex-col-reverse md:flex-row gap-4">
+        <motion.div 
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="w-full lg:w-1/2 flex flex-col-reverse md:flex-row gap-4"
+        >
           <div className="flex md:flex-col gap-4 overflow-x-auto md:overflow-visible md:w-24 shrink-0">
             {product.images?.length > 0 && product.images.map((img: string, idx: number) => {
               const isVid = img.toLowerCase().endsWith('.mp4') || img.toLowerCase().endsWith('.webm');
@@ -204,7 +209,12 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
         </div>
 
         {/* Product Info */}
-        <div className="w-full lg:w-1/2 flex flex-col">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="w-full lg:w-1/2 flex flex-col"
+        >
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">{product.name}</h1>
           
           <div className="flex items-center gap-4 mb-6">
@@ -344,7 +354,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
             </div>
           </div>
 
-        </div>
+        </motion.div>
       </div>
     </div>
   );
