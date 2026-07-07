@@ -206,7 +206,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
               </>
             )}
           </div>
-        </div>
+        </motion.div>
 
         {/* Product Info */}
         <motion.div 
