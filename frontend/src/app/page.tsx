@@ -62,6 +62,10 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Collection Card 1 */}
             <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: 0.1 }}
               whileHover={{ y: -10 }}
               className="relative rounded-2xl overflow-hidden aspect-[3/4] group cursor-pointer shadow-md"
             >
@@ -74,6 +78,10 @@ export default function Home() {
 
             {/* Collection Card 2 */}
             <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: 0.3 }}
               whileHover={{ y: -10 }}
               className="relative rounded-2xl overflow-hidden aspect-[3/4] group cursor-pointer shadow-md"
             >
@@ -86,6 +94,10 @@ export default function Home() {
 
             {/* Collection Card 3 */}
             <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: 0.5 }}
               whileHover={{ y: -10 }}
               className="relative rounded-2xl overflow-hidden aspect-[3/4] group cursor-pointer shadow-md"
             >
@@ -102,7 +114,12 @@ export default function Home() {
       {/* Highlights Section */}
       <section className="py-20 bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-          <div>
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">Crafted with Passion & Tradition</h2>
             <p className="text-gray-200 mb-8 leading-relaxed text-lg">
               Every saree in our collection tells a story. Woven by master artisans across India, our pieces are more than just clothing—they are a celebration of centuries-old techniques passed down through generations.
@@ -119,14 +136,20 @@ export default function Home() {
               </li>
             </ul>
             <Link href="/about" className="text-[var(--color-primary)] font-semibold hover:underline">Read Our Story &rarr;</Link>
-          </div>
-          <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
+          </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative h-96 rounded-2xl overflow-hidden shadow-2xl"
+          >
             <div className="absolute inset-0 bg-gradient-to-tr from-[#FF00FF] to-[#800000] opacity-80"></div>
             {/* Placeholder for a beautiful image */}
             <div className="absolute inset-0 flex items-center justify-center text-white font-medium">
               [Brand Image Video/Hero]
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 

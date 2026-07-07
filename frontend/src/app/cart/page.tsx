@@ -57,11 +57,14 @@ export default function CartPage() {
         <div className="w-full lg:w-2/3">
           <div className="bg-gray-900 text-white rounded-xl border border-[var(--color-primary)] border-opacity-30 shadow-sm overflow-hidden">
             <ul className="divide-y divide-gray-200 dark:divide-gray-800">
-              {items.map((item, index) => (
-                <motion.li 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
+              <AnimatePresence>
+                {items.map((item, index) => (
+                  <motion.li 
+                    layout
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, x: -50, transition: { duration: 0.2 } }}
+                    transition={{ delay: index * 0.1 }}
                   key={item.id} 
                   className="p-6 flex flex-col sm:flex-row gap-6"
                 >
@@ -109,13 +112,18 @@ export default function CartPage() {
                     </div>
                   </div>
                 </motion.li>
-              ))}
+              </AnimatePresence>
             </ul>
           </div>
         </div>
 
         {/* Order Summary */}
-        <div className="w-full lg:w-1/3">
+        <motion.div 
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="w-full lg:w-1/3"
+        >
           <div className="bg-black rounded-xl p-6 border border-[var(--color-primary)] border-opacity-30 sticky top-28">
             <h2 className="text-xl font-bold text-white mb-6">Order Summary</h2>
             
@@ -150,7 +158,7 @@ export default function CartPage() {
               100% Secure Checkout
             </div>
           </div>
-        </div>
+        </motion.div>
 
       </div>
     </div>
