@@ -41,9 +41,9 @@ export default function SplashScreen() {
             <img 
               src="/namaskaram_lady.jpg" 
               alt="Welcome" 
-              className="w-full h-full object-cover opacity-80"
+              className="w-full h-full object-contain opacity-80"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-60"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/80 opacity-80"></div>
             
             <motion.div 
               className="absolute bottom-20 text-center z-10"
