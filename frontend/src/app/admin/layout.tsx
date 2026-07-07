@@ -34,7 +34,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         
       if (dbError) throw dbError;
       
-      if (data && password === data.admin_password) {
+      if (data && password.trim() === data.admin_password) {
         setIsAuthenticated(true);
         sessionStorage.setItem('admin_auth', 'true');
         document.cookie = "admin_auth=true; path=/; max-age=86400; SameSite=Strict";
@@ -45,7 +45,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     } catch (err) {
       console.error('Error verifying password:', err);
       // Fallback in case table doesn't exist yet
-      if (password === 'admin123') {
+      if (password.trim() === 'admin123') {
         setIsAuthenticated(true);
         sessionStorage.setItem('admin_auth', 'true');
         document.cookie = "admin_auth=true; path=/; max-age=86400; SameSite=Strict";
