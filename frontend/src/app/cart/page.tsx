@@ -112,6 +112,7 @@ export default function CartPage() {
                     </div>
                   </div>
                 </motion.li>
+                ))}
               </AnimatePresence>
             </ul>
           </div>
