@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import Link from 'next/link';
 import { Trash2, ShoppingBag, ArrowRight, ShieldCheck } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CartPage() {
   const { items, removeFromCart, updateQuantity, subtotal, totalItems } = useCart();
@@ -150,9 +150,11 @@ export default function CartPage() {
               <p className="text-xs text-gray-300 mt-1">Inclusive of all taxes</p>
             </div>
 
-            <Link href="/checkout" className="w-full bg-[var(--color-primary)] hover:bg-[#600000] text-white py-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors shadow-lg">
-              Proceed to Checkout <ArrowRight className="w-5 h-5" />
-            </Link>
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Link href="/checkout" className="w-full bg-[var(--color-primary)] hover:bg-[#b08d20] text-black hover:text-white py-4 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors shadow-lg">
+                Proceed to Checkout <ArrowRight className="w-5 h-5" />
+              </Link>
+            </motion.div>
 
             <div className="mt-6 flex items-center justify-center text-sm text-gray-300 gap-2">
               <ShieldCheck className="w-5 h-5 text-green-600" />

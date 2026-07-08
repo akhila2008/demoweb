@@ -427,9 +427,9 @@ export default function CheckoutPage() {
                       {formErrors.general && <p className="text-red-500 text-sm font-medium mt-2">{formErrors.general}</p>}
 
                       <div className="mt-6 bg-[#1a1a1a] p-4 rounded-lg flex items-center justify-between">
-                        <button onClick={handleAddressSubmit} className="bg-[var(--color-primary)] hover:bg-[#b08d20] text-black font-bold py-3 px-8 rounded-lg transition-colors">
+                        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={handleAddressSubmit} className="bg-[var(--color-primary)] hover:bg-[#b08d20] text-black font-bold py-3 px-8 rounded-lg transition-colors">
                           Use this address
-                        </button>
+                        </motion.button>
                       </div>
                     </div>
                   )}
@@ -542,13 +542,14 @@ export default function CheckoutPage() {
 
                   <div className="bg-[#1a1a1a] p-6 rounded-lg flex flex-col md:flex-row items-center justify-between gap-6 border-t-4 border-[var(--color-primary)]">
                     <div>
-                      <button 
+                      <motion.button 
+                        whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                         onClick={handlePlaceOrder}
                         disabled={isProcessing}
-                        className="bg-[var(--color-primary)] hover:bg-[#b08d20] disabled:opacity-50 text-black font-bold py-3 px-8 rounded-lg transition-colors w-full md:w-auto shadow-lg"
+                        className="bg-[var(--color-primary)] hover:bg-[#b08d20] disabled:opacity-50 text-black font-bold py-3 px-6 rounded-lg transition-colors shadow-lg"
                       >
                         {isProcessing ? 'Processing securely...' : paymentMethod === 'ONLINE' ? 'Place your order and pay' : 'Place your order'}
-                      </button>
+                      </motion.button>
                       <p className="text-xs text-gray-400 mt-3 text-center md:text-left">
                         By placing your order, you agree to Vastrini's privacy notice and conditions of use.
                       </p>
@@ -569,13 +570,14 @@ export default function CheckoutPage() {
         {/* Right Column: Order Summary Box (Amazon style side panel) */}
         <div className="w-full lg:w-1/3">
           <div className="bg-[#111] border border-gray-800 rounded-lg p-6 sticky top-24">
-            <button 
+            <motion.button 
+              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
               onClick={() => { if (activeStep === 3) handlePlaceOrder(); else setActiveStep(3); }}
               disabled={activeStep < 3 || isProcessing}
               className="w-full bg-[var(--color-primary)] hover:bg-[#b08d20] disabled:opacity-50 text-black font-bold py-3 rounded-lg transition-colors mb-4 shadow-lg text-sm"
             >
               {isProcessing ? 'Processing...' : activeStep < 3 ? 'Use this address to continue' : 'Place your order and pay'}
-            </button>
+            </motion.button>
             <p className="text-xs text-gray-400 text-center mb-6">Choose a shipping address and payment method to calculate shipping, handling, and tax.</p>
             
             {/* Coupon Code section (Moved above Order Summary) */}

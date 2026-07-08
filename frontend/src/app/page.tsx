@@ -60,9 +60,11 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: baseDelay + 1.0 }}
           >
-            <Link href="/shop" className="inline-block bg-[var(--color-indian-gold)] text-gray-900 font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl hover:bg-[#E6C200] transition-all transform hover:-translate-y-1">
-              Explore Collections
-            </Link>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
+              <Link href="/shop" className="inline-block bg-[var(--color-indian-gold)] text-gray-900 font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl hover:bg-[#E6C200] transition-colors">
+                Explore Collections
+              </Link>
+            </motion.div>
           </motion.div>
         </div>
       </section>

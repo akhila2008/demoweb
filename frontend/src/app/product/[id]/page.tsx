@@ -284,7 +284,9 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
               >+</button>
             </div>
             
-            <button 
+            <motion.button 
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={handleAddToCart}
               disabled={product.stock === 0 && !isAdded}
               className={`flex-grow h-12 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors shadow-md ${
@@ -292,7 +294,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
                   ? 'bg-green-600 hover:bg-green-700 text-white' 
                   : product.stock === 0 
                     ? 'bg-gray-300 text-gray-300 cursor-not-allowed'
-                    : 'bg-[var(--color-primary)] hover:bg-[#600000] text-white'
+                    : 'bg-[var(--color-primary)] hover:bg-[#b08d20] text-black hover:text-white'
               }`}
             >
               {isAdded ? (
@@ -300,9 +302,11 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
               ) : (
                 <><ShoppingCart className="w-5 h-5" /> {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</>
               )}
-            </button>
+            </motion.button>
             
-            <button 
+            <motion.button 
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
               onClick={() => toggleWishlist({
                 id: product.id,
                 name: product.name,
@@ -317,7 +321,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
               }`}
             >
               <Heart className={`w-5 h-5 ${isInWishlist(product.id) ? 'fill-current' : ''}`} />
-            </button>
+            </motion.button>
           </div>
 
           {/* Additional Info */}
